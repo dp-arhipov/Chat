@@ -1,6 +1,6 @@
-export const dialog = [
-    {dialogId: 2, name: "Иван Иванов"},
-    {dialogId: 3, name: "Николай Николаев"}
+export const dialogs = [
+    {id: 2, name: "Иван Иванов"},
+    {id: 3, name: "Николай Николаев"}
 ];
 
 export const messages = [

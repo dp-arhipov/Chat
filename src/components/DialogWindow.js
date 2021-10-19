@@ -1,30 +1,15 @@
 import React, {useState} from 'react';
 import MessageInput from "./MessageInput";
 import MessagesList from "./MessagesList";
-import {useParams} from "react-router-dom";
 
-
-const ChatWindow = ({messages, setMessages}) => {
-    const currentUserId = 1;
-    const params = useParams();
-    const dialogId = params.id;
-
-    const handleSubmit = (e, inputText) => {
-        console.log(e, inputText);
-        e.preventDefault();
-        setMessages([...messages,{
-            id: currentUserId,
-            text: inputText,
-            date: "сегодня"
-        }]);
-    }
+const DialogWindow = () => {
 
     return (
         <div className={"chat-window"}>
-            <MessagesList messages={messages}/>
-            <MessageInput handleSubmit={handleSubmit}/>
+            <MessagesList/>
+            <MessageInput/>
         </div>
     );
 };
 
-export default ChatWindow;
+export default DialogWindow;
