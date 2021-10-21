@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import DialogList from "./DialogList";
 import DialogWindow from "./DialogWindow";
 import * as API from "../API";
-import ChatContext from '../context'
+import ChatContext from '../context';
 
 const Chat = () => {
 
@@ -24,24 +24,27 @@ const Chat = () => {
     }, [])
 
     useEffect(() => {
-        if(dialogs.length!=0){
+        if (dialogs.length != 0) {
             setCurrentDialog(dialogs[0]);
         }
     }, [dialogs])
 
-    useEffect( () => {
-        if(currentDialog.hasOwnProperty('id')){
-             setMessages(API.getMessages(currentDialog.id));
+    useEffect(() => {
+        if (currentDialog.hasOwnProperty('id')) {
+            setMessages(API.getMessages(currentDialog.id));
         }
-    },[currentDialog])
+    }, [currentDialog])
 
 
     return (
         <ChatContext.Provider value={{messages, addMessage}}>
-            <div>
-                <h1>{currentDialog.name}</h1>
-                <DialogList dialogs={dialogs} setCurrentDialog={setCurrentDialog}/>
-                <DialogWindow/>
+            <div className={"chat"}>
+                <div className={"chat__left-bar"}>
+                    <DialogList dialogs={dialogs} setCurrentDialog={setCurrentDialog}/>
+                </div>
+                <div className="chat__right-bar">
+                    <DialogWindow currentDialog={currentDialog}/>
+                </div>
             </div>
         </ChatContext.Provider>
     );

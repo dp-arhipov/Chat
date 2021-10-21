@@ -12,12 +12,12 @@ const MessageInput = () => {
     }
 
     return (
-        <div className={"message-input"}>
-            <form onSubmit={e=>handleSubmitButton(e)}>
-                <input type="text" value={inputText} onChange={e => setInputText(e.target.value)}/>
+
+            <form className={"message-input"} onSubmit={e=>handleSubmitButton(e)}>
+                <input type="text" value={inputText} placeholder={"Введите сообщение..."} onChange={e => setInputText(e.target.value)}/>
                 <input type="submit" value="Отправить"/>
             </form>
-        </div>
+
     );
 };
 
