@@ -8,12 +8,12 @@ import NotFound from "./components/NotFound";
 import {initializeApp} from 'firebase/app';
 import {getFirestore} from 'firebase/firestore';
 import {AuthContext} from './context';
-//import {firebaseConfig} from 'src/firebaseConfig'
-// import  'firebase/storage'
-// import  'firebase/auth'
+
 import { getAuth, signInWithCustomToken } from "firebase/auth";
 import {useAuthState} from "react-firebase-hooks/auth";
 
+
+import {useCurrentUser} from "./API";
 
 
 // Initialize Firebase
@@ -31,19 +31,15 @@ const firestore = getFirestore(app);
 const auth = getAuth();
 
 function App() {
-    const user = useAuthState(auth);
-
+const currentUser = useCurrentUser();
+//console.log(currentUser.isLoggedIn);
     return (
-        <AuthContext.Provider value={{auth, firestore}}>
+        <AuthContext.Provider value={{auth, firestore, currentUser}}>
             <div className="App">
 
                 <BrowserRouter>
                     <Switch>
-                        {/*<Route exact path="/" component={Login}></Route>*/}
-                        {/*<Route exact path="/dialog">*/}
-                        {/*    <Chat/>*/}
-                        {/*</Route>*/}
-                        {(user[0])
+                        {(currentUser.isLoggedIn)
                             ?<Route exact path="/" component={Chat}></Route>
                             :<Route exact path="/" component={Login}></Route>
                         }

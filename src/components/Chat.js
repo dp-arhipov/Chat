@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import DialogList from "./DialogList";
 import DialogWindow from "./DialogWindow";
-import * as API from "../API";
+
 import {AuthContext, ChatContext} from '../context';
-import {doc, setDoc, getDoc} from "firebase/firestore";
 import {useAuthState} from "react-firebase-hooks/auth";
+import * as API from "../API"
 
 const Chat = () => {
 
@@ -15,46 +15,63 @@ const Chat = () => {
 
     const {auth} = useContext(AuthContext);
     const {firestore} = useContext(AuthContext);
+    const {currentUser} = useContext(AuthContext);
+
     const user = useAuthState(auth);
 
+    // const [currentDialog, setCurrentDialog] = useState([]);
+    // const [currentUser, setCurrentUser] = useState(user);
 
     const addMessage = async (text) => {
-
         const now = new Date();
-        const newMessage = {
+        const message = {
             id: currentUserId,
             text: text,
             date: now.toLocaleDateString(),
             time: now.toLocaleTimeString()
         }
-        setMessages([...messages, newMessage]);
+        setMessages([...messages, message]);
+        API.sendMessage(currentUser.id, currentDialog.id, message);
 
-
-        const docRef = doc(firestore, "users", currentUserId, "dialogs", currentDialog.id);
-        setDoc(docRef, {
-            messages: [...messages, newMessage]
-        }, {merge: true});
-
-
-
-    }
-
-    const getMessages = async (dialogId) => {
         //const docRef = doc(firestore, "users", currentUserId, "dialogs", currentDialog.id);
+        // setDoc(docRef, {
+        //     messages: [...messages, newMessage]
+        // }, {merge: true});
 
-        const docRef = doc(firestore, "users", currentUserId, "dialogs", dialogId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            return docSnap.data().messages;
-        } else {
-            // doc.data() will be undefined in this case
+        //
+        // await updateDoc(docRef, {
+        //     messages: arrayUnion(newMessage)
+        // });
 
-            return false;
-        }
+
     }
 
-    useEffect(() => {
-        setDialogs(API.getDialogs());
+    const getMessages = (dialogId) => {
+
+        // //const docRef = doc(firestore, "users", currentUserId, "dialogs", currentDialog.id);
+        //
+        // const docRef = doc(firestore, "users", currentUserId, "dialogs", dialogId);
+        // const docSnap = await getDoc(docRef);
+        // if (docSnap.exists()) {
+        //     return docSnap.data().messages;
+        // } else {
+        //     // doc.data() will be undefined in this case
+        //
+        //     return false;
+        // }
+
+        return API.getDialogMessages(currentUser.id, currentDialog.id);
+    }
+
+    useEffect(async () => {
+       // console.log(await API.getDialogList(currentUser.id));
+        setDialogs(await API.getDialogList(currentUser.id));
+        //await API.getDialogList(currentUser.id);
+
+        // console.log( docSnap);
+        //console.log(await API.getDialogList(currentUser.id));
+        //const docRef = doc(firestore, "users", currentUser.id, "dialogs", currentDialog.id);
+
         setCurrentUserId(user[0].uid);
     }, [])
 
@@ -67,12 +84,9 @@ const Chat = () => {
     useEffect(async () => {
         if (currentDialog.hasOwnProperty('id')) {
             let messages = await getMessages(currentDialog.id);
-            (messages)?setMessages(messages):setMessages([]);
-
-            //*console.log(typeof API.getMessages(currentDialog.id))
-           //let messages = API.getMessages(currentDialog.id);
-            //setMessages(messages);
+            (messages) ? setMessages(messages) : setMessages([]);
         }
+
     }, [currentDialog])
 
 
