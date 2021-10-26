@@ -1,13 +1,22 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import {Card} from "react-bootstrap";
+import {ChatContext} from "../context";
 
-const Message = ({text, date, id}) => {
-
+const Message = ({text, date, id, time}) => {
+    const {currentUserId} = useContext(ChatContext);
+    //const currentUserId = 1;
     return (
+
         <div className={"message-item"}>
-            {id == "1"
-                ? <div className={"message-item__mine"}><b> Я   [{date}]</b> {text}</div>
-                : <div className={"message-item__not-mine"}><b> Он   [{date}]</b> {text}</div>
-            }
+            <Card border="primary" style={{ width: '25rem', marginLeft: (id==currentUserId)?'auto': 0, marginBottom:'0.5rem'}}>
+                <Card.Header>{date}  {time}</Card.Header>
+                <Card.Body>
+                    <Card.Title></Card.Title>
+                    <Card.Text>
+                        {text}
+                    </Card.Text>
+                </Card.Body>
+            </Card>
 
 
         </div>

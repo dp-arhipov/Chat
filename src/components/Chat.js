@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import DialogList from "./DialogList";
 import DialogWindow from "./DialogWindow";
 import * as API from "../API";
-import ChatContext from '../context';
+import {AuthContext, ChatContext} from '../context';
+import {doc, setDoc, getDoc} from "firebase/firestore";
+import {useAuthState} from "react-firebase-hooks/auth";
 
 const Chat = () => {
 
@@ -11,16 +13,49 @@ const Chat = () => {
     const [currentDialog, setCurrentDialog] = useState({});
     const [currentUserId, setCurrentUserId] = useState(1);
 
-    const addMessage = (text) => {
-        setMessages([...messages, {
+    const {auth} = useContext(AuthContext);
+    const {firestore} = useContext(AuthContext);
+    const user = useAuthState(auth);
+
+
+    const addMessage = async (text) => {
+
+        const now = new Date();
+        const newMessage = {
             id: currentUserId,
             text: text,
-            date: "сегодня"
-        }]);
+            date: now.toLocaleDateString(),
+            time: now.toLocaleTimeString()
+        }
+        setMessages([...messages, newMessage]);
+
+
+        const docRef = doc(firestore, "users", currentUserId, "dialogs", currentDialog.id);
+        setDoc(docRef, {
+            messages: [...messages, newMessage]
+        }, {merge: true});
+
+
+
+    }
+
+    const getMessages = async (dialogId) => {
+        //const docRef = doc(firestore, "users", currentUserId, "dialogs", currentDialog.id);
+
+        const docRef = doc(firestore, "users", currentUserId, "dialogs", dialogId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data().messages;
+        } else {
+            // doc.data() will be undefined in this case
+
+            return false;
+        }
     }
 
     useEffect(() => {
         setDialogs(API.getDialogs());
+        setCurrentUserId(user[0].uid);
     }, [])
 
     useEffect(() => {
@@ -29,15 +64,20 @@ const Chat = () => {
         }
     }, [dialogs])
 
-    useEffect(() => {
+    useEffect(async () => {
         if (currentDialog.hasOwnProperty('id')) {
-            setMessages(API.getMessages(currentDialog.id));
+            let messages = await getMessages(currentDialog.id);
+            (messages)?setMessages(messages):setMessages([]);
+
+            //*console.log(typeof API.getMessages(currentDialog.id))
+           //let messages = API.getMessages(currentDialog.id);
+            //setMessages(messages);
         }
     }, [currentDialog])
 
 
     return (
-        <ChatContext.Provider value={{messages, addMessage}}>
+        <ChatContext.Provider value={{messages, addMessage, currentUserId}}>
             <div className={"chat"}>
                 <div className={"chat__left-bar"}>
                     <DialogList dialogs={dialogs} setCurrentDialog={setCurrentDialog}/>

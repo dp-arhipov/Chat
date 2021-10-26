@@ -1,116 +1,124 @@
-@import '~sanitize.css';
-
-.class1 {
-
-  display: flex;
-  flex-direction: column;
-
-  height: 500px;
-  background-color: #ff0000;
-
-  .class2 {
-    background-color: #ffd500;
-  }
-
-  .class3 {
-
-    display: flex;
 
 
-    background-color: #9cff00;
+//@import '~sanitize.css';
+@import '~bootstrap';
 
-    .class31 {
-
-      background-color: #00ffcb;
-    }
-
-    .class32 {
-      margin-right: 0px;
-
-      background-color: #001eff;
-    }
-
-    .class33 {
-      margin-left: 50px;
-      flex: 1;
-      background-color: #ff00d5;
-    }
-
-  }
-
-  .class4 {
-    background-color: #ffd500;
-  }
-}
+//.class1 {
+//
+//  display: flex;
+//  flex-direction: column;
+//
+//  height: 500px;
+//  background-color: #ff0000;
+//
+//  .class2 {
+//    background-color: #ffd500;
+//  }
+//
+//  .class3 {
+//
+//    display: flex;
+//
+//
+//    background-color: #9cff00;
+//
+//    .class31 {
+//
+//      background-color: #00ffcb;
+//    }
+//
+//    .class32 {
+//      margin-right: 0px;
+//
+//      background-color: #001eff;
+//    }
+//
+//    .class33 {
+//      margin-left: 50px;
+//      flex: 1;
+//      background-color: #ff00d5;
+//    }
+//
+//  }
+//
+//  .class4 {
+//    background-color: #ffd500;
+//  }
+//}
 
 
 //reset+
-ul {
-  padding: 0;
-  margin: 0;
-}
+//ul {
+//  padding: 0;
+//  margin: 0;
+//}
 
 
 .chat {
-  display: grid;
-  grid-column-gap: 30px;
-  grid: 100vh/20px [left-bar] 1fr [right-bar] 3fr 20px;
-
+  display: flex;
+  height: 100vh;
   &__left-bar {
-    grid-column: left-bar;
+    flex: 1;
   }
 
   &__right-bar {
-    grid-column: right-bar;
+    flex: 3;
   }
 }
 
 
 .dialog-list {
-  padding-top: 40px;
+ // padding-top: 40px;
   height: 100%;
-  border-right: 1px solid grey;
+  border-right: 1px solid #dbdbdb;
 
   &__item {
-    list-style-type: none;
-    padding: 10px 0px 10px 20px;
-    border: 1px solid grey;
-
+    //list-style-type: none;
+    //padding: 10px 0px 10px 20px;
+    //border: 1px solid grey;
+    //border-right:none;
+    //border-bottom: none;
     &:hover {
       cursor: pointer;
     }
+    //&:last-child{
+    //  border-bottom: 1px solid grey;
+    //}
   }
 }
 
 
 .dialog-window {
   display: flex;
+
   flex-direction: column;
   height: 100%;
 
   &__title {
+    align-self:center;
 
   }
 
   &__messages {
-    flex: 1;
+    padding-left: 30px;
   }
 
   &__input {
-    // margin-left: auto;
+    //border-left:none;
+    margin-top: auto;
   }
 
 }
 
 .message-input {
-  display: flex;
+
 
   input {
-    padding: 10px;
+    //padding: 10px;
   }
 
   input[type=text] {
-    flex: 1;
+
   }
 
   input[type=submit] {
@@ -120,14 +128,4 @@ ul {
 
 .message-item {
 
-  padding: 10px;
-
-
-  &__mine {
-    background-color: #ffdfdf;
-  }
-
-  &__not-mine {
-    background-color: aliceblue;
-  }
 }

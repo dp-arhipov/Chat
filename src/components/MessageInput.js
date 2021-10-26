@@ -1,24 +1,44 @@
 import React, {useContext, useState} from 'react';
-import ChatContext from '../context';
+import {AuthContext, ChatContext} from '../context';
+import {Button, Form, FormControl, InputGroup} from "react-bootstrap";
+
 
 const MessageInput = () => {
     const {addMessage} = useContext(ChatContext)
     const [inputText, setInputText] = useState();
+    const {firestore} = useContext(AuthContext);
 
-    const handleSubmitButton  = (e) => {
+    const handleSubmitButton = (e) => {
         e.preventDefault();
-        addMessage(inputText);
+        if (inputText.trim() != '') {
+            addMessage(inputText);
+        }
         setInputText('');
+
     }
+
 
     return (
 
-            <form className={"message-input"} onSubmit={e=>handleSubmitButton(e)}>
-                <input type="text" value={inputText} placeholder={"Введите сообщение..."} onChange={e => setInputText(e.target.value)}/>
-                <input type="submit" value="Отправить"/>
-            </form>
+        <Form className={"message-input"} onSubmit={e => handleSubmitButton(e)}>
 
-    );
+            <InputGroup size="lg">
+                <FormControl
+                    placeholder="Введите сообщение..."
+                    value={inputText}
+                    onChange={e => setInputText(e.target.value)}
+
+                />
+                <Button variant="outline-primary" type="submit">
+                    Button
+                </Button>
+            </InputGroup>
+
+        </Form>
+
+
+    )
+        ;
 };
 
 export default MessageInput;

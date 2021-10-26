@@ -1,4 +1,4 @@
 import React from 'react'
- const Context = React.createContext();
+export const ChatContext = React.createContext();
 
-export default Context;
+export const AuthContext = React.createContext();
