@@ -95,10 +95,10 @@ export const getDialogMessages = async (userID, dialogID) => {
 //
 export const getDialogList = async (userId) => {
     let dialogList = [];
-    const querySnapshot = await getDocs(collection(firestore, "usersData", userId, "dialogsInfo"));
-    if (querySnapshot) {
-        querySnapshot.forEach((doc) => {
-            dialogList.push({id: doc.id, name: doc.data().name});
+    const docs = await getDocs(collection(firestore, "usersData", userId, "dialogsInfo"));
+    if (docs) {
+        docs.forEach((doc) => {
+            dialogList.push({id: doc.id, name: doc.data().dialogName});
         });
     }
     return dialogList;
@@ -130,10 +130,10 @@ export const createDialogWith = async (user, currentUser) => {
         });
     }
 
-        const docRef1 = doc(firestore, "usersData", currentUser.id, "dialogsData", dialogID);
-        setDoc(docRef1, {});
-        const docRef2 = doc(firestore, "usersData", currentUser.id, "dialogsInfo", dialogID);
-        setDoc(docRef2, {chatMemberId: user.id, dialogName: user.name});
+    const docRef3 = doc(firestore, "usersData", currentUser.id, "dialogsData", dialogID);
+    setDoc(docRef3, {});
+    const docRef2 = doc(firestore, "usersData", currentUser.id, "dialogsInfo", dialogID);
+    setDoc(docRef2, {chatMemberId: user.id, dialogName: user.name});
 
     return dialogID;
 //console.log();

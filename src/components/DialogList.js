@@ -3,7 +3,6 @@ import {ListGroup} from "react-bootstrap";
 import UserList from "./UserList";
 
 const DialogList = ({dialogList, setCurrentDialog}) => {
-
     return (
         <Fragment>
             <ListGroup className={"dialog-list"}>
