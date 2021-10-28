@@ -6,7 +6,6 @@ import {Button, Form, FormControl, InputGroup} from "react-bootstrap";
 const MessageInput = () => {
     const {addMessage} = useContext(ChatContext)
     const [inputText, setInputText] = useState();
-    const {firestore} = useContext(AuthContext);
 
     const handleSubmitButton = (e) => {
         e.preventDefault();

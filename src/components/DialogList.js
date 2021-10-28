@@ -1,16 +1,20 @@
-import React, {useState} from 'react';
-import Dialog from "./Dialog";
-import { Link } from 'react-router-dom'
+import React, {Fragment} from 'react';
 import {ListGroup} from "react-bootstrap";
+import UserList from "./UserList";
 
-const DialogList = ({dialogs, setCurrentDialog}) => {
+const DialogList = ({dialogList, setCurrentDialog}) => {
 
     return (
-    <ListGroup className={"dialog-list"}>
-        {dialogs.map((dialog) => {
-            return <ListGroup.Item className={"dialog-list__item"} key={dialog.dialogId} onClick={()=>setCurrentDialog(dialog)}>{dialog.name}</ListGroup.Item>
-        })}
-    </ListGroup>
+        <Fragment>
+            <ListGroup className={"dialog-list"}>
+                {dialogList.map((dialog) => {
+                    return <ListGroup.Item className={"dialog-list__item"} key={dialog.id}
+                                           onClick={() => setCurrentDialog(dialog)}>{dialog.name}</ListGroup.Item>
+                })}
+            </ListGroup>
+
+            <UserList/>
+        </Fragment>
 
     );
 };

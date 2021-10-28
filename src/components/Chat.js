@@ -1,23 +1,17 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import DialogList from "./DialogList";
 import DialogWindow from "./DialogWindow";
 
-import {AuthContext, ChatContext} from '../context';
-import {useAuthState} from "react-firebase-hooks/auth";
+import {ChatContext} from '../context';
 import * as API from "../API"
+
 
 const Chat = () => {
 
-    const [dialogs, setDialogs] = useState([]);
+    const [dialogList, setDialogList] = useState([]);
     const [messages, setMessages] = useState([]);
     const [currentDialog, setCurrentDialog] = useState({});
-    const [currentUserId, setCurrentUserId] = useState(1);
-
-    const {auth} = useContext(AuthContext);
-    const {firestore} = useContext(AuthContext);
-    const {currentUser} = useContext(AuthContext);
-
-    const user = useAuthState(auth);
+    const currentUser = API.useCurrentUser();
 
     // const [currentDialog, setCurrentDialog] = useState([]);
     // const [currentUser, setCurrentUser] = useState(user);
@@ -25,7 +19,7 @@ const Chat = () => {
     const addMessage = async (text) => {
         const now = new Date();
         const message = {
-            id: currentUserId,
+            id: currentUser.id,
             text: text,
             date: now.toLocaleDateString(),
             time: now.toLocaleTimeString()
@@ -33,53 +27,23 @@ const Chat = () => {
         setMessages([...messages, message]);
         API.sendMessage(currentUser.id, currentDialog.id, message);
 
-        //const docRef = doc(firestore, "users", currentUserId, "dialogs", currentDialog.id);
-        // setDoc(docRef, {
-        //     messages: [...messages, newMessage]
-        // }, {merge: true});
-
-        //
-        // await updateDoc(docRef, {
-        //     messages: arrayUnion(newMessage)
-        // });
-
 
     }
 
     const getMessages = (dialogId) => {
-
-        // //const docRef = doc(firestore, "users", currentUserId, "dialogs", currentDialog.id);
-        //
-        // const docRef = doc(firestore, "users", currentUserId, "dialogs", dialogId);
-        // const docSnap = await getDoc(docRef);
-        // if (docSnap.exists()) {
-        //     return docSnap.data().messages;
-        // } else {
-        //     // doc.data() will be undefined in this case
-        //
-        //     return false;
-        // }
-
         return API.getDialogMessages(currentUser.id, currentDialog.id);
     }
 
     useEffect(async () => {
-       // console.log(await API.getDialogList(currentUser.id));
-        setDialogs(await API.getDialogList(currentUser.id));
-        //await API.getDialogList(currentUser.id);
+        setDialogList(await API.getDialogList(currentUser.id));
 
-        // console.log( docSnap);
-        //console.log(await API.getDialogList(currentUser.id));
-        //const docRef = doc(firestore, "users", currentUser.id, "dialogs", currentDialog.id);
-
-        setCurrentUserId(user[0].uid);
     }, [])
 
     useEffect(() => {
-        if (dialogs.length != 0) {
-            setCurrentDialog(dialogs[0]);
+        if (dialogList.length != 0) {
+            setCurrentDialog(dialogList[0]);
         }
-    }, [dialogs])
+    }, [dialogList])
 
     useEffect(async () => {
         if (currentDialog.hasOwnProperty('id')) {
@@ -90,11 +54,20 @@ const Chat = () => {
     }, [currentDialog])
 
 
+    const startDialogWith = async (user) => {
+        //await API.setup(currentUser);
+        await API.createDialogWith(user, currentUser);
+
+
+        //setDialogList(await API.getDialogList(currentUser.id));
+        //setCurrentDialog(dialogList[API.createDialogWith(user, currentUser)]);
+    }
+
     return (
-        <ChatContext.Provider value={{messages, addMessage, currentUserId}}>
+        <ChatContext.Provider value={{messages, addMessage, startDialogWith}}>
             <div className={"chat"}>
                 <div className={"chat__left-bar"}>
-                    <DialogList dialogs={dialogs} setCurrentDialog={setCurrentDialog}/>
+                    <DialogList dialogList={dialogList} setCurrentDialog={setCurrentDialog}/>
                 </div>
                 <div className="chat__right-bar">
                     <DialogWindow currentDialog={currentDialog}/>
