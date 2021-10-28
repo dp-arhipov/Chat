@@ -22,8 +22,6 @@ const auth = getAuth();
 export const logIn = async () => {
     const provider = new GoogleAuthProvider();
     const {user} = await signInWithPopup(auth, provider);
-    const docRef = doc(collection(firestore, "usersData"), user.uid);
-    setDoc(docRef, {}, {merge: true});
 
     const docRef2 = doc(collection(firestore, "usersInfo"), user.uid);
     setDoc(docRef2, {
@@ -33,11 +31,11 @@ export const logIn = async () => {
     return user;
 }
 
-export const setup = (user) => {
-    let dialogID = nanoid(8);
-    const docRef2 = doc(firestore, "usersData", user.id, "dialogsInfo", dialogID);
-    setDoc(docRef2, {chatMemberId: "y0PPDWFRMxhaMBE19eYcS2koLSB3", name: "Alex Suuper"});
-}
+// export const setup = (user) => {
+//     let dialogID = nanoid(8);
+//     const docRef2 = doc(firestore, "usersData", user.id, "dialogsInfo", dialogID);
+//     setDoc(docRef2, {chatMemberId: "y0PPDWFRMxhaMBE19eYcS2koLSB3", name: "Alex Suuper"});
+// }
 
 export const logOut = () => {
     signOut(auth);
@@ -61,15 +59,72 @@ export const useCurrentUser = () => {
     }
 }
 
+
+export const getUsers = async () => {
+    const querySnapshot = await getDocs(collection(firestore, "usersInfo"));
+    let userList = [];
+    if (querySnapshot) {
+        querySnapshot.forEach((doc) => {
+            userList.push({id: doc.id, name: doc.data().name});
+        });
+    }
+    return userList
+}
+
+
+//
+export const getDialogList = async (userId) => {
+    let dialogList = [];
+    //const docs = await getDocs(collection(firestore, "usersData", userId, "dialogsInfo"));
+    const docs = await getDocs(collection(firestore, "dialogsInfo"));
+    if (docs) {
+        docs.forEach((doc) => {
+            dialogList.push({id: doc.id, name: doc.data().dialogName});
+        });
+    }
+    return dialogList;
+}
+
+export const createDialogWith = async (user, currentUser) => {
+    let dialogID = nanoid(8);
+    //const docRef = collection(firestore, "usersData", currentUser.id, "dialogsInfo");
+    const docRef = collection(firestore, "dialogsInfo");
+    const docs = await getDocs(docRef);
+
+
+    docs.forEach((document) => {
+        if (document.data().chatMemberId == user.id) {
+            dialogID = document.id;
+            return dialogID;
+        }
+    });
+
+
+    //const docRef3 = doc(firestore, "usersData", currentUser.id, "dialogsData", dialogID);
+    const docRef3 = doc(firestore, "dialogsData", dialogID);
+    setDoc(docRef3, {});
+    //const docRef2 = doc(firestore, "usersData", currentUser.id, "dialogsInfo", dialogID);
+    const docRef2 = doc(firestore, "dialogsInfo", dialogID);
+    setDoc(docRef2, {chatMemberId: user.id, dialogName: user.name, dialogCreatorId: currentUser.id});
+
+    const docRef6 = doc(firestore, "usersInfo", user.id, "dialogList", dialogID);
+    //!!!имя диалога у каждого юзера своё, переделать
+    setDoc(docRef6, {dialogName: user.name}, {merge: true});
+    return dialogID;
+
+}
+
 export const sendMessage = async (userID, dialogID, text) => {
-    const docRef = doc(firestore, "usersData", userID, "dialogsData", dialogID);
+    // const docRef = doc(firestore, "usersData", userID, "dialogsData", dialogID);
+    const docRef = doc(firestore, "dialogsData", dialogID);
     await updateDoc(docRef, {
         [userID]: arrayUnion(text)
     });
 }
 //
 export const getDialogMessages = async (userID, dialogID) => {
-    const docRef = doc(firestore, "usersData", userID, "dialogsData", dialogID);
+    //const docRef = doc(firestore, "usersData", userID, "dialogsData", dialogID);
+    const docRef = doc(firestore, "dialogsData", dialogID);
     const docSnap = await getDoc(docRef);
     const dataObj = docSnap.data();
     const idArray = Object.keys(dataObj);
@@ -91,50 +146,3 @@ export const getDialogMessages = async (userID, dialogID) => {
     }
 }
 
-
-//
-export const getDialogList = async (userId) => {
-    let dialogList = [];
-    const docs = await getDocs(collection(firestore, "usersData", userId, "dialogsInfo"));
-    if (docs) {
-        docs.forEach((doc) => {
-            dialogList.push({id: doc.id, name: doc.data().dialogName});
-        });
-    }
-    return dialogList;
-}
-
-export const getUsers = async () => {
-    const querySnapshot = await getDocs(collection(firestore, "usersInfo"));
-    let userList = [];
-    if (querySnapshot) {
-        querySnapshot.forEach((doc) => {
-            userList.push({id: doc.id, name: doc.data().name});
-        });
-    }
-    return userList
-}
-
-export const createDialogWith = async (user, currentUser) => {
-
-    let dialogID = nanoid(8);
-    const docRef = collection(firestore, "usersData", currentUser.id, "dialogsInfo");
-    const docs = await getDocs(docRef);
-
-    if (!docs.empty) {
-        docs.forEach((document) => {
-            if (document.data().chatMemberId == user.id) {
-                dialogID = document.id;
-                return dialogID;
-            }
-        });
-    }
-
-    const docRef3 = doc(firestore, "usersData", currentUser.id, "dialogsData", dialogID);
-    setDoc(docRef3, {});
-    const docRef2 = doc(firestore, "usersData", currentUser.id, "dialogsInfo", dialogID);
-    setDoc(docRef2, {chatMemberId: user.id, dialogName: user.name});
-
-    return dialogID;
-//console.log();
-}

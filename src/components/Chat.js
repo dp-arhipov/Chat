@@ -55,8 +55,7 @@ const Chat = () => {
 
 
     const startDialogWith = async (user) => {
-        //await API.setup(currentUser);
-const newDialogId = await API.createDialogWith(user, currentUser);
+        const newDialogId = await API.createDialogWith(user, currentUser);
         setDialogList(await API.getDialogList(currentUser.id));
         setCurrentDialog(dialogList[newDialogId]);
     }
