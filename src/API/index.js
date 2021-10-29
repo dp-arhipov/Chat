@@ -1,5 +1,5 @@
 import {initializeApp} from 'firebase/app';
-import {arrayUnion, collection, doc, getDocs, getFirestore, setDoc, serverTimestamp} from 'firebase/firestore';
+import {arrayUnion, collection, doc, getDocs, getFirestore, setDoc, serverTimestamp, updateDoc} from 'firebase/firestore';
 import {getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "firebase/auth";
 import {useAuthState} from "react-firebase-hooks/auth";
 
@@ -109,22 +109,37 @@ export const createDialogWith = async (user, currentUser) => {
     let dialogId = await dialogExists(user, currentUser);
     if (!dialogId) {
         dialogId = nanoid(8);
-        const docRef6 = doc(firestore, "Users", currentUser.id, "dialogList", dialogId);
-        setDoc(docRef6, {dialogName: user.name, chatMemberId: user.id}, {merge: true});
+        const docRef1 = doc(firestore, "Users", currentUser.id, "dialogList", dialogId);
+        setDoc(docRef1, {dialogName: user.name, chatMemberId: user.id}, {merge: true});
 
-        const docRef22 = doc(collection(firestore, "Dialogs", dialogId, "info"));
-        setDoc(docRef22, {dialogName: user.name, chatMemberId: user.id, dialogCreatorId: currentUser.id});
+        const docRef2 = doc(collection(firestore, "Dialogs", dialogId, "info"));
+        setDoc(docRef2, {dialogName: user.name, chatMemberId: user.id, dialogCreatorId: currentUser.id});
 
-        const docRef23 = doc(firestore, "Users", user.id, "dialogList", dialogId);
-        setDoc(docRef23, {dialogName: currentUser.name, chatMemberId: currentUser.id}, {merge: true});
+        const docRef4 = doc(firestore, "Users", user.id, "dialogList", dialogId);
+        setDoc(docRef4, {dialogName: currentUser.name, chatMemberId: currentUser.id}, {merge: true});
     }
     return dialogId;
 
 }
 
-export const sendMessage = async (user, dialog, message) => {
-    const docRef = doc(collection(firestore, "Dialogs", dialog.id, "data"), user.id);
-    setDoc(docRef, {[serverTimestamp()]:{text: message}}, {merge: true});
+export const sendMessage = async (user, dialog, text) => {
+
+    const now = new Date();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString();
+    const message = {
+        id: user.id,
+        text: text,
+        date: now.toLocaleDateString(),
+        time: now.toLocaleTimeString()
+    }
+    // const docRef = doc(collection(firestore, "Dialogs", dialog.id, "data"), "messages");
+    // setDoc(docRef, {"messages":arrayUnion(message)}, { merge: true });
+    //
+    const docRef = doc(collection(firestore, "Dialogs", dialog.id, "data"), date+" "+time );
+    setDoc(docRef, message, { merge: true });
+
+
 
 }
 //
@@ -134,16 +149,10 @@ export const getDialogMessages = async (user, dialog) => {
     const docSnap = await getDocs(docRef22);
     if (docSnap) {
         for (let item of docSnap.docs) {
-            const dataObj = item.data();
-            const idArray = Object.keys(dataObj);
-            idArray.map(item => {
-                for (let key in dataObj[item]) {
-                    messages = [...messages, dataObj[item][key]];
-                }
-            })
+            messages = [...messages, item.data()];
         }
     }
-
+    console.log(messages);
     return messages;
 
 }
