@@ -25,13 +25,13 @@ const Chat = () => {
             time: now.toLocaleTimeString()
         }
         setMessages([...messages, message]);
-        API.sendMessage(currentUser.id, currentDialog.id, message);
+        API.sendMessage(currentUser, currentDialog, text);
 
 
     }
 
     const getMessages = (dialogId) => {
-        return API.getDialogMessages(currentUser.id, currentDialog.id);
+        return API.getDialogMessages(currentUser, currentDialog);
     }
 
     useEffect(async () => {
