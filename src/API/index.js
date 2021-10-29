@@ -1,5 +1,5 @@
 import {initializeApp} from 'firebase/app';
-import {arrayUnion, collection, doc, getDocs, getFirestore, setDoc, serverTimestamp, updateDoc} from 'firebase/firestore';
+import {arrayUnion, collection, doc, getDocs, getFirestore, setDoc, serverTimestamp, updateDoc, query, where, orderBy, Timestamp} from 'firebase/firestore';
 import {getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "firebase/auth";
 import {useAuthState} from "react-firebase-hooks/auth";
 
@@ -131,11 +131,10 @@ export const sendMessage = async (user, dialog, text) => {
         id: user.id,
         text: text,
         date: now.toLocaleDateString(),
-        time: now.toLocaleTimeString()
+        time: now.toLocaleTimeString(),
+        timestamp: serverTimestamp()
     }
-    // const docRef = doc(collection(firestore, "Dialogs", dialog.id, "data"), "messages");
-    // setDoc(docRef, {"messages":arrayUnion(message)}, { merge: true });
-    //
+
     const docRef = doc(collection(firestore, "Dialogs", dialog.id, "data"), date+" "+time );
     setDoc(docRef, message, { merge: true });
 
@@ -145,14 +144,15 @@ export const sendMessage = async (user, dialog, text) => {
 //
 export const getDialogMessages = async (user, dialog) => {
     let messages = [];
-    const docRef22 = collection(firestore, "Dialogs", dialog.id, "data");
-    const docSnap = await getDocs(docRef22);
+    const docRef = collection(firestore, "Dialogs", dialog.id, "data");
+    const q = query(docRef, orderBy("timestamp"))
+    const docSnap = await getDocs(q);
     if (docSnap) {
         for (let item of docSnap.docs) {
             messages = [...messages, item.data()];
         }
     }
-    console.log(messages);
+
     return messages;
 
 }
