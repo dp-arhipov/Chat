@@ -3,8 +3,7 @@ import Message from "./Message";
 import {ChatContext} from '../context';
 
 const MessagesList = () => {
-    const {messages} = useContext(ChatContext)
-
+    const {messages} = useContext(ChatContext);
 
     return (
         <div className={"messages-list"}>

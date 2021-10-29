@@ -61,13 +61,13 @@ const Chat = () => {
     }
 
     return (
-        <ChatContext.Provider value={{messages, addMessage, startDialogWith}}>
+        <ChatContext.Provider value={{messages, addMessage, startDialogWith, currentDialog, dialogList, setCurrentDialog, currentUser}}>
             <div className={"chat"}>
                 <div className={"chat__left-bar"}>
-                    <DialogList dialogList={dialogList} setCurrentDialog={setCurrentDialog}/>
+                    <DialogList/>
                 </div>
                 <div className="chat__right-bar">
-                    <DialogWindow currentDialog={currentDialog}/>
+                    <DialogWindow/>
                 </div>
             </div>
         </ChatContext.Provider>

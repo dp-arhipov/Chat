@@ -1,18 +1,21 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import MessageInput from "./MessageInput";
 import MessagesList from "./MessagesList";
-import {Button} from "react-bootstrap";
-import * as API from "../API"
 
-const DialogWindow = ({currentDialog}) => {
 
-    const logOutButtonHandler = () => {
-        API.logOut();
-    }
+import {ChatContext} from '../context';
+import UserBlock from "./UserBlock";
+
+const DialogWindow = () => {
+
+    const {currentDialog} = useContext(ChatContext)
+
+
     return (
         <div className={"dialog-window"}>
-            <h2 className={"dialog-window__title"}>{currentDialog.name}</h2>
-            <Button onClick={logOutButtonHandler}>Выход</Button>
+<UserBlock/>
+            <h3 className={"dialog-window__title"}>{currentDialog.name}</h3>
+
             <div className="dialog-window__messages">
                 <MessagesList/>
             </div>
