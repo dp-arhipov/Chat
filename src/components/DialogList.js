@@ -1,23 +1,38 @@
 import React, {Fragment, useContext} from 'react';
-import {ListGroup} from "react-bootstrap";
 import UserList from "./UserList";
 import {ChatContext} from '../context';
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import Avatar from "@mui/material/Avatar";
+import List from "@mui/material/List";
 
 const DialogList = () => {
     const {dialogList, setCurrentDialog} = useContext(ChatContext);
 
     return (
         <Fragment>
-            <ListGroup className={"dialog-list"}>
+
+            <List>
                 {dialogList.map((dialog) => {
-                    return <ListGroup.Item
-                        className={"dialog-list__item"}
-                        key={dialog.id}
-                        onClick={() => setCurrentDialog(dialog)}>
-                        {dialog.name}
-                    </ListGroup.Item>
+                    return (
+                        <Fragment>
+                            <ListItem sx={{cursor:"pointer"}} alignItems="flex-start" key={dialog.id}
+                                      onClick={() => setCurrentDialog(dialog)}>
+                                <ListItemAvatar>
+                                    <Avatar alt={dialog.name} src="/static/images/avatar/1.jpg"/>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={dialog.name}
+                                    secondary={"Текст последнего сообщения"}
+                                />
+                            </ListItem>
+                            <Divider variant="inset" component="li"/>
+                        </Fragment>
+                    )
                 })}
-            </ListGroup>
+            </List>
 
             <UserList/>
         </Fragment>

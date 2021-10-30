@@ -54,78 +54,78 @@
 //}
 
 
-.chat {
-  display: flex;
-  height: 100vh;
-  &__left-bar {
-    flex: 1;
-  }
-
-  &__right-bar {
-    flex: 3;
-  }
-}
-
-
-.dialog-list {
- // padding-top: 40px;
-  height: 100%;
-  border-right: 1px solid #dbdbdb;
-
-  &__item {
-    //list-style-type: none;
-    //padding: 10px 0px 10px 20px;
-    //border: 1px solid grey;
-    //border-right:none;
-    //border-bottom: none;
-    &:hover {
-      cursor: pointer;
-    }
-    //&:last-child{
-    //  border-bottom: 1px solid grey;
-    //}
-  }
-}
+//.chat {
+//  display: flex;
+//  height: 100vh;
+//  &__left-bar {
+//    flex: 1;
+//  }
+//
+//  &__right-bar {
+//    flex: 3;
+//  }
+//}
 
 
-.dialog-window {
-  display: flex;
-
-  flex-direction: column;
-  height: 100%;
-
-  &__title {
-    align-self:center;
-
-  }
-
-  &__messages {
-    padding-left: 30px;
-  }
-
-  &__input {
-    //border-left:none;
-    margin-top: auto;
-  }
-
-}
-
-.message-input {
+//.dialog-list {
+// // padding-top: 40px;
+//  height: 100%;
+//  border-right: 1px solid #dbdbdb;
+//
+//  &__item {
+//    //list-style-type: none;
+//    //padding: 10px 0px 10px 20px;
+//    //border: 1px solid grey;
+//    //border-right:none;
+//    //border-bottom: none;
+//    &:hover {
+//      cursor: pointer;
+//    }
+//    //&:last-child{
+//    //  border-bottom: 1px solid grey;
+//    //}
+//  }
+//}
 
 
-  input {
-    //padding: 10px;
-  }
+//.dialog-window {
+  //display: flex;
 
-  input[type=text] {
+  //flex-direction: column;
+  //height: 100%;
+  //
+  //&__title {
+  //  align-self:center;
+  //
+  //}
 
-  }
+  //&__messages {
+  //  padding-left: 30px;
+  //}
+  //
+  //&__input {
+  //  //border-left:none;
+  //  margin-top: auto;
+  //}
 
-  input[type=submit] {
-
-  }
-}
-
-.message-item {
-
-}
+//}
+//
+//.message-input {
+//
+//
+//  input {
+//    //padding: 10px;
+//  }
+//
+//  input[type=text] {
+//
+//  }
+//
+//  input[type=submit] {
+//
+//  }
+//}
+//
+//.message-item {
+//
+//}

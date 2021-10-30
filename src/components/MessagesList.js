@@ -1,12 +1,13 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import Message from "./Message";
 import {ChatContext} from '../context';
+import Box from "@mui/material/Box";
 
 const MessagesList = () => {
     const {messages} = useContext(ChatContext);
 
     return (
-        <div className={"messages-list"}>
+        <div>
             {messages.map(message =>
                 <Message
                     text={message.text}

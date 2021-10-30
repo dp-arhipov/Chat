@@ -1,43 +1,38 @@
 import React, {useContext, useState} from 'react';
-import {AuthContext, ChatContext} from '../context';
-import {Button, Form, FormControl, InputGroup} from "react-bootstrap";
+import {ChatContext} from '../context';
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 
 const MessageInput = () => {
     const {addMessage} = useContext(ChatContext)
-    const [inputText, setInputText] = useState();
+    const [inputText, setInputText] = useState('');
 
-    const handleSubmitButton = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
         if (inputText.trim() != '') {
             addMessage(inputText);
         }
         setInputText('');
-
     }
 
-
     return (
+        <Box component="form" onSubmit={handleSubmit} sx={{display: 'flex', alignItems: 'center'}}>
+            <TextField
+                sx={{flex: 1}}
+                size="small"
+                placeholder="Введите сообщение..."
+                variant="outlined"
+                value={inputText}
+                onChange={e => setInputText(e.target.value)}
+            />
+            <Button variant="outlined" type="submit" size="large">
+                Отправить
+            </Button>
+        </Box>
 
-        <Form className={"message-input"} onSubmit={e => handleSubmitButton(e)}>
-
-            <InputGroup size="lg">
-                <FormControl
-                    placeholder="Введите сообщение..."
-                    value={inputText}
-                    onChange={e => setInputText(e.target.value)}
-
-                />
-                <Button variant="outline-primary" type="submit">
-                    Button
-                </Button>
-            </InputGroup>
-
-        </Form>
-
-
-    )
-        ;
+    );
 };
 
 export default MessageInput;

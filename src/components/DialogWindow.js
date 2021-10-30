@@ -1,10 +1,12 @@
-import React,{useContext} from 'react';
+import React, {useContext} from 'react';
 import MessageInput from "./MessageInput";
 import MessagesList from "./MessagesList";
 
 
 import {ChatContext} from '../context';
-import UserBlock from "./UserBlock";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
 
 const DialogWindow = () => {
 
@@ -12,16 +14,17 @@ const DialogWindow = () => {
 
 
     return (
-        <div className={"dialog-window"}>
-<UserBlock/>
-            <h3 className={"dialog-window__title"}>{currentDialog.name}</h3>
+        <div style={{ height: 'inherit'}}>
 
-            <div className="dialog-window__messages">
+            <Typography variant="h4" color="text.secondary" component="div">
+                Диалог с {currentDialog.name}
+            </Typography>
+            <Box sx={{overflow: 'auto', height: '100%'}}>
                 <MessagesList/>
-            </div>
-            <div className="dialog-window__input">
+            </Box>
+            <Box pt={'1rem'}>
                 <MessageInput/>
-            </div>
+            </Box>
         </div>
     );
 };

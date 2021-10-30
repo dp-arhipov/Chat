@@ -4,6 +4,9 @@ import DialogWindow from "./DialogWindow";
 
 import {ChatContext} from '../context';
 import * as API from "../API"
+import Header from "./Header";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 
 
 const Chat = () => {
@@ -61,15 +64,22 @@ const Chat = () => {
     }
 
     return (
-        <ChatContext.Provider value={{messages, addMessage, startDialogWith, currentDialog, dialogList, setCurrentDialog, currentUser}}>
-            <div className={"chat"}>
-                <div className={"chat__left-bar"}>
-                    <DialogList/>
-                </div>
-                <div className="chat__right-bar">
-                    <DialogWindow/>
-                </div>
-            </div>
+        <ChatContext.Provider
+
+            value={{messages, addMessage, startDialogWith, currentDialog, dialogList, setCurrentDialog, currentUser}}>
+
+                <Header/>
+                <Grid container spacing={2}>
+                    <Grid item xs={4}>
+                        <DialogList/>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <div style={{height: "800px"}}>
+                            <DialogWindow/>
+                        </div>
+                    </Grid>
+                </Grid>
+
         </ChatContext.Provider>
     );
 };
