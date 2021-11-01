@@ -1,13 +1,24 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useRef} from 'react';
 import Message from "./Message";
 import {ChatContext} from '../context';
-import Box from "@mui/material/Box";
 
 const MessagesList = () => {
     const {messages} = useContext(ChatContext);
+    const messageRef = useRef();
+
+    useEffect(() => {
+        if (messageRef.current) {
+            messageRef.current.scrollIntoView(
+                {
+                    behavior: 'smooth',
+                    block: 'end',
+                    inline: 'nearest'
+                })
+        }
+    })
 
     return (
-        <div>
+        <div ref={messageRef}>
             {messages.map(message =>
                 <Message
                     text={message.text}

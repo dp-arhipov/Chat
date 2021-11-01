@@ -1,33 +1,36 @@
-import React, {Fragment, useContext, useState} from 'react';
+import React from 'react';
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
-import {ChatContext} from "../context";
-import * as API from "../API";
+import SearchIcon from '@mui/icons-material/Search';
 
 const FinderInput = ({handleFinder, finderInputText, setFinderInputText}) => {
-    const handleSubmit = async (event) => {
+
+    const handleChange = async (event) => {
+        setFinderInputText(event.target.value);
         event.preventDefault();
-        const text = finderInputText.trim();
+        const text = event.target.value.trim();
         if (text != '') {
             handleFinder(text);
         }
+
     }
 
+
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{display: 'flex'}}>
+        <Box component="form" sx={{display: 'flex'}}>
             <TextField
                 sx={{flex: '1'}}
-                placeholder="Введите nickname..."
+                placeholder="Найти..."
                 value={finderInputText}
-                onChange={e => setFinderInputText(e.target.value)}
+                onChange={handleChange}
                 InputProps={{
                     endAdornment:
                         <InputAdornment position="end">
-                            <Button type="submit" variant="filled">
-                                Найти
-                            </Button>
+                            <SearchIcon/>
+
+
                         </InputAdornment>
                 }}
 

@@ -58,10 +58,11 @@ export const logOut = () => {
 }
 
 export const useCurrentUser = () => {
-
     const user = useAuthState(auth);
     const isLoggedIn = (user[0] != null) ? true : false;
+
     if (isLoggedIn) {
+
         return {
             allInfo: user,
             name: user[0].displayName,
@@ -177,14 +178,14 @@ export const findUserByNickName = async (nickName) => {
     docs.forEach((doc) => {
         if (doc.data().nickName == nickName) {
             user = {id: doc.id, name: doc.data().name}
-        };
+        }
+        ;
     });
 
     return user;
 }
 
 export const find = async (text) => {
-   let result = findUserByNickName(text);
-
+    let result = findUserByNickName(text);
     return result;
 }
