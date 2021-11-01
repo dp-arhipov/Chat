@@ -1,5 +1,4 @@
 import React, {Fragment, useContext} from 'react';
-import UserList from "./UserList";
 import {ChatContext} from '../context';
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
@@ -10,33 +9,26 @@ import List from "@mui/material/List";
 
 const DialogList = () => {
     const {dialogList, setCurrentDialog} = useContext(ChatContext);
-
     return (
-        <Fragment>
-
-            <List>
-                {dialogList.map((dialog) => {
-                    return (
-                        <Fragment>
-                            <ListItem sx={{cursor:"pointer"}} alignItems="flex-start" key={dialog.id}
-                                      onClick={() => setCurrentDialog(dialog)}>
-                                <ListItemAvatar>
-                                    <Avatar alt={dialog.name} src="/static/images/avatar/1.jpg"/>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={dialog.name}
-                                    secondary={"Текст последнего сообщения"}
-                                />
-                            </ListItem>
-                            <Divider variant="inset" component="li"/>
-                        </Fragment>
-                    )
-                })}
-            </List>
-
-            <UserList/>
-        </Fragment>
-
+        <List>
+            {dialogList.map((dialog) => {
+                return (
+                    <Fragment>
+                        <ListItem sx={{cursor: "pointer"}} alignItems="flex-start" key={dialog.id}
+                                  onClick={() => setCurrentDialog(dialog)}>
+                            <ListItemAvatar>
+                                <Avatar alt={dialog.name} src="/static/images/avatar/1.jpg"/>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={dialog.name}
+                                secondary={"Текст последнего сообщения"}
+                            />
+                        </ListItem>
+                        <Divider variant="inset" component="li"/>
+                    </Fragment>
+                )
+            })}
+        </List>
     );
 };
 

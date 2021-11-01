@@ -1,5 +1,16 @@
 import {initializeApp} from 'firebase/app';
-import {arrayUnion, collection, doc, getDocs, getFirestore, setDoc, serverTimestamp, updateDoc, query, where, orderBy, Timestamp} from 'firebase/firestore';
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    getFirestore,
+    orderBy,
+    query,
+    serverTimestamp,
+    setDoc,
+    updateDoc
+} from 'firebase/firestore';
 import {getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "firebase/auth";
 import {useAuthState} from "react-firebase-hooks/auth";
 
@@ -29,19 +40,18 @@ export const logIn = async () => {
     const provider = new GoogleAuthProvider();
     const {user} = await signInWithPopup(auth, provider);
 
-    const docRef2 = doc(collection(firestore, "Users"), user.uid);
-    setDoc(docRef2, {
-        name: user.displayName
-    }, {merge: true});
+    const docRef = doc(collection(firestore, "Users"), user.uid);
+    const document = await getDoc(docRef);
+    if (!document.exists()) {
+        setDoc(docRef, {
+            name: user.displayName,
+            nickName: "user_" + nanoid(8)
+        }, {merge: true});
+    }
 
     return user;
 }
 
-// export const setup = (user) => {
-//     let dialogID = nanoid(8);
-//     const docRef2 = doc(firestore, "usersData", user.id, "dialogsInfo", dialogID);
-//     setDoc(docRef2, {chatMemberId: "y0PPDWFRMxhaMBE19eYcS2koLSB3", name: "Alex Suuper"});
-// }
 
 export const logOut = () => {
     signOut(auth);
@@ -135,9 +145,8 @@ export const sendMessage = async (user, dialog, text) => {
         timestamp: serverTimestamp()
     }
 
-    const docRef = doc(collection(firestore, "Dialogs", dialog.id, "data"), date+" "+time );
-    setDoc(docRef, message, { merge: true });
-
+    const docRef = doc(collection(firestore, "Dialogs", dialog.id, "data"), date + " " + time);
+    setDoc(docRef, message, {merge: true});
 
 
 }
@@ -156,4 +165,26 @@ export const getDialogMessages = async (user, dialog) => {
     return messages;
 
 }
+export const setNickName = async (user, nickName) => {
+    const docRef = doc(firestore, "Users", user.id);
+    updateDoc(docRef, {nickName: nickName});
+}
 
+export const findUserByNickName = async (nickName) => {
+    let user = false;
+    const docRef = collection(firestore, "Users");
+    const docs = await getDocs(docRef);
+    docs.forEach((doc) => {
+        if (doc.data().nickName == nickName) {
+            user = {id: doc.id, name: doc.data().name}
+        };
+    });
+
+    return user;
+}
+
+export const find = async (text) => {
+   let result = findUserByNickName(text);
+
+    return result;
+}

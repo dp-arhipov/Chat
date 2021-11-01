@@ -12,12 +12,11 @@ const Header = () => {
     }
     const {currentUser} = useContext(ChatContext);
     return (
-        <AppBar position="static">
+        <AppBar position="static" >
             <Toolbar>
                 {/*<img src={avatar} alt="Avatar"/>*/}
-
                 <Typography variant="h5" component="div" sx={{flexGrow: 1}}>
-                    Диалоги
+                    AMessanger
                 </Typography>
                 <Typography variant="h6" component="div">
                     {currentUser.name}

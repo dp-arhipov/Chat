@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import DialogList from "./DialogList";
-import DialogWindow from "./DialogWindow";
+import React, {useContext, useEffect, useState} from 'react';
+import Main from "./Main";
 
-import {ChatContext} from '../context';
+import {AuthContext, ChatContext} from '../context';
 import * as API from "../API"
 import Header from "./Header";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import LeftBar from "./LeftBar";
 
 
 const Chat = () => {
@@ -14,10 +13,7 @@ const Chat = () => {
     const [dialogList, setDialogList] = useState([]);
     const [messages, setMessages] = useState([]);
     const [currentDialog, setCurrentDialog] = useState({});
-    const currentUser = API.useCurrentUser();
-
-    // const [currentDialog, setCurrentDialog] = useState([]);
-    // const [currentUser, setCurrentUser] = useState(user);
+    const {currentUser} = useContext(AuthContext);
 
     const addMessage = async (text) => {
         const now = new Date();
@@ -68,17 +64,12 @@ const Chat = () => {
 
             value={{messages, addMessage, startDialogWith, currentDialog, dialogList, setCurrentDialog, currentUser}}>
 
-                <Header/>
-                <Grid container spacing={2}>
-                    <Grid item xs={4}>
-                        <DialogList/>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <div style={{height: "800px"}}>
-                            <DialogWindow/>
-                        </div>
-                    </Grid>
-                </Grid>
+            <Header/>
+            <Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>
+                <LeftBar/>
+                <Main/>
+            </Box>
+
 
         </ChatContext.Provider>
     );
