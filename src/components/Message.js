@@ -1,29 +1,14 @@
-import React from 'react';
-import {useCurrentUser} from "../API";
+import React, {useContext} from 'react';
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import {AuthContext} from "../context";
 
 const Message = ({text, date, id, time}) => {
-    //const {currentUser} = useContext(AuthContext);
-    const currentUser = useCurrentUser();
+    const {currentUser} = useContext(AuthContext);
     return (
 
-        // <div className={"message-item"}>
-        //     <Paper elevation={5} sx={{width: '25rem', marginLeft: (id==currentUser.id)?'auto': 0, marginBottom:'0.5rem'}}>
-        //     <Card border="primary" style={{ width: '25rem', marginLeft: (id==currentUser.id)?'auto': 0, marginBottom:'0.5rem'}}>
-        //         <Card.Header>{date}  {time}</Card.Header>
-        //         <Card.Body>
-        //             <Card.Title></Card.Title>
-        //             <Card.Text>
-        //                 {text}
-        //             </Card.Text>
-        //         </Card.Body>
-        //     </Card>
-        //         </Paper>
-        //
-        // </div>
         <Box display="flex">
 
 
@@ -32,12 +17,12 @@ const Message = ({text, date, id, time}) => {
                 marginLeft: (id == currentUser.id) ? 'auto' : 0,
                 marginBottom: '0.5rem'
             }}>
-                <Card  elevation={1}>
-                    <CardContent >
+                <Card elevation={1}>
+                    <CardContent>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                           {date} {time}
+                            {date} {time}
                         </Typography>
-                        <Typography noWrap={false} component="div" variant="body1" >
+                        <Typography noWrap={false} component="div" variant="body1">
                             {text}
                         </Typography>
 

@@ -11,7 +11,6 @@ const MessageInput = () => {
     const [inputText, setInputText] = useState('');
 
     const handleSubmit = (event) => {
-        console.log(inputText);
         event.preventDefault();
         if (inputText.trim() != '') {
             addMessage(inputText);

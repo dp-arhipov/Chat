@@ -1,11 +1,15 @@
-import React, {useContext, useEffect, useRef} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import Message from "./Message";
 import {ChatContext} from '../context';
-
+import {store} from '../store'
 const MessagesList = () => {
-    const {messages} = useContext(ChatContext);
-    const messageRef = useRef();
+    const [messages,setMessages] = useState(store.getState().messages);
+    store.subscribe(() => {
+        setMessages(store.getState().messages);
+    })
 
+
+    const messageRef = useRef();
     useEffect(() => {
         if (messageRef.current) {
             messageRef.current.scrollIntoView(

@@ -17,7 +17,7 @@ const UserProfile = () => {
         // setNickName(nick);
         // setNickName('');
 
-        if (!await API.findUserByNickName(nickName)) {API.setNickName(currentUser, nickName); setNickNameIsBusy(false)}
+        if (!await API.find(nickName)) {API.changeNickName(nickName); setNickNameIsBusy(false)}
         else setNickNameIsBusy(true);
     }
     useEffect( () => {

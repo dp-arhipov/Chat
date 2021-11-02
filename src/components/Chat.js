@@ -6,31 +6,31 @@ import * as API from "../API"
 import Header from "./Header";
 import Box from "@mui/material/Box";
 import LeftBar from "./LeftBar";
-
+import {store} from '../store'
 
 const Chat = () => {
 
     const [dialogList, setDialogList] = useState([]);
-    const [messages, setMessages] = useState([]);
     const [currentDialog, setCurrentDialog] = useState({});
     const {currentUser} = useContext(AuthContext);
 
     const addMessage = async (text) => {
-        const now = new Date();
-        const message = {
-            id: currentUser.id,
-            text: text,
-            date: now.toLocaleDateString(),
-            time: now.toLocaleTimeString()
-        }
-        setMessages([...messages, message]);
-        API.sendMessage(currentUser, currentDialog, text);
-
+        //можно удалять
+        //console.log(currentDialog);
+        API.sendMessage(currentUser.id, currentDialog.id, text);
+        console.log( store.getState());
+        console.log(store.getState().dialogList);
+        console.log(dialogList);
 
     }
 
-    const getMessages = (dialogId) => {
-        return API.getDialogMessages(currentUser, currentDialog);
+    const startDialogWith = async (user) => {
+        const newDialogId = await API.createDialogWith();
+        setDialogList(await API.getDialogList());
+        console.log(store.getState().currentDialog)
+        setCurrentDialog(store.getState().currentDialog);
+        //console.log(currentDialog);
+
     }
 
     useEffect(async () => {
@@ -45,24 +45,20 @@ const Chat = () => {
     }, [dialogList])
 
     useEffect(async () => {
+        //console.log(store.getState().currentDialog)
         if (currentDialog.hasOwnProperty('id')) {
-            let messages = await getMessages(currentDialog.id);
-            (messages) ? setMessages(messages) : setMessages([]);
+            await API.setDialogMessages(currentDialog.id);
         }
 
     }, [currentDialog])
 
 
-    const startDialogWith = async (user) => {
-        const newDialogId = await API.createDialogWith(user, currentUser);
-        setDialogList(await API.getDialogList(currentUser.id));
-        setCurrentDialog(dialogList[newDialogId]);
-    }
+
 
     return (
         <ChatContext.Provider
 
-            value={{messages, addMessage, startDialogWith, currentDialog, dialogList, setCurrentDialog, currentUser}}>
+            value={{addMessage, startDialogWith, currentDialog, dialogList, setCurrentDialog, currentUser}}>
 
             <Header/>
             <Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>
