@@ -1,17 +1,18 @@
-import React, {Fragment, useContext} from 'react';
+import React, {Fragment, useContext, useState} from 'react';
 import MessageInput from "./MessageInput";
 import MessagesList from "./MessagesList";
 
-
-import {ChatContext} from '../context';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {Divider} from "@mui/material";
-
+import {store} from '../store'
 
 const Main = () => {
 
-    const {currentDialog} = useContext(ChatContext);
+    const [currentDialog,setCurrentDialog] = useState(store.getState().currentDialog);
+    store.subscribe(() => {
+        setCurrentDialog(store.getState().currentDialog);
+    })
 
     return (
         <Box sx={{display:'flex', flexDirection: 'column'}}>

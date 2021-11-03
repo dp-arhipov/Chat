@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Message from "./Message";
-import {ChatContext} from '../context';
+
 import {store} from '../store'
 const MessagesList = () => {
     const [messages,setMessages] = useState(store.getState().messages);

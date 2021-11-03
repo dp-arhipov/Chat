@@ -3,10 +3,12 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import {AuthContext} from "../context";
+
+import {store} from "../store";
 
 const Message = ({text, date, id, time}) => {
-    const {currentUser} = useContext(AuthContext);
+
+    const currentUser = store.getState().currentUser;
     return (
 
         <Box display="flex">

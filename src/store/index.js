@@ -1,8 +1,9 @@
 import {createStore} from 'redux'
-import {Provider} from "react-redux";
 
-function reducer(state = {currentUser: false, currentDialog: false, dialogList:[], messages:[] }, action) {
-    switch(action.type){
+const initialState = {currentUser: false, currentDialog: false, dialogList: [], messages: []}
+
+function reducer(state = initialState, action) {
+    switch (action.type) {
         case "SET_CURRENT_USER":
             return {
                 ...state,
@@ -11,7 +12,7 @@ function reducer(state = {currentUser: false, currentDialog: false, dialogList:[
         case "SET_CURRENT_DIALOG":
             return {
                 ...state,
-                currentDialog: state.dialogList.filter(dialog=>dialog.id==action.payload)[0]
+                currentDialog: state.dialogList.filter(dialog => dialog.id == action.payload)[0]
             }
         case "ADD_MESSAGE":
             return {
@@ -42,6 +43,10 @@ function reducer(state = {currentUser: false, currentDialog: false, dialogList:[
                 ...state,
                 //messages: action.payload
                 findResults: {user: action.payload}
+            }
+        case "LOGOUT":
+            return {
+                ...initialState
             }
 
     }

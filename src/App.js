@@ -6,7 +6,7 @@ import Test from "./components/Test";
 import NotFound from "./components/NotFound";
 import './App.scss';
 import UserProfile from "./components/UserProfile";
-import {AuthContext} from "./context";
+
 import {store} from './store'
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
     return (
 
         <div className="App">
-            <AuthContext.Provider value={{currentUser}}>
+
                 <BrowserRouter>
                     <Switch>
                         {(currentUser)
@@ -35,7 +35,7 @@ function App() {
                         <Route component={NotFound}></Route>
                     </Switch>
                 </BrowserRouter>
-            </AuthContext.Provider>
+
 
         </div>
 

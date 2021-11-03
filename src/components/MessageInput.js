@@ -1,19 +1,21 @@
 import React, {useContext, useState} from 'react';
-import {ChatContext} from '../context';
+
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
+import * as API from "../API";
 
 
 const MessageInput = () => {
-    const {addMessage} = useContext(ChatContext)
+
+
     const [inputText, setInputText] = useState('');
 
     const handleSubmit = (event) => {
         event.preventDefault();
         if (inputText.trim() != '') {
-            addMessage(inputText);
+            API.sendMessage(inputText);
         }
         setInputText('');
     }

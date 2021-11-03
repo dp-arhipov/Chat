@@ -2,13 +2,15 @@ import React, {Fragment, useContext, useEffect, useState} from 'react';
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import {AuthContext} from "../context";
+
 import Button from "@mui/material/Button";
 import * as API from "../API"
 import FormControl from "@mui/material/FormControl";
+import {store} from '../store'
 
 const UserProfile = () => {
-    const {currentUser} = useContext(AuthContext);
+
+    const currentUser = store.getState().currentUser;
     const [nickName, setNickName] = useState('');
     const [nickNameIsBusy, setNickNameIsBusy] = useState(false);
     const handleForm = async (e) => {

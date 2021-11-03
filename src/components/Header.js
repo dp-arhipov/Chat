@@ -1,13 +1,14 @@
 import React, {Fragment, useContext} from 'react';
 import {AppBar, IconButton, Typography} from '@mui/material';
 import * as API from "../API"
-import {ChatContext} from "../context";
+
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Toolbar from "@mui/material/Toolbar";
 import {AccountCircle} from "@mui/icons-material";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import ModalUserProfile from "./ModalUserProfile";
+import {store} from '../store'
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
@@ -18,7 +19,7 @@ const Header = () => {
     const logOutButtonHandler = () => {
         API.logOut();
     }
-    const {currentUser} = useContext(ChatContext);
+    const currentUser = store.getState().currentUser;
     return (
         <Fragment>
             <AppBar position="static">
