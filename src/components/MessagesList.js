@@ -10,6 +10,7 @@ const MessagesList = () => {
 
 
     const messageRef = useRef();
+
     useEffect(() => {
         if (messageRef.current) {
             messageRef.current.scrollIntoView(
@@ -31,6 +32,7 @@ const MessagesList = () => {
                     id={message.id}
                 />
             )}
+
         </div>
     );
 };

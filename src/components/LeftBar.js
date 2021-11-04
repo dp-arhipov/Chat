@@ -14,8 +14,11 @@ const LeftBar = () => {
         API.createDialogWith(user);
     }
     const handleFinder = async (text) => {
-        let result = await API.find(text);
-        (result) ? setFindResult([result]) : setFindResult('');
+        setTimeout(async () => {
+            const result = await API.find(text);
+            (result) ? setFindResult([result]) : setFindResult('');
+        }, 100);
+
     }
 
     return (
