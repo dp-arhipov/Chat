@@ -7,14 +7,18 @@ import Avatar from "@mui/material/Avatar";
 import List from "@mui/material/List";
 import * as API from '../API'
 import {store} from "../store";
+import {useSelector} from "react-redux";
 
 const DialogList = () => {
     //const {dialogList, setCurrentDialog} = useContext(ChatContext);
-    const [dialogList, setDialogList] = useState(store.getState().dialogList);
-    store.subscribe(() => {
-        setDialogList(store.getState().dialogList);
-        //console.log(store.getState())
-    })
+    // const [dialogList, setDialogList] = useState(store.getState().dialogList);
+    // store.subscribe(() => {
+    //     setDialogList(store.getState().dialogList);
+    //     //console.log(store.getState())
+    // })
+
+
+    const dialogList = useSelector(state => state.dialogList);
     const itemClickHandle = (dialogID) => {
         API.setCurrentDialog(dialogID);
     }

@@ -7,10 +7,10 @@ import Button from "@mui/material/Button";
 import * as API from "../API"
 import FormControl from "@mui/material/FormControl";
 import {store} from '../store'
+import {useSelector} from "react-redux";
 
 const UserProfile = () => {
-
-    const currentUser = store.getState().currentUser;
+    const currentUser = useSelector(state => state.currentUser);
     const [nickName, setNickName] = useState('');
     const [nickNameIsBusy, setNickNameIsBusy] = useState(false);
     const handleForm = async (e) => {

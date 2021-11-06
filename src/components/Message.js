@@ -1,14 +1,11 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-import {store} from "../store";
+const Message = ({text, date, id, currentUserId, time}) => {
 
-const Message = ({text, date, id, time}) => {
-
-    const currentUser = store.getState().currentUser;
     return (
 
         <Box display="flex">
@@ -16,7 +13,7 @@ const Message = ({text, date, id, time}) => {
 
             <Box sx={{
                 width: '25rem',
-                marginLeft: (id == currentUser.id) ? 'auto' : 0,
+                marginLeft: (id == currentUserId) ? 'auto' : 0,
                 marginBottom: '0.5rem'
             }}>
                 <Card elevation={1}>

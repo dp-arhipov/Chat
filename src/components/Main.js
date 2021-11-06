@@ -6,13 +6,11 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {Divider} from "@mui/material";
 import {store} from '../store'
+import {useSelector} from "react-redux";
 
 const Main = () => {
 
-    const [currentDialog,setCurrentDialog] = useState(store.getState().currentDialog);
-    store.subscribe(() => {
-        setCurrentDialog(store.getState().currentDialog);
-    })
+    const currentDialog = useSelector(state => state.currentDialog);
 
     return (
         <Box sx={{display:'flex', flexDirection: 'column'}}>

@@ -2,13 +2,11 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import Message from "./Message";
 
 import {store} from '../store'
+import {useSelector} from "react-redux";
 const MessagesList = () => {
-    const [messages,setMessages] = useState(store.getState().messages);
-    store.subscribe(() => {
-        setMessages(store.getState().messages);
-    })
 
-
+    const currentUserId = useSelector(state => state.currentUser.id);
+    const messages = useSelector(state => state.messages);
     const messageRef = useRef();
 
     useEffect(() => {
@@ -30,6 +28,7 @@ const MessagesList = () => {
                     date={message.date}
                     time={message.time}
                     id={message.id}
+                    currentUserId={currentUserId}
                 />
             )}
 

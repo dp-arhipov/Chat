@@ -1,6 +1,6 @@
-import {applyMiddleware, createStore} from 'redux'
+import {applyMiddleware, combineReducers, createStore} from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
-
+import {configureStore, createAction} from "@reduxjs/toolkit";
 const initialState = {currentUser: false, currentDialog: false, dialogList: [], messages: []}
 
 
@@ -56,23 +56,16 @@ function reducer(state = initialState, action) {
     return state;
 };
 
-//
-// const vars={
-//     currentMember,
-//     currenUser,
-//     currentDialog
-// }
-
-// export const store = createStore(reducer);
-
-
 export const store = createStore(
     reducer,
     composeWithDevTools(
         //applyMiddleware(...middleware)
-        // other store enhancers if any
+
     )
 );
-//
-// store.dispatch({type: 'ADD_USER', payload: '5'})
-// store.dispatch({type: 'ADD_USER', payload: '5'})
+
+
+export const addMessage = (messages) => ({type: 'ADD_MESSAGE', payload: messages})
+
+
+
