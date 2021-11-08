@@ -1,5 +1,4 @@
-
-import {DB, Auth} from './firebaseInit';
+import {Auth, DB} from './firebaseInit';
 import {store} from '../store'
 
 export const logIn = async () => {
@@ -47,6 +46,7 @@ export const find = async (text) => {
 
 export const setCurrentDialog = async (dialogId) => {
     store.dispatch({type: 'SET_CURRENT_DIALOG', payload: dialogId});
+
     await setDialogMessages(dialogId);
 
 }
@@ -58,16 +58,12 @@ export const setDialogList = async (userId = store.getState().currentUser.id) =>
 }
 
 export const createDialogWith = async (member = store.getState().findResults.user, currentUser = store.getState().currentUser) => {
-
     let dialogId = await DB.dialogExists(member.id, currentUser.id);
-
     if (!dialogId) {
         dialogId = await DB.createDialog(member, currentUser);
     }
     await setDialogList();
     setCurrentDialog(dialogId);
-
-
 }
 
 export const initDialog = async () => {

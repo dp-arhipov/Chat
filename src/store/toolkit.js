@@ -1,10 +1,13 @@
 import {combineReducers} from "redux";
-import {configureStore, createAction, createReducer} from "@reduxjs/toolkit";
+import {configureStore, createAction, createReducer, createSlice} from "@reduxjs/toolkit";
 
 
-const initialState = {currentUser: false, currentDialog: false, dialogList: [], messages: []}
+const initialState = {testState: false}
 
-export const setCurrentUser = createAction("SET_CURRENT_USER22");
+//export const setTestState = createAction("SET_TEST");
+
+
+
 // case "SET_CURRENT_USER":
 // return {
 //     ...state,
@@ -50,20 +53,25 @@ export const setCurrentUser = createAction("SET_CURRENT_USER22");
 //     ...initialState
 // }
 
-export const reducerText = createReducer(initialState, {
-[setCurrentUser]:(state, action)=>{
-    state.currentUser22=action.payload
-}
-});
-
-// export const rootReducer = combineReducers( {
-//     reducer
-//
-// })
-
-//const store2 = configureStore({rootReducer})
+// export const reducerTestState = createReducer(initialState, {
+// [setTestState]:(state, action)=>{
+//     state.testState=action.payload
+// }
+// });
 
 
+const testSlice = createSlice({
+    name: "testSlice",
+    initialState,
+    reducers:{
+        setTestState(state, action){
+            state.testState=action.payload
+        }
+    }
 
+})
+
+export default testSlice.reducer
+export const {setTestState} = testSlice.actions
 
 

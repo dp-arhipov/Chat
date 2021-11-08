@@ -4,7 +4,7 @@ import {nanoid} from "nanoid";
 
 export class FirebaseAuth {
 
-    constructor(auth) { // конструктор
+    constructor(auth) {
         this.auth = auth;
     }
 
@@ -12,7 +12,6 @@ export class FirebaseAuth {
         const googleProvider = new GoogleAuthProvider();
         const {user} = await signInWithPopup(this.auth, googleProvider);
         return user;
-
     }
 
     logOut = async () => {
@@ -31,15 +30,15 @@ export class FirebaseDB {
     }
 
     createUser = async (userId, userName) => {
+        const docRef = doc(collection(this.firestore, "Users"), userId);
+        const document = await getDoc(docRef);
+
         let nickName = "user_" + nanoid(8);
         const userInfo = {
             name: userName,
             id: userId,
             nickName: nickName
         }
-
-        const docRef = doc(collection(this.firestore, "Users"), userId);
-        const document = await getDoc(docRef);
 
         if (!document.exists()) {
             setDoc(docRef, {
@@ -51,7 +50,6 @@ export class FirebaseDB {
     }
 
     sendMessage = (senderId, dialogId, text) => {
-
         const now = new Date();
         const date = now.toLocaleDateString();
         const time = now.toLocaleTimeString();
@@ -84,7 +82,6 @@ export class FirebaseDB {
 
     getCurrentUserDialogs = async (userId) => {
         let dialogList = [];
-        //const docs = await getDocs(collection(firestore, "usersData", userId, "dialogsInfo"));
         const docs = await getDocs(collection(this.firestore, "Users", userId, "dialogList"));
 
         if (docs) {
@@ -132,7 +129,6 @@ export class FirebaseDB {
             if (doc.data().nickName == nickName) {
                 user = {id: doc.id, name: doc.data().name}
             }
-            ;
         });
         return user;
     }
@@ -145,11 +141,9 @@ export class FirebaseDB {
             if (doc.id == userId) {
                 user = {id: doc.id, name: doc.data().name}
             }
-            ;
         });
         return user;
     }
-
 
     setNickName = async (nickName, userId) => {
         const docRef = doc(this.firestore, "Users", userId);
