@@ -52,7 +52,7 @@ export const setCurrentDialog = async (dialogId) => {
 }
 
 export const setDialogList = async (userId = store.getState().currentUser.id) => {
-    const dialogList = await DB.getCurrentUserDialogs(userId)
+    const dialogList = await DB.getUserDialogs(userId)
     store.dispatch({type: 'SET_DIALOG_LIST', payload: dialogList})
 
 }

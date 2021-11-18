@@ -19,7 +19,7 @@ function App() {
 
             <BrowserRouter>
                 <Switch>
-                    {(currentUser)
+                    {(currentUser.id)
                         ? <Route exact path="/" component={Chat}></Route>
                         : <Route exact path="/" component={Login}></Route>
                     }

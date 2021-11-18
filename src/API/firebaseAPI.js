@@ -80,7 +80,7 @@ export class FirebaseDB {
         return messages;
     }
 
-    getCurrentUserDialogs = async (userId) => {
+    getUserDialogs = async (userId) => {
         let dialogList = [];
         const docs = await getDocs(collection(this.firestore, "Users", userId, "dialogList"));
 

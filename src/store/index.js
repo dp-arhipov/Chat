@@ -1,7 +1,8 @@
 import {applyMiddleware, combineReducers, createStore} from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {configureStore, createAction} from "@reduxjs/toolkit";
-import reducerTestState from "./toolkit"
+import {currentUserReducer, currentDialogReducer} from "./toolkit"
+//import currentUserReducer from "./toolkit"
 
 
 const initialState = {currentUser: false, currentDialog: false, dialogList: [], messages: []}
@@ -67,20 +68,25 @@ function reducer(state = initialState, action) {
 //
 //     )
 // );
-console.log(reducer)
-const rootReducer = combineReducers({
-    reducer,reducerTestState
-
-})
+// console.log(reducer)
+// const rootReducer = combineReducers({
+//     reducer,
+//     currentUser:currentUserReducer,
+//     currentDialog:currentDialogReducer,
+//
+// })
 
 export const store = configureStore({
-    reducer: rootReducer,
-    devTools: composeWithDevTools()
+    reducer: {
+        reducer,
+        currentUser:currentUserReducer,
+        currentDialog:currentDialogReducer,
+    },
     }
 );
 
 
-export const addMessage = (messages) => ({type: 'ADD_MESSAGE', payload: messages})
+//export const addMessage = (messages) => ({type: 'ADD_MESSAGE', payload: messages})
 
 
 
