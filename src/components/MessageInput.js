@@ -5,17 +5,21 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import * as API from "../API";
+import {sendMessage, setDefaultDialog} from "../store/actions";
+import {useDispatch} from "react-redux";
 
 
 const MessageInput = () => {
 
 
     const [inputText, setInputText] = useState('');
+    const dispatch = useDispatch();
 
     const handleSubmit = (event) => {
         event.preventDefault();
         if (inputText.trim() != '') {
-            API.sendMessage(inputText);
+            // API.sendMessage(inputText);
+            dispatch(sendMessage(inputText));
         }
         setInputText('');
     }

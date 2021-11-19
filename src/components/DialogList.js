@@ -7,7 +7,9 @@ import Avatar from "@mui/material/Avatar";
 import List from "@mui/material/List";
 import * as API from '../API'
 import {store} from "../store";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import * as selectors from "../store/selectors"
+import {setDefaultDialog, changeCurrentDialog} from "../store/actions";
 
 const DialogList = () => {
     //const {dialogList, setCurrentDialog} = useContext(ChatContext);
@@ -18,9 +20,12 @@ const DialogList = () => {
     // })
 
 
-    const dialogList = useSelector(state => state.dialogList);
+    const dialogList = useSelector(selectors.dialogList);
+    const dispatch = useDispatch();
     const itemClickHandle = (dialogID) => {
-        API.setCurrentDialog(dialogID);
+        //API.setCurrentDialog(dialogID);
+        dispatch(changeCurrentDialog(dialogID));
+
     }
     return (
         <List>

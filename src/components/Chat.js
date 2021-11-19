@@ -21,10 +21,10 @@ const Chat = () => {
     return (
         <Fragment>
             {/*<Header/>*/}
-            {/*<Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>*/}
-            {/*    <LeftBar/>*/}
-            {/*    <Main/>*/}
-            {/*</Box>*/}
+            <Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>
+                <LeftBar/>
+                <Main/>
+            </Box>
         </Fragment>
     );
 };

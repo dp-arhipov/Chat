@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Message from "./Message";
-
+import * as selectors from "../store/selectors"
 import {store} from '../store'
 import {useSelector} from "react-redux";
 const MessagesList = () => {
 
-    const currentUserId = useSelector(state => state.currentUser.id);
-    const messages = useSelector(state => state.messages);
+    const currentUserId = useSelector(selectors.currentUserId);
+    const messages = useSelector(selectors.messages);
     const messageRef = useRef();
 
     useEffect(() => {

@@ -35,6 +35,7 @@ import {createSlice} from "@reduxjs/toolkit";
 //     }
 // })
 const currentDialogInitialState = {
+    isFetching:false,
     id: '',
     name: '',
     messages: []
@@ -44,11 +45,14 @@ const currentDialogSlice = createSlice({
     name: "currentDialog",
     initialState: currentDialogInitialState,
     reducers: {
+        setCurrentDialogFetching(state, action){
+            state.isFetching=action.payload;
+        },
         setCurrentDialog(state, action) {
             const currentDialog = action.payload;
             state.id = currentDialog.id
             state.name = currentDialog.name
-            console.log(action.payload)
+            //console.log(action.payload)
         },
         addMessage(state, action) {
             state.messages.push(action.payload)
@@ -62,6 +66,7 @@ const currentDialogSlice = createSlice({
 
 
 const currentUserInitialState = {
+    isFetching:false,
     id: '',
     nickName: '',
     name: '',
@@ -71,6 +76,9 @@ const currentUserSlice = createSlice({
     name: "currentUser",
     initialState: currentUserInitialState,
     reducers: {
+        setCurrentUserFetching(state, action){
+            state.isFetching=action.payload;
+        },
         setCurrentUser(state, action) {
             state.id = action.payload.id
             state.nickName = action.payload.nickName
@@ -90,7 +98,7 @@ const currentUserSlice = createSlice({
 //export default currentUserSlice.reducer;
 export const currentUserReducer = currentUserSlice.reducer;
 export const currentDialogReducer = currentDialogSlice.reducer;
-export const {setCurrentUser, setDialogList, setNickName, logOut} = currentUserSlice.actions
-export const {addMessage, setCurrentDialog, setDialogMessages} = currentDialogSlice.actions
+export const {setCurrentUserFetching, setCurrentUser, setDialogList, setNickName, logOut} = currentUserSlice.actions
+export const {setCurrentDialogFetching, addMessage, setCurrentDialog, setDialogMessages} = currentDialogSlice.actions
 
 
