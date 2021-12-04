@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import {changeName, changeNickName, isNickNameBusy} from '../store/actions'
+import {changeCurrentUserName, changeCurrentUserNickName, isNickNameBusy} from '../store/actions'
 
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
@@ -40,11 +40,11 @@ const UserProfile = () => {
     const handleForm = async (e) => {
         //console.log(memArr);
         e.preventDefault();
-        dispatch(changeName(name));
+        dispatch(changeCurrentUserName(name));
 
         if (!await isNickNameBusy(nickName)) {
             setNickNameIsBusy(false)
-            dispatch(changeNickName(nickName));
+            dispatch(changeCurrentUserNickName(nickName));
         } else setNickNameIsBusy(true);
     }
 

@@ -1,75 +1,22 @@
-import {Auth, DB} from './firebaseInit';
-import {store} from '../store'
+import {initializeApp} from "firebase/app";
+import {getFirestore} from "firebase/firestore";
+import {getAuth} from "firebase/auth";
+import {FirebaseAuth, FirebaseDB} from "./firebaseAPI";
+import {useSelector} from "react-redux";
+import * as selectors from "../store/selectors";
 
-export const logIn = async () => {
-    let user = await Auth.googleLogin();
-    user = await DB.createUser(user.uid, user.displayName);
-    store.dispatch({type: 'SET_CURRENT_USER', payload: user})
-}
+const firebaseConfig = {
+    apiKey: "AIzaSyDDgdMfwVDWoblWGD6EGn_b2-aUP9sD-tI",
+    authDomain: "chat-2-cf0e6.firebaseapp.com",
+    projectId: "chat-2-cf0e6",
+    storageBucket: "chat-2-cf0e6.appspot.com",
+    messagingSenderId: "164607313968",
+    appId: "1:164607313968:web:0861de31a4521df2b645f5"
+};
 
-export const logOut = () => {
-    Auth.logOut();
-    store.dispatch({type: 'LOGOUT', payload: false})
-}
+const app = initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+const auth = getAuth();
 
-export const sendMessage = (text, senderId = store.getState().currentUser.id, dialogId = store.getState().currentDialog.id) => {
-    DB.sendMessage(senderId, dialogId, text);
-
-    const now = new Date();
-    const message = {
-        id: senderId,
-        text: text,
-        date: now.toLocaleDateString(),
-        time: now.toLocaleTimeString()
-    }
-    store.dispatch({type: 'ADD_MESSAGE', payload: message})
-
-}
-
-export const setDialogMessages = async (dialogId) => {
-    const messages = await DB.getDialogMessages(dialogId);
-    store.dispatch({type: 'SET_MESSAGES', payload: messages})
-}
-
-
-export const changeNickName = async (nickName) => {
-    DB.setNickName(nickName, store.getState().currentUser.id);
-    store.dispatch({type: 'SET_NICK_NAME', payload: nickName})
-}
-
-export const find = async (text) => {
-    let user = await DB.findUserByNickName(text);
-    store.dispatch({type: 'SET_FIND_RESULTS', payload: user})
-    console.log(store.getState())
-    return user;
-}
-
-export const setCurrentDialog = async (dialogId) => {
-    store.dispatch({type: 'SET_CURRENT_DIALOG', payload: dialogId});
-
-    await setDialogMessages(dialogId);
-
-}
-
-export const setDialogList = async (userId = store.getState().currentUser.id) => {
-    const dialogList = await DB.getUserDialogList(userId)
-    store.dispatch({type: 'SET_DIALOG_LIST', payload: dialogList})
-
-}
-
-export const createDialogWith = async (member = store.getState().findResults.user, currentUser = store.getState().currentUser) => {
-    let dialogId = await DB.dialogWithThisUserExists(member.id, currentUser.id);
-    if (!dialogId) {
-        dialogId = await DB.createDialogWith(member, currentUser);
-    }
-    await setDialogList();
-    setCurrentDialog(dialogId);
-}
-
-export const initDialog = async () => {
-    await setDialogList(store.getState().currentUser.id);
-    if (store.getState().dialogList.length != 0) await setCurrentDialog(store.getState().dialogList[0].id)
-}
-
-
-
+export const Auth = new FirebaseAuth(auth);
+export const DB = new FirebaseDB(app, firestore);

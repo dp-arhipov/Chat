@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {logIn} from "../store/actions"
 import * as selectors from "../store/selectors";
-import {DB} from "../API/firebaseInit";
+
 
 const Login = () => {
     const dispatch = useDispatch();

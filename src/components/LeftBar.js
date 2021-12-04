@@ -19,6 +19,7 @@ const LeftBar = () => {
     const handleItemClick = async (userId) => {
         //API.createDialogWith(user);
         dispatch(createDialogWith(userId));
+        setFinderInputText('')
     }
     const handleFinder = async (text) => {
         setTimeout(async () => {

@@ -27,7 +27,7 @@ const MessagesList = () => {
                     text={message.text}
                     date={message.date}
                     time={message.time}
-                    id={message.id}
+                    creatorId={message.creatorId}
                     currentUserId={currentUserId}
                 />
             )}

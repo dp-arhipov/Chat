@@ -4,7 +4,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-const Message = ({text, date, id, currentUserId, time}) => {
+const Message = ({text, date, creatorId, currentUserId, time}) => {
 
     return (
 
@@ -13,7 +13,7 @@ const Message = ({text, date, id, currentUserId, time}) => {
 
             <Box sx={{
                 width: '25rem',
-                marginLeft: (id == currentUserId) ? 'auto' : 0,
+                marginLeft: (creatorId == currentUserId) ? 'auto' : 0,
                 marginBottom: '0.5rem'
             }}>
                 <Card elevation={1}>

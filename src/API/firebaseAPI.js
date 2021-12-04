@@ -31,18 +31,19 @@ export class FirebaseAuth {
     logOut = async () => {
         signOut(this.auth);
     }
-    // getCurrentUser = () => {
-    //     return this.user;
-    // }
 
 }
 
 export class FirebaseDB {
     constructor(app, firestore) {
+
+        this.nickNameTemplate = () => "user_" + nanoid(8);
+        this.dialogIdTemplate = () => nanoid(8);
+        this.dialogNameTemplate = name => "Диалог c " + name;;
+
         this.app = app;
         this.firestore = firestore;
-        this.nickNameTemplate = () =>  "user_"+nanoid(8);
-        this.dialogIdTemplate = () => nanoid(8);
+
         this.refs = {}
         this.refs.users = collection(this.firestore, "Users")
         this.refs.user = userId => doc(this.refs.users, userId)
@@ -73,7 +74,7 @@ export class FirebaseDB {
         //
         //     this.refs.currentCompanionDialog = doc(this.refs.userDialogList(this.currentCompanionId), this.currentDialogId)
         // }
-       //console.log( this.refs.currentCompanionDialog)
+        //console.log( this.refs.currentCompanionDialog)
 
     }
 
@@ -101,12 +102,12 @@ export class FirebaseDB {
 
     addDialogListener = async (dialogId, callback) => {
         //const q = query(collection(this.firestore, "Dialogs", dialogId, "data"));
+
         const subscribe = await onSnapshot(this.refs.dialogData(dialogId), (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type == "added" && change.doc.data().id != this.currentUserId) callback(dialogId, change.doc.data());
+                });
 
-            snapshot.docChanges().forEach((change) => {
-                if (change.type == "added" && change.doc.data().id != this.currentUserId) callback(change.doc.data());
-
-            });
             //return result.push(doc.docs);
         })
 
@@ -134,7 +135,7 @@ export class FirebaseDB {
 
     getDialogMessages = async (dialogId) => {
         let messages = [];
-       // const docRef = collection(this.firestore, "Dialogs", dialogId, "data");
+        // const docRef = collection(this.firestore, "Dialogs", dialogId, "data");
         const q = query(this.refs.dialogData(dialogId), orderBy("timestamp"))
         const docSnap = await getDocs(q);
         if (docSnap) {
@@ -156,13 +157,13 @@ export class FirebaseDB {
         return dialogList;
     }
 
-    dialogWithThisUserExists = async (companionId, currentUserId = this.currentUserId) => {
+    findDialogByCompanionId = async (companionId, currentUserId = this.currentUserId) => {
         //const docRef = collection(this.firestore, "Users", currentUserId, "dialogList");
-        const docs = await getDocs(this.refs.userDialogList(currentUserId));
-        let dialogID = undefined;
-        docs.forEach((document) => {
-            if (document.data().companionId == companionId) {
-                dialogID = document.id;
+        const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
+        let dialogID;
+        dialogList.forEach((dialog) => {
+            if (dialog.data().companionId == companionId) {
+                dialogID = dialog.id;
             }
         });
         return (dialogID) ? dialogID : false;
@@ -171,16 +172,19 @@ export class FirebaseDB {
     createDialogWith = async (companionId, currentUserId = this.currentUserId, currentUserName = this.currentUserName) => {
 
         const dialogId = this.dialogIdTemplate();
-        const companionName = "Диалог c "+companionId;
+
+        const user = await getDoc(this.refs.user(companionId));
+        const dialogName = this.dialogNameTemplate(user.data().name);
+
         const docRef1 = doc(this.refs.userDialogList(currentUserId), dialogId);
-        setDoc(docRef1, {dialogName: companionName, companionId: companionId});
+        setDoc(docRef1, {dialogName: dialogName, companionId: companionId});
 
         const docRef2 = doc(this.refs.userDialogList(companionId), dialogId);
-        setDoc(docRef2, {dialogName:  currentUserName, companionId: currentUserId});
+        setDoc(docRef2, {dialogName: currentUserName, companionId: currentUserId});
 
         const docRef3 = doc(this.refs.dialogInfo(dialogId));
-        setDoc(docRef3, {dialogName: companionName, companionId: companionId, creatorId: currentUserId});
-        console.log(docRef3)
+        setDoc(docRef3, {dialogName: dialogName, companionId: companionId, creatorId: currentUserId});
+
         return dialogId;
 
     }
