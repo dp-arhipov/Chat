@@ -9,17 +9,24 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import ModalUserProfile from "./ModalUserProfile";
 import {store} from '../store'
+import {logOut} from "../store/actions"
+import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
+import * as selectors from "../store/selectors";
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const dispatch = useDispatch();
 
     const logOutButtonHandler = () => {
-        API.logOut();
+        // API.logOutStore();
+        dispatch(logOut());
+
     }
-    const currentUser = store.getState().currentUser;
+    // const currentUser = store.getState().currentUser;
+    const currentUser = useSelector(selectors.currentUser);
     return (
         <Fragment>
             <AppBar position="static">

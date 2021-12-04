@@ -1,45 +1,73 @@
-import React, {Fragment, useContext, useEffect, useState} from 'react';
-import Box from "@mui/material/Box";
+import React, {Fragment, useEffect, useState} from 'react';
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import Button from "@mui/material/Button";
-import * as API from "../API"
 import FormControl from "@mui/material/FormControl";
-import {store} from '../store'
-import {useSelector} from "react-redux";
+import {changeName, changeNickName, isNickNameBusy} from '../store/actions'
+
+import {useDispatch, useSelector} from "react-redux";
+import * as selectors from "../store/selectors"
 
 const UserProfile = () => {
-    const currentUser = useSelector(state => state.currentUser);
+    const currentUserName = useSelector(selectors.currentUserName);
+    const currentUserNickName = useSelector(selectors.currentUserNickName);
+
     const [nickName, setNickName] = useState('');
+    const [name, setName] = useState('');
+
     const [nickNameIsBusy, setNickNameIsBusy] = useState(false);
+    const [wrongName, setWrongName] = useState(false);
+    const dispatch = useDispatch();
+
+    // const [memArr, setMemArr] = useState('');
+    // useEffect(()=>{
+    //     setMemArr(rand(10000));
+    //
+    // },[])
+    //
+    // const rand = (max) => {
+    //     let arr = [];
+    //     for (let i = 0; i < max; i++) {
+    //         arr[i] = getRndInteger(0,10);
+    //     }
+    // }
+    //
+    // const getRndInteger = (min, max) => {
+    //     return Math.floor(Math.random() * (max - min + 1)) + min;
+    // }
+
     const handleForm = async (e) => {
+        //console.log(memArr);
         e.preventDefault();
-        // let nickName = e.target.value;
-        // setNickName(nick);
-        // setNickName('');
+        dispatch(changeName(name));
 
-        if (!await API.find(nickName)) {API.changeNickName(nickName); setNickNameIsBusy(false)}
-        else setNickNameIsBusy(true);
+        if (!await isNickNameBusy(nickName)) {
+            setNickNameIsBusy(false)
+            dispatch(changeNickName(nickName));
+        } else setNickNameIsBusy(true);
     }
-    useEffect( () => {
 
-    })
 
     return (
         <Fragment>
             <Typography>
-                {currentUser.name}
+                {currentUserName}
             </Typography>
 
-            <FormControl onSubmit={handleForm} m={'100px'}>
-                <TextField label="Никнейм" variant="outlined" value={nickName}
+            <FormControl onSubmit={() => console.log("df")} m={'100px'}>
+                <TextField label="Никнейм" variant="outlined" value={nickName} m={'20px'}
                            onChange={e => setNickName(e.target.value)}
                            error={nickNameIsBusy}
-                           helperText={(nickNameIsBusy)?"Никнейм занят":''}
+                           helperText={(nickNameIsBusy) ? "Никнейм занят" : ''}
                 />
-                <TextField label="Имя" variant="outlined" />
-                <Button type={"submit"}>Сохранить</Button>
+                <TextField label="Имя" variant="outlined" m={'20px'}
+                           value={name}
+                           onChange={e => setName(e.target.value)}
+                           error={wrongName}
+                           helperText={(wrongName) ? "Неверный формат имени " : ''}
+                />
+                <Button type="submit" onClick={handleForm}>Сохранить</Button>
             </FormControl>
         </Fragment>
     );

@@ -9,10 +9,10 @@ import * as API from '../API'
 import {store} from "../store";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
-import {setDefaultDialog, changeCurrentDialog} from "../store/actions";
+import {setDefaultDialog, setCurrentDialog} from "../store/actions";
 
 const DialogList = () => {
-    //const {dialogList, setCurrentDialog} = useContext(ChatContext);
+    //const {dialogList, setCurrentDialogInfo} = useContext(ChatContext);
     // const [dialogList, setDialogList] = useState(store.getState().dialogList);
     // store.subscribe(() => {
     //     setDialogList(store.getState().dialogList);
@@ -23,8 +23,8 @@ const DialogList = () => {
     const dialogList = useSelector(selectors.dialogList);
     const dispatch = useDispatch();
     const itemClickHandle = (dialogID) => {
-        //API.setCurrentDialog(dialogID);
-        dispatch(changeCurrentDialog(dialogID));
+        //API.setCurrentDialogInfo(dialogID);
+        dispatch(setCurrentDialog(dialogID));
 
     }
     return (

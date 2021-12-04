@@ -52,15 +52,15 @@ export const setCurrentDialog = async (dialogId) => {
 }
 
 export const setDialogList = async (userId = store.getState().currentUser.id) => {
-    const dialogList = await DB.getUserDialogs(userId)
+    const dialogList = await DB.getUserDialogList(userId)
     store.dispatch({type: 'SET_DIALOG_LIST', payload: dialogList})
 
 }
 
 export const createDialogWith = async (member = store.getState().findResults.user, currentUser = store.getState().currentUser) => {
-    let dialogId = await DB.dialogExists(member.id, currentUser.id);
+    let dialogId = await DB.dialogWithThisUserExists(member.id, currentUser.id);
     if (!dialogId) {
-        dialogId = await DB.createDialog(member, currentUser);
+        dialogId = await DB.createDialogWith(member, currentUser);
     }
     await setDialogList();
     setCurrentDialog(dialogId);

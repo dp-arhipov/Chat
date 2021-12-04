@@ -2,14 +2,16 @@ import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 import {FirebaseAuth, FirebaseDB} from "./firebaseAPI";
+import {useSelector} from "react-redux";
+import * as selectors from "../store/selectors";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD2BU7gYSyAqQVjqVWpfPS0Tm2G9eEBQ5Y",
-    authDomain: "chat-2b90b.firebaseapp.com",
-    projectId: "chat-2b90b",
-    storageBucket: "chat-2b90b.appspot.com",
-    messagingSenderId: "910644473265",
-    appId: "1:910644473265:web:d580b75d98257c3e17e190"
+    apiKey: "AIzaSyDDgdMfwVDWoblWGD6EGn_b2-aUP9sD-tI",
+    authDomain: "chat-2-cf0e6.firebaseapp.com",
+    projectId: "chat-2-cf0e6",
+    storageBucket: "chat-2-cf0e6.appspot.com",
+    messagingSenderId: "164607313968",
+    appId: "1:164607313968:web:0861de31a4521df2b645f5"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -18,3 +20,4 @@ const auth = getAuth();
 
 export const Auth = new FirebaseAuth(auth);
 export const DB = new FirebaseDB(app, firestore);
+
