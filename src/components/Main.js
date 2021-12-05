@@ -18,7 +18,7 @@ const Main = () => {
         <Box sx={{display: 'flex', flexDirection: 'column'}}>
 
             <Typography variant="h5" p={"1rem"} color="text.secondary" component="div">
-                Диалог с {currentDialog.name}
+                {currentDialog.name}
             </Typography>
             <Divider/>
             <Box sx={{overflow: 'auto'}}>

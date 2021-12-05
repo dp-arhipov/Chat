@@ -173,8 +173,9 @@ export const addDialogListeners = () => {
        // console.log(dialogList)
         for (const dialogId of dialogIds) {
            // DB.addDialogListener(id, (x) => dispatch(setFindResults(x)));
-            await DB.addDialogListener(dialogId,  (dialogId, message, currentDialogId = getState().currentDialog.id) => {
-                if(dialogId == currentDialogId)  dispatch(addMessage(message))
+            await DB.addDialogListener(dialogId,  (dialogId, message, currentDialogId = getState().currentDialog.id, currentUserId = getState().currentUser.id) => {
+                if(dialogId == currentDialogId && message.creatorId!=currentUserId) { dispatch(addMessage(message))
+                    console.log(message)}
             });
         }
     }

@@ -105,7 +105,7 @@ export class FirebaseDB {
 
         const subscribe = await onSnapshot(this.refs.dialogData(dialogId), (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
-                    if (change.type == "added" && change.doc.data().id != this.currentUserId) callback(dialogId, change.doc.data());
+                    if (change.type == "added") callback(dialogId, change.doc.data());
                 });
 
             //return result.push(doc.docs);
