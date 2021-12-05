@@ -22,13 +22,17 @@
 import {Auth, DB} from "../API";
 import {
     addMessage,
+    addMessageTest,
     resetCurrentDialog,
     resetFindResults,
     resetUser,
     setCurrentDialogFetching,
     setCurrentDialogInfo,
+    setCurrentDialogInfoTest,
+    setCurrentDialogMessagesTest,
     setCurrentUser,
     setDialogList,
+    setDialogListTest,
     setDialogMessages,
     setFindResults,
     setFindResultsFetching,
@@ -45,6 +49,8 @@ export const logIn = () => {
         user = await DB.createUser(user.id, user.name);
         dispatch(setCurrentUser(user));
         DB.setCurrentUser(user);
+
+
         //dispatch(addListeners());
         // DB.setCurrentUser(getState().currentUser);
         // dispatch(loadDialogList());
@@ -71,8 +77,10 @@ export const initChat = () => {
 
 export const loadDialogList = () => {
     return async function disp(dispatch, getState) {
-         let dialogList = await DB.getUserDialogList(getState().currentUser.id);
-         dispatch(setDialogList(dialogList))
+        let dialogList = await DB.getUserDialogList(getState().currentUser.id);
+        dispatch(setDialogList(dialogList))
+
+        dispatch(setDialogListTest(dialogList))
     }
 }
 
@@ -104,6 +112,7 @@ export const sendMessage = (text) => {
             time: now.toLocaleTimeString()
         }
         dispatch(addMessage(message));
+        dispatch(addMessageTest(message));
     }
 }
 
@@ -113,8 +122,12 @@ export const setCurrentDialog = (dialogID) => {
         dispatch(setCurrentDialogFetching(true))
         const currentDialogInfo = getState().currentUser.dialogList.filter(item => item.id == dialogID)[0];
         dispatch(setCurrentDialogInfo(currentDialogInfo));
+        dispatch(setCurrentDialogInfoTest(currentDialogInfo));
+
         const messages = await DB.getDialogMessages(dialogID)
         dispatch(setDialogMessages(messages))
+        dispatch(setCurrentDialogMessagesTest(messages))
+
         dispatch(setCurrentDialogFetching(false))
 
 
@@ -165,45 +178,48 @@ export const isNickNameBusy = async (nickName) => {
     return await DB.findUserByNickName(nickName) ? true : false;
 }
 
+// export const addDialogListeners = () => {
+//     return async function disp(dispatch, getState) {
+//         let dialogIds = [];
+//         let dialogList = await getState().currentUser.dialogList;
+//         dialogList.forEach((item=>dialogIds.push(item.id)));
+//        // console.log(dialogList)
+//         for (const dialogId of dialogIds) {
+//            // DB.addDialogListener(id, (x) => dispatch(setFindResults(x)));
+//             await DB.addDialogListener(
+//                 dialogId,
+//                 (dialogId, message, currentDialogId = getState().currentDialog.id, currentUserId = getState().currentUser.id) => {
+//                     if (dialogId == currentDialogId && message.creatorId != currentUserId) {
+//                         dispatch(addMessage(message))
+//                         console.log(message)
+//                     }
+//                 });
+//         }
+//     }
+// }
+
 export const addDialogListeners = () => {
     return async function disp(dispatch, getState) {
         let dialogIds = [];
-        let dialogList = await getState().currentUser.dialogList;
-        dialogList.forEach((item=>dialogIds.push(item.id)));
-       // console.log(dialogList)
+        let dialogList = await getState().dialogList.dialogs;
+        //dialogList.forEach((item=>dialogIds.push(item.id)));
+        dialogIds = Object.keys(dialogList);
+        console.log(dialogIds)
         for (const dialogId of dialogIds) {
-           // DB.addDialogListener(id, (x) => dispatch(setFindResults(x)));
-            await DB.addDialogListener(dialogId,  (dialogId, message, currentDialogId = getState().currentDialog.id, currentUserId = getState().currentUser.id) => {
-                if(dialogId == currentDialogId && message.creatorId!=currentUserId) { dispatch(addMessage(message))
-                    console.log(message)}
-            });
+            // DB.addDialogListener(id, (x) => dispatch(setFindResults(x)));
+            await DB.addDialogListener(
+                dialogId,
+                (dialogId, message, currentDialogId = getState().dialogList.currentDialog.id, currentUserId = getState().currentUser.id) => {
+                    if (dialogId == currentDialogId && message.creatorId != currentUserId) {
+                        dispatch(addMessageTest(message))
+
+                    }
+                });
         }
     }
-
 }
-// const listener = (dialogId, message, currentDialogId = getState().currentDialog.id) => {
-//     if(dialogId == currentDialogId)  console.log(dialogId, message)
-//
-// }
 
-// export const addListeners = () => {
-//     return async function disp(dispatch, getState) {
-//         store.subscribe(() => {
-//           DB.setCurrentUser(getState().currentUser, getState().currentDialog);
-//         })
-//
-//         store.subscribe(() => {
-//             let dialogIds = [];
-//             getState().currentUser.dialogList.forEach((item => dialogIds.push(item.id)));
-//             for (const id of dialogIds) {
-//                 DB.addDialogListener(id, getState().currentUser.id, (x) => dispatch(addMessage(x)));
-//                 // DB.addDialogListener(id, (x) => console.log(x));
-//             }
-//         })
-//     }
-//
-//
-// }
+
 
 
 
