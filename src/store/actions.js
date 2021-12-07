@@ -18,6 +18,7 @@
 //сохранять уже загруженные диаологи в кеше
 //сделать мемоизацию компонентов
 //разные форматы сообщений message, сделать однотипные
+//уровни доступа, безопасность
 
 import {Auth, DB} from "../API";
 import {
@@ -79,7 +80,6 @@ export const loadDialogList = () => {
     return async function disp(dispatch, getState) {
         let dialogList = await DB.getUserDialogList(getState().currentUser.id);
         dispatch(setDialogList(dialogList))
-
         dispatch(setDialogListTest(dialogList))
     }
 }
@@ -103,29 +103,30 @@ export const sendMessage = (text) => {
     return async function disp(dispatch, getState) {
         const senderId = getState().currentUser.id;
         const dialogId = getState().currentDialog.id;
-        DB.sendMessage(dialogId, text);
-        const now = new Date();
-        const message = {
-            creatorId: senderId,
-            text: text,
-            date: now.toLocaleDateString(),
-            time: now.toLocaleTimeString()
-        }
+        const message = await DB.sendMessage(dialogId, text);
         dispatch(addMessage(message));
         dispatch(addMessageTest(message));
     }
 }
 
 
-export const setCurrentDialog = (dialogID) => {
+export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
         dispatch(setCurrentDialogFetching(true))
-        const currentDialogInfo = getState().currentUser.dialogList.filter(item => item.id == dialogID)[0];
+        const currentDialogInfo = getState().currentUser.dialogList.filter(item => item.id == dialogId)[0];
         dispatch(setCurrentDialogInfo(currentDialogInfo));
         dispatch(setCurrentDialogInfoTest(currentDialogInfo));
 
-        const messages = await DB.getDialogMessages(dialogID)
+        const messages = await DB.getDialogMessages(dialogId)
         dispatch(setDialogMessages(messages))
+
+       // const messages2 = await DB.getDialogMessages(dialogId, 5, getState().dialogList.dialogs[dialogId].messages[0].messageId)
+       //  let messages2 = await DB.getDialogMessages(dialogId, 5, messages[0].messageId)
+       //  dispatch(setDialogMessages([...messages2, ...messages]))
+
+
+
+
         dispatch(setCurrentDialogMessagesTest(messages))
 
         dispatch(setCurrentDialogFetching(false))
@@ -216,6 +217,9 @@ export const addDialogListeners = () => {
                     }
                 });
         }
+
+
+
     }
 }
 

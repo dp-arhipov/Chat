@@ -90,6 +90,15 @@ const currentUserInitialState = {
     name: '',
     dialogList: []
 }
+const currentLoggedInUserInitialState = {
+    isFetching: false,
+    findResults: [],
+    id: 'yJiN8j3mxxVhT7mejKfXnhW0OfF3',
+    nickName: 'user_9zBQN6aK',
+    name: 'Даниил Архипов',
+    dialogList: []
+}
+
 const currentUserSlice = createSlice({
     name: "currentUser",
     initialState: currentUserInitialState,

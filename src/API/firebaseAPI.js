@@ -9,7 +9,9 @@ import {
     query,
     serverTimestamp,
     setDoc,
-    updateDoc
+    updateDoc,
+    limit,
+    startAfter
 } from "firebase/firestore";
 import {nanoid} from "nanoid";
 
@@ -40,6 +42,7 @@ export class FirebaseDB {
         this.nickNameTemplate = () => "user_" + nanoid(8);
         this.dialogIdTemplate = () => nanoid(8);
         this.dialogNameTemplate = name => "Диалог c " + name;;
+        this.messageIdTemplate = () => nanoid(8);
 
         this.app = app;
         this.firestore = firestore;
@@ -115,11 +118,12 @@ export class FirebaseDB {
     }
 
 
-    sendMessage = (dialogId, text, creatorId = this.currentUserId) => {
+    sendMessage = async (dialogId, text, creatorId = this.currentUserId) => {
 
         const now = new Date();
         const date = now.toLocaleDateString();
         const time = now.toLocaleTimeString();
+        const messageId = this.messageIdTemplate();
         const message = {
             creatorId: creatorId,
             text: text,
@@ -127,27 +131,46 @@ export class FirebaseDB {
             time: now.toLocaleTimeString(),
             timestamp: serverTimestamp()
         }
-        const docRef = doc(this.refs.dialogData(dialogId), date + " " + time);
+        const docRef = doc(this.refs.dialogData(dialogId), messageId);
         //console.log(this.refs);
-        setDoc(docRef, message);
+        await setDoc(docRef, message);
+        return {messageId, ...message};
 
     }
 
-    getDialogMessages = async (dialogId) => {
+    getDialogMessages = async (dialogId, loadLimit = 10, lastVisibleMessageId = 0) => {
         let messages = [];
-        // const docRef = collection(this.firestore, "Dialogs", dialogId, "data");
-        const q = query(this.refs.dialogData(dialogId), orderBy("timestamp"))
+        let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(loadLimit))
+        if(lastVisibleMessageId) {
+            const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+            q = query(
+                this.refs.dialogData(dialogId),
+                orderBy("timestamp", "desc"),
+                startAfter(lastVisibleMessage),
+                limit(loadLimit));
+        }
         const docSnap = await getDocs(q);
         if (docSnap) {
             for (let item of docSnap.docs) {
-                messages = [...messages, item.data()];
+                let messageId = item.id;
+                const message = {messageId ,...item.data()}
+                messages = [message,...messages];
             }
         }
         return messages;
     }
 
+    // getNextPackOfMessages = async (dialogId) =>{
+    //     const lastVisibleMessageId = messages[0].messageId;
+    //     // const ref = doc(this.refs.dialogData(dialogId), id)
+    //     const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+    //
+    //
+    // }
+
     getUserDialogList = async (userId) => {
         let dialogList = [];
+
         const docs = await getDocs(this.refs.userDialogList(userId));
         if (docs) {
             docs.forEach((doc) => {
