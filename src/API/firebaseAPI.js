@@ -138,7 +138,7 @@ export class FirebaseDB {
 
     }
 
-    getDialogMessages = async (dialogId, loadLimit = 10, lastVisibleMessageId = 0) => {
+    getDialogMessages = async (dialogId, lastVisibleMessageId = 0,loadLimit = 10) => {
         let messages = [];
         let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(loadLimit))
         if(lastVisibleMessageId) {
@@ -152,21 +152,14 @@ export class FirebaseDB {
         const docSnap = await getDocs(q);
         if (docSnap) {
             for (let item of docSnap.docs) {
-                let messageId = item.id;
-                const message = {messageId ,...item.data()}
+                const message = {messageId:item.id ,...item.data()}
                 messages = [message,...messages];
             }
         }
         return messages;
     }
 
-    // getNextPackOfMessages = async (dialogId) =>{
-    //     const lastVisibleMessageId = messages[0].messageId;
-    //     // const ref = doc(this.refs.dialogData(dialogId), id)
-    //     const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
-    //
-    //
-    // }
+
 
     getUserDialogList = async (userId) => {
         let dialogList = [];

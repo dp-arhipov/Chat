@@ -1,27 +1,30 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import Message from "./Message";
 import * as selectors from "../store/selectors"
 import {store} from '../store'
 import {useSelector} from "react-redux";
+import {useLazyLoading} from "../customHooks/useLazyLoading";
+import Container from "@mui/material/Container";
 const MessagesList = () => {
 
     const currentUserId = useSelector(selectors.currentUserId);
     const messages = useSelector(selectors.messages);
-    const messageRef = useRef();
+    //const mRef = useRef();
 
-    useEffect(() => {
-        if (messageRef.current) {
-            messageRef.current.scrollIntoView(
-                {
-                    behavior: 'smooth',
-                    block: 'end',
-                    inline: 'nearest'
-                })
-        }
-    })
+    // useEffect(() => {
+    //     if (mRef.current) {
+    //         mRef.current.scrollIntoView(
+    //             {
+    //                 behavior: 'smooth',
+    //                 block: 'end',
+    //                 inline: 'nearest'
+    //             })
+    //     }
+    // })
+
 
     return (
-        <div ref={messageRef}>
+        <Container>
             {messages.map(message =>
                 <Message
                     text={message.text}
@@ -31,8 +34,7 @@ const MessagesList = () => {
                     currentUserId={currentUserId}
                 />
             )}
-
-        </div>
+        </Container>
     );
 };
 

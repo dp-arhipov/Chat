@@ -36,6 +36,10 @@ const dialogListSlice = createSlice({
             state.currentDialog.name = currentDialog.name
             state.currentDialog.memberId = currentDialog.memberId
         },
+        addOldDialogMessagesTest(state, action){
+                const id = state.currentDialog.id
+                state.dialogs[id].messages = [...action.payload,...state.dialogs[id].messages]
+        },
         // setDialogMessages(state, action) {
         //     state.messages = action.payload
         // },
@@ -154,6 +158,6 @@ export const dialogListReducer = dialogListSlice.reducer;
 export const {setCurrentUserFetching, setCurrentUser, setDialogList, setNickName, setName, resetUser} = currentUserSlice.actions
 export const {setFindResultsFetching, setFindResults, resetFindResults} = findResultsSlice.actions
 export const {setCurrentDialogFetching, addMessage, setCurrentDialogInfo, setDialogMessages, resetCurrentDialog} = currentDialogSlice.actions
-export const {setDialogListTest, addMessageTest, setCurrentDialogInfoTest, setCurrentDialogMessagesTest} = dialogListSlice.actions
+export const {setDialogListTest, addMessageTest, setCurrentDialogInfoTest, setCurrentDialogMessagesTest, addOldDialogMessagesTest, resetDialogList} = dialogListSlice.actions
 
 
