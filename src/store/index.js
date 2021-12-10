@@ -7,7 +7,6 @@ import {currentUserReducer, currentDialogReducer, findResultsReducer, dialogList
 export const store = configureStore({
     reducer: {
         currentUser:currentUserReducer,
-        currentDialog:currentDialogReducer,
         findResults: findResultsReducer,
         dialogList: dialogListReducer
     },

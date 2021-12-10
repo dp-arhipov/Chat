@@ -13,8 +13,8 @@ import {loadNextMessages} from "../store/actions";
 const Main = () => {
 
     //const currentDialog = useSelector(state => state.currentDialog);
-    const currentDialog = useSelector(selectors.currentDialog);
-    const isCurrentDialogFetching = useSelector(selectors.isCurrentDialogFetching);
+    const currentDialogName = useSelector(selectors.currentDialogName);
+    const currentDialogId = useSelector(selectors.currentDialogId);
     const messageListContainerRef = useRef();
     const dispatch = useDispatch();
     //
@@ -47,13 +47,12 @@ const Main = () => {
         }
 
     }
-
+   // console.log(currentDialogId)
     return (
-        (!isCurrentDialogFetching) &&
         <Box sx={{display: 'flex', flexDirection: 'column'}}>
 
             <Typography variant="h5" p={"1rem"} color="text.secondary" component="div">
-                {currentDialog.name}
+                {currentDialogName}
             </Typography>
             <Divider/>
             <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScroll}>
@@ -62,7 +61,6 @@ const Main = () => {
             <Box pt={'1rem'} mt={'auto'}>
                 <MessageInput/>
             </Box>
-
         </Box>
 
 

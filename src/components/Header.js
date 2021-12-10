@@ -26,7 +26,7 @@ const Header = () => {
 
     }
     // const currentUser = store.getState().currentUser;
-    const currentUser = useSelector(selectors.currentUser);
+    const currentUserName = useSelector(selectors.currentUserName);
     return (
         <Fragment>
             <AppBar position="static">
@@ -36,7 +36,7 @@ const Header = () => {
                         AMessanger
                     </Typography>
                     <Typography variant="h6" component="div" onClick={handleOpen} sx={{cursor:"pointer"}}>
-                        {currentUser.name}
+                        {currentUserName}
                     </Typography>
                     <IconButton color="inherit" onClick={handleOpen}>
                         <AccountCircle/>

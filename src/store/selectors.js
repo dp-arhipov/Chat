@@ -1,13 +1,15 @@
-export const currentDialog = state => state.dialogList.currentDialog
-export const currentDialogId = currentDialog.id
 export const currentUser = state => state.currentUser
-export const currentUserId = currentUser.id
-export const currentUserName = currentUser.name
-export const currentUserNickName = currentUser.nickName
+export const currentUserId = state => currentUser(state).id
+export const currentUserName = state => currentUser(state).name
+export const currentUserNickName = state => currentUser(state).nickName
 
 export const dialogList = state => state.dialogList.dialogs
 
-export const messages =  dialogList[currentDialog.id].messages
+
+export const currentDialogId = state=> state.dialogList.currentDialogId
+export const currentDialog = state => state.dialogList.dialogs[currentDialogId(state)]
+export const currentDialogName = state => currentDialog(state).name
+export const currentDialogMessages =  state => currentDialog(state).messages
 export const findResults = state => state.findResults.data
 
 export const isCurrentDialogFetching = state => state.currentDialog.isFetching

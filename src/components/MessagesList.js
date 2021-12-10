@@ -8,7 +8,8 @@ import Container from "@mui/material/Container";
 const MessagesList = () => {
 
     const currentUserId = useSelector(selectors.currentUserId);
-    const messages = useSelector(selectors.messages);
+    const messages = useSelector(selectors.currentDialogMessages);
+    //console.log(messages)
     //const mRef = useRef();
 
     // useEffect(() => {

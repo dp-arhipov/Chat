@@ -89,12 +89,18 @@ export class FirebaseDB {
                 name: userName,
                 nickName: nickName
             });
+            this.currentUserId = userId
+            this.currentUserName = userName
+            this.currentUserNickName = nickName
             return {
                 id: userId,
                 name: userName,
                 nickName: nickName
             }
         }
+        this.currentUserId = user.id
+        this.currentUserName = user.data().name
+        this.currentUserNickName = user.data().nickName
         return {
             id: user.id,
             name: user.data().name,
@@ -119,7 +125,7 @@ export class FirebaseDB {
 
 
     sendMessage = async (dialogId, text, creatorId = this.currentUserId) => {
-
+        //console.log(dialogId, text)
         const now = new Date();
         const date = now.toLocaleDateString();
         const time = now.toLocaleTimeString();

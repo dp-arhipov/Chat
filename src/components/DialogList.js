@@ -1,35 +1,30 @@
-import React, {Fragment, useState} from 'react';
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
+import React, {Fragment} from 'react';
 import List from "@mui/material/List";
-import * as API from '../API'
-import {store} from "../store";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
-import {setDefaultDialog, setCurrentDialog} from "../store/actions";
+import {setCurrentDialog} from "../store/actions";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
 
 const DialogList = () => {
-    //const {dialogList, setCurrentDialogInfo} = useContext(ChatContext);
-    // const [dialogList, setDialogList] = useState(store.getState().dialogList);
-    // store.subscribe(() => {
-    //     setDialogList(store.getState().dialogList);
-    //     //console.log(store.getState())
-    // })
 
-
-    const dialogList = useSelector(selectors.dialogList);
+    const dialogListObj = useSelector(selectors.dialogList);
+    const dialogListArr = Object.values(dialogListObj)
     const dispatch = useDispatch();
     const itemClickHandle = (dialogID) => {
-        //API.setCurrentDialogInfo(dialogID);
+        //API.setCurrentDialogIdTest(dialogID);
         dispatch(setCurrentDialog(dialogID));
 
     }
+
+
+
     return (
         <List>
-            {dialogList.map((dialog) => {
+            {dialogListArr.map((dialog) => {
                 return (
                     <Fragment>
                         <ListItem sx={{cursor: "pointer"}} alignItems="flex-start" key={dialog.id}
@@ -47,6 +42,7 @@ const DialogList = () => {
                 )
             })}
         </List>
+
     );
 };
 
