@@ -7,7 +7,6 @@
 //сохранение юзера в куках
 //обработка ошибок в redux thunk
 //поработать с временем сообщений
-//сделать более логичные селекторы
 //почему сообщения загружаются несколько раз 2 раза added и 2 modified
 //переделать слушатель, добавляет лишнее. при создании диалога с уже имеющимся собеседником, добавляются его сообщения, сейчас слушатель слушает все диалоги
 //при создании нового диалога ничего не происходит, добавить экшна
@@ -21,23 +20,26 @@
 //добавить возможность тестить без регистрацц
 //починить поиск
 //добавить задержки в загрузки через trottling
+//сделать селекторы в actions
 
 import {Auth, DB} from "../API";
 import {
-    addMessageTest,
-    addOldDialogMessagesTest,
+    addCurrentDialogMessage,
+    addOldCurrentDialogMessages,
     resetDialogList,
     resetFindResults,
     resetUser,
-    setCurrentDialogIdTest,
-    setCurrentDialogMessagesTest,
+    setCurrentDialogId,
+    addLastCurrentDialogMessages,
     setCurrentUser,
-    setDialogListTest,
+    setDialogList,
     setFindResults,
     setFindResultsFetching,
     setName,
     setNickName
 } from "./slices";
+
+import * as selectors from "./selectors"
 
 export const logIn = () => {
     return async function disp(dispatch, getState) {
@@ -58,8 +60,9 @@ export const initChat = () => {
 
 export const loadDialogList = () => {
     return async function disp(dispatch, getState) {
-        let dialogList = await DB.getUserDialogList(getState().currentUser.id);
-        dispatch(setDialogListTest(dialogList))
+        const currentUserId = selectors.currentUserId(getState());
+        let dialogList = await DB.getUserDialogList(currentUserId);
+        dispatch(setDialogList(dialogList))
     }
 }
 
@@ -74,11 +77,9 @@ export const logOut = () => {
 
 export const sendMessage = (text) => {
     return async function disp(dispatch, getState) {
-        const senderId = getState().currentUser.id;
-        const dialogId = getState().dialogList.currentDialogId;
-        console.log(dialogId);
-        const message = await DB.sendMessage(dialogId, text);
-        dispatch(addMessageTest(message));
+        const currentDialogId = selectors.currentDialogId(getState());
+        const message = await DB.sendMessage(currentDialogId, text);
+        dispatch(addCurrentDialogMessage(message));
     }
 }
 
@@ -86,19 +87,19 @@ export const sendMessage = (text) => {
 export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
         //dispatch(setCurrentDialogFetching(true))
-        const currentDialogId = dialogId;
-        dispatch(setCurrentDialogIdTest(currentDialogId));
-        const messages = await DB.getDialogMessages(dialogId)
-        dispatch(setCurrentDialogMessagesTest(messages))
+        dispatch(setCurrentDialogId(dialogId));
+        const messages = await DB.getDialogMessages(dialogId, 10)
+        dispatch(addLastCurrentDialogMessages(messages))
         //dispatch(setCurrentDialogFetching(false))
     }
 }
 
-export const loadNextMessages = (dialogId) => {
+export const loadOldCurrentDialogMessages = () => {
     return async function disp(dispatch, getState) {
-        dialogId = getState().dialogList.currentDialogId;
-        const messages = await DB.getDialogMessages(dialogId, getState().dialogList.dialogs[dialogId].messages[0].messageId)
-        dispatch(addOldDialogMessagesTest(messages))
+        const dialogId = selectors.currentDialogId(getState());
+        const lastVisibleMessageId = selectors.currentDialogLastMessageId(getState());
+        const messages = await DB.getDialogMessages(dialogId, 10, lastVisibleMessageId)
+        dispatch(addOldCurrentDialogMessages(messages))
     }
 }
 
@@ -148,14 +149,14 @@ export const isNickNameBusy = async (nickName) => {
 export const addDialogListeners = () => {
     return async function disp(dispatch, getState) {
         let dialogIds = [];
-        let dialogList = await getState().dialogList.dialogs;
+        let dialogList = await selectors.dialogList(getState());
         dialogIds = Object.keys(dialogList);
         for (const dialogId of dialogIds) {
             await DB.addDialogListener(
                 dialogId,
-                (dialogId, message, currentDialogId = getState().dialogList.currentDialogId, currentUserId = getState().currentUser.id) => {
+                (dialogId, message, currentDialogId = selectors.currentDialogId(getState()), currentUserId = selectors.currentUserId(getState())) => {
                     if (dialogId == currentDialogId && message.creatorId != currentUserId) {
-                        dispatch(addMessageTest(message))
+                        dispatch(addCurrentDialogMessage(message))
                     }
                 });
         }

@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import * as API from "../API";
-import {sendMessage, loadNextMessages} from "../store/actions";
+import {sendMessage, loadOldCurrentDialogMessages} from "../store/actions";
 import {useDispatch} from "react-redux";
 
 
@@ -20,7 +20,7 @@ const MessageInput = () => {
         if (inputText.trim() != '') {
             // API.sendMessage(inputText);
             dispatch(sendMessage(inputText));
-            //dispatch(loadNextMessages())
+            //dispatch(loadOldCurrentDialogMessages())
         }
         setInputText('');
     }

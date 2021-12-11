@@ -144,7 +144,7 @@ export class FirebaseDB {
 
     }
 
-    getDialogMessages = async (dialogId, lastVisibleMessageId = 0,loadLimit = 10) => {
+    getDialogMessages = async (dialogId, loadLimit = 10,  lastVisibleMessageId = 0) => {
         let messages = [];
         let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(loadLimit))
         if(lastVisibleMessageId) {

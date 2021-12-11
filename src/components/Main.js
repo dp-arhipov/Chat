@@ -8,7 +8,7 @@ import MessagesList from "./MessagesList";
 import MessageInput from "./MessageInput";
 import Container from "@mui/material/Container";
 import {useLazyLoading} from "../customHooks/useLazyLoading";
-import {loadNextMessages} from "../store/actions";
+import {loadOldCurrentDialogMessages} from "../store/actions";
 
 const Main = () => {
 
@@ -43,7 +43,7 @@ const Main = () => {
     const onScroll = () =>{
         const m = messageListContainerRef.current.scrollTop
         if (m==0){
-            dispatch(loadNextMessages());
+            dispatch(loadOldCurrentDialogMessages());
         }
 
     }

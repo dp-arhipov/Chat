@@ -15,12 +15,8 @@ const DialogList = () => {
     const dialogListArr = Object.values(dialogListObj)
     const dispatch = useDispatch();
     const itemClickHandle = (dialogID) => {
-        //API.setCurrentDialogIdTest(dialogID);
         dispatch(setCurrentDialog(dialogID));
-
     }
-
-
 
     return (
         <List>

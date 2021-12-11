@@ -11,10 +11,10 @@ const dialogListSlice = createSlice({
     name: "dialogListSlice",
     initialState: dialogListInitialState,
     reducers: {
-        setCurrentDialogFetchingTest(state, action){
+        setCurrentDialogFetching(state, action){
             state.isFetching=action.payload;
         },
-        setDialogListTest(state, action) {
+        setDialogList(state, action) {
             const dialogList = action.payload;
             //state.dialogs = dialogList
 
@@ -24,28 +24,25 @@ const dialogListSlice = createSlice({
             }
             //return dialogList
         },
-        addMessageTest(state, action) {
+        addCurrentDialogMessage(state, action) {
             const id = state.currentDialogId
             state.dialogs[id].messages.push(action.payload)
         },
-        setCurrentDialogMessagesTest(state, action) {
+        addLastCurrentDialogMessages(state, action) {
             const id = state.currentDialogId
             state.dialogs[id].messages = action.payload
 
         },
-        setCurrentDialogIdTest(state, action) {
+        setCurrentDialogId(state, action) {
             //const currentDialog = action.payload;
             state.currentDialogId = action.payload
             // state.currentDialog.name = currentDialog.name
             // state.currentDialog.memberId = currentDialog.memberId
         },
-        addOldDialogMessagesTest(state, action){
+        addOldCurrentDialogMessages(state, action){
                 const id = state.currentDialogId
                 state.dialogs[id].messages = [...action.payload,...state.dialogs[id].messages]
         },
-        // setDialogMessages(state, action) {
-        //     state.messages = action.payload
-        // },
         resetDialogList(state, action) {
             Object.assign(state, dialogListInitialState)
         }
@@ -121,9 +118,9 @@ export const currentUserReducer = currentUserSlice.reducer;
 
 export const findResultsReducer = findResultsSlice.reducer;
 export const dialogListReducer = dialogListSlice.reducer;
-export const {setCurrentUserFetching, setCurrentUser, setDialogList, setNickName, setName, resetUser} = currentUserSlice.actions
-export const {setFindResultsFetching, setFindResults, resetFindResults} = findResultsSlice.actions
 
-export const {setDialogListTest, addMessageTest, setCurrentDialogIdTest, setCurrentDialogMessagesTest, addOldDialogMessagesTest, resetDialogList} = dialogListSlice.actions
+export const {setCurrentUserFetching, setCurrentUser, setNickName, setName, resetUser} = currentUserSlice.actions
+export const {setFindResultsFetching, setFindResults, resetFindResults} = findResultsSlice.actions
+export const {setDialogList, addCurrentDialogMessage, setCurrentDialogId, addLastCurrentDialogMessages, addOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
 
 
