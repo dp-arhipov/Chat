@@ -15,7 +15,7 @@ const Chat = () => {
 
     }, [])
 
-    console.log(currentDialogId)
+    //console.log(currentDialogId)
     return (
         <Fragment>
             <Header/>

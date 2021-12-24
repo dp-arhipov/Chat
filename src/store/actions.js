@@ -1,36 +1,44 @@
 //переделать споcоб логина с использованием опций firebase
 //разобраться, почему не работают операции с массивом, если их делать после строки с передачей массива в dispatch
-//в компонентах сделать более логичное управление состояниями
+
 //добавить isFetching во все компоненты с крутилками
 //find results переделать формат
 //валидацию имени и ника
-//сохранение юзера в куках
-//обработка ошибок в redux thunk
-//поработать с временем сообщений
-//почему сообщения загружаются несколько раз 2 раза added и 2 modified
-//переделать слушатель, добавляет лишнее. при создании диалога с уже имеющимся собеседником, добавляются его сообщения, сейчас слушатель слушает все диалоги
+
+///обработка ошибок в redux thunk
+///поработать с временем сообщений
 //при создании нового диалога ничего не происходит, добавить экшна
 //при создании диалога другим юзером нужно чтобы он появлялся у собеседника сразу
 //передавать части стора через компоненты
-//в dialog Info добавить вместо id непонятного документы по одному на каждое поле
-//сохранять уже загруженные диаологи в кеше
+
+//в компонентах сделать более логичное управление состояниями
 //сделать мемоизацию компонентов
+
 //разные форматы сообщений message, сделать однотипные
 //уровни доступа, безопасность
 //добавить возможность тестить без регистрацц
-//починить поиск
 //добавить задержки в загрузки через trottling
-//сделать селекторы в actions
+//исправить прокрутку
+
+//добавить отработку ошибкок, если сообщений в диалоге нет при подгрузке
+///почему сообщения загружаются несколько раз 2 раза added и 2 modified
+////переделать слушатель, добавляет лишнее. при создании диалога с уже имеющимся собеседником, добавляются его сообщения, сейчас слушатель слушает все диалоги
+////сохранение юзера в куках
+
+//структура полей dialogs и message
+
+//переделать параметры по умолчанию на undefined вместо 0
 
 import {Auth, DB} from "../API";
 import {
     addCurrentDialogMessage,
-    addOldCurrentDialogMessages,
+    addDialogMessage,
+    addSomeLastCurrentDialogMessages,
+    addSomeOldCurrentDialogMessages,
     resetDialogList,
     resetFindResults,
     resetUser,
     setCurrentDialogId,
-    addLastCurrentDialogMessages,
     setCurrentUser,
     setDialogList,
     setFindResults,
@@ -40,6 +48,9 @@ import {
 } from "./slices";
 
 import * as selectors from "./selectors"
+import {nanoid} from "nanoid";
+
+const messageLoadLimit = 5;
 
 export const logIn = () => {
     return async function disp(dispatch, getState) {
@@ -78,8 +89,23 @@ export const logOut = () => {
 export const sendMessage = (text) => {
     return async function disp(dispatch, getState) {
         const currentDialogId = selectors.currentDialogId(getState());
-        const message = await DB.sendMessage(currentDialogId, text);
-        dispatch(addCurrentDialogMessage(message));
+        const creatorId = selectors.currentUserId(getState());
+
+        const now = new Date();
+        const date = now.toLocaleDateString();
+        const time = now.toLocaleTimeString();
+        const messageId = nanoid(8);
+        const message = {
+            messageId,
+            creatorId: creatorId,
+            text: text,
+            date: date,
+            time: time,
+        }
+        // const message = await DB.sendMessage(currentDialogId, text);
+        const request = await DB.sendMessage(currentDialogId, message);
+        //console.log(message)
+        dispatch(addNewMessage(currentDialogId, message));
     }
 }
 
@@ -88,9 +114,14 @@ export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
         //dispatch(setCurrentDialogFetching(true))
         dispatch(setCurrentDialogId(dialogId));
-        const messages = await DB.getDialogMessages(dialogId, 10)
-        dispatch(addLastCurrentDialogMessages(messages))
+        if (selectors.currentDialogMessages(getState()).length == 0) {
+            const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
+            //console.log(messages)
+            dispatch(addSomeLastCurrentDialogMessages(messages))
+        }
+
         //dispatch(setCurrentDialogFetching(false))
+        //dispatch(addDialogListeners())
     }
 }
 
@@ -98,8 +129,12 @@ export const loadOldCurrentDialogMessages = () => {
     return async function disp(dispatch, getState) {
         const dialogId = selectors.currentDialogId(getState());
         const lastVisibleMessageId = selectors.currentDialogLastMessageId(getState());
-        const messages = await DB.getDialogMessages(dialogId, 10, lastVisibleMessageId)
-        dispatch(addOldCurrentDialogMessages(messages))
+        //console.log(lastVisibleMessageId);
+       // const lastFirstId = DB.getFirstMessageId();
+
+        const messages = await DB.getDialogMessages(dialogId, messageLoadLimit, lastVisibleMessageId)
+        console.log(messages);
+        dispatch(addSomeOldCurrentDialogMessages(messages))
     }
 }
 
@@ -152,13 +187,28 @@ export const addDialogListeners = () => {
         let dialogList = await selectors.dialogList(getState());
         dialogIds = Object.keys(dialogList);
         for (const dialogId of dialogIds) {
+           
             await DB.addDialogListener(
                 dialogId,
-                (dialogId, message, currentDialogId = selectors.currentDialogId(getState()), currentUserId = selectors.currentUserId(getState())) => {
-                    if (dialogId == currentDialogId && message.creatorId != currentUserId) {
-                        dispatch(addCurrentDialogMessage(message))
+                (dialogId, message) => {
+                    if (!isMessageInCash(message.messageId, dialogId, getState())) {
+                        dispatch(addNewMessage(dialogId, message))
                     }
                 });
+        }
+    }
+}
+
+const isMessageInCash = (messageId, dialogId, state) => {
+    const dialogMessages = selectors.dialogMessages(state, dialogId);
+    //console.log(messageId, dialogMessages)
+    return dialogMessages.some(message => message.messageId == messageId);
+}
+
+export const addNewMessage = (dialogId, message) => {
+    return async function disp(dispatch, getState) {
+        if (!isMessageInCash(message.messageId, dialogId, getState())) {
+            dispatch(addDialogMessage({dialogId, message}))
         }
     }
 }
