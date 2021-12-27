@@ -31,9 +31,9 @@
 
 import {Auth, DB} from "../API";
 import {
-    addCurrentDialogMessage,
     addDialogMessage,
-    addSomeLastCurrentDialogMessages,
+    addDialogMessages,
+    setDialogFetching,
     addSomeOldCurrentDialogMessages,
     resetDialogList,
     resetFindResults,
@@ -49,8 +49,9 @@ import {
 
 import * as selectors from "./selectors"
 import {nanoid} from "nanoid";
+import {serverTimestamp} from "firebase/firestore";
 
-const messageLoadLimit = 5;
+const messageLoadLimit = 10;
 
 export const logIn = () => {
     return async function disp(dispatch, getState) {
@@ -88,14 +89,14 @@ export const logOut = () => {
 
 export const sendMessage = (text) => {
     return async function disp(dispatch, getState) {
-        const currentDialogId = selectors.currentDialogId(getState());
+        const dialogId = selectors.currentDialogId(getState());
         const creatorId = selectors.currentUserId(getState());
 
         const now = new Date();
         const date = now.toLocaleDateString();
         const time = now.toLocaleTimeString();
         const messageId = nanoid(8);
-        const message = {
+        let message = {
             messageId,
             creatorId: creatorId,
             text: text,
@@ -103,9 +104,16 @@ export const sendMessage = (text) => {
             time: time,
         }
         // const message = await DB.sendMessage(currentDialogId, text);
-        const request = await DB.sendMessage(currentDialogId, message);
-        //console.log(message)
-        dispatch(addNewMessage(currentDialogId, message));
+        dispatch(setDialogFetching({dialogId, isFetching:true}))
+        dispatch(addNewMessage(dialogId, message));
+        const request = await DB.sendMessage(dialogId, message);
+        dispatch(setDialogFetching({dialogId, isFetching:false}))
+
+        message = await DB.getDialogMessage(dialogId, messageId);
+        console.log(message.timestamp) ;
+        // console.log(serverTimestamp())
+
+
     }
 }
 
@@ -116,8 +124,9 @@ export const setCurrentDialog = (dialogId) => {
         dispatch(setCurrentDialogId(dialogId));
         if (selectors.currentDialogMessages(getState()).length == 0) {
             const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
-            //console.log(messages)
-            dispatch(addSomeLastCurrentDialogMessages(messages))
+            console.log("first load: ")
+            console.log(messages)
+            //dispatch(addSomeLastCurrentDialogMessages(messages))
         }
 
         //dispatch(setCurrentDialogFetching(false))
@@ -128,11 +137,12 @@ export const setCurrentDialog = (dialogId) => {
 export const loadOldCurrentDialogMessages = () => {
     return async function disp(dispatch, getState) {
         const dialogId = selectors.currentDialogId(getState());
-        const lastVisibleMessageId = selectors.currentDialogLastMessageId(getState());
+        const lastVisibleMessageId = selectors.currentDialogFirstMessageId(getState());
         //console.log(lastVisibleMessageId);
-       // const lastFirstId = DB.getFirstMessageId();
+        // const lastFirstId = DB.getFirstMessageId();
 
         const messages = await DB.getDialogMessages(dialogId, messageLoadLimit, lastVisibleMessageId)
+        console.log("new load: ");
         console.log(messages);
         dispatch(addSomeOldCurrentDialogMessages(messages))
     }
@@ -186,30 +196,48 @@ export const addDialogListeners = () => {
         let dialogIds = [];
         let dialogList = await selectors.dialogList(getState());
         dialogIds = Object.keys(dialogList);
+
         for (const dialogId of dialogIds) {
-           
+            const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
+            dispatch(addDialogMessages({dialogId, messages}))
+
             await DB.addDialogListener(
                 dialogId,
-                (dialogId, message) => {
-                    if (!isMessageInCash(message.messageId, dialogId, getState())) {
-                        dispatch(addNewMessage(dialogId, message))
-                    }
+                async (dialogId, message) => {
+
+                    // if (getLastMessage(dialogId, getState())) {
+                    //     const lastMessageTimestamp = getLastMessage(dialogId, getState()).timestamp.toMillis()
+                    //     if (message.timestamp.toMillis() > lastMessageTimestamp) {
+                    //         dispatch(addNewMessage(dialogId, message))
+                    //     }
+                    // }
                 });
         }
     }
 }
 
-const isMessageInCash = (messageId, dialogId, state) => {
+const getLastMessage = (dialogId, state) => {
     const dialogMessages = selectors.dialogMessages(state, dialogId);
-    //console.log(messageId, dialogMessages)
-    return dialogMessages.some(message => message.messageId == messageId);
+    if (dialogMessages != []) {
+        const lastMessageId = dialogMessages[dialogMessages.length - 1].messageId
+        return dialogMessages.find(message => message.messageId == lastMessageId);
+    } else return false;
+
+    // return dialogMessages;
 }
+
+
+// const isMessageInCash = (messageId, dialogId, state) => {
+//     const dialogMessages = selectors.dialogMessages(state, dialogId);
+//     //console.log(messageId, dialogMessages)
+//     return dialogMessages.some(message => message.messageId == messageId);
+// }
 
 export const addNewMessage = (dialogId, message) => {
     return async function disp(dispatch, getState) {
-        if (!isMessageInCash(message.messageId, dialogId, getState())) {
-            dispatch(addDialogMessage({dialogId, message}))
-        }
+        // if (!isMessageInCash(message.messageId, dialogId, getState())) {
+        dispatch(addDialogMessage({dialogId, message}))
+        // }
     }
 }
 

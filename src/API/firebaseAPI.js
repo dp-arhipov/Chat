@@ -11,7 +11,8 @@ import {
     serverTimestamp,
     setDoc,
     startAfter,
-    updateDoc
+    updateDoc,
+    where
 } from "firebase/firestore";
 import {nanoid} from "nanoid";
 
@@ -130,25 +131,21 @@ export class FirebaseDB {
 
 
     sendMessage = async (dialogId, message, creatorId = this.currentUserId) => {
-        //console.log(dialogId, text)
-        // const now = new Date();
-        // const date = now.toLocaleDateString();
-        // const time = now.toLocaleTimeString();
-        // const messageId = nanoid(8);
-        // const message = {
-        //     messageId,
-        //     creatorId: creatorId,
-        //     text: text,
-        //     date: date,
-        //     time: time,
-        //     timestamp: serverTimestamp()
-        // }
         message = {...message, timestamp: serverTimestamp()}
         const docRef = doc(this.refs.dialogData(dialogId), message.messageId);
         const request = await setDoc(docRef, message);
+        console.log(request)
         return request;
 
     }
+
+    getDialogMessage = async (dialogId, messageId) => {
+        let q = doc(this.refs.dialogData(dialogId), messageId)
+        const docSnap = await getDoc(q);
+        const message = docSnap.data();
+        return message;
+    }
+
 
     getDialogMessages = async (dialogId, loadLimit = 10, lastVisibleMessageId = 0) => {
         let messages = [];

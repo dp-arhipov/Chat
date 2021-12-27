@@ -13,6 +13,11 @@ const dialogListSlice = createSlice({
         setCurrentDialogFetching(state, action){
             state.isFetching=action.payload;
         },
+        setDialogFetching(state, action){
+            const id = action.payload.dialogId
+            const isFetching  = action.payload.isFetching
+            state.dialogs[id].isFetching = isFetching
+        },
         setDialogList(state, action) {
             const dialogList = action.payload;
             //state.dialogs = dialogList
@@ -27,6 +32,17 @@ const dialogListSlice = createSlice({
             const id = action.payload.dialogId
             const message  = action.payload.message
             state.dialogs[id].messages.push(message)
+        },
+        // addMessageTimestamp(state, action) {
+        //     const dialogId = action.payload.dialogId
+        //     const messageId  = action.payload.messageId
+        //     state.dialogs[dialogId].messages.find(message=>message.messageId == messageId)
+        // },
+        addDialogMessages(state, action) {
+            const id = action.payload.dialogId
+            const messages  = action.payload.messages
+            console.log(action.payload)
+            state.dialogs[id].messages = messages;
         },
         addCurrentDialogMessage(state, action) {
             const id = state.currentDialogId
@@ -57,6 +73,6 @@ const dialogListSlice = createSlice({
 
 
 export const dialogListReducer = dialogListSlice.reducer;
-export const {setDialogList, addDialogMessage, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
+export const {setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
 
 

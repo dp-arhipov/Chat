@@ -6,12 +6,12 @@ import {useSelector} from "react-redux";
 import * as selectors from "../store/selectors";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDDgdMfwVDWoblWGD6EGn_b2-aUP9sD-tI",
-    authDomain: "chat-2-cf0e6.firebaseapp.com",
-    projectId: "chat-2-cf0e6",
-    storageBucket: "chat-2-cf0e6.appspot.com",
-    messagingSenderId: "164607313968",
-    appId: "1:164607313968:web:0861de31a4521df2b645f5"
+    apiKey: "AIzaSyCVwzZ5D0PyOuiAdr2QKbtErjYOTZD4uws",
+    authDomain: "chat-3-bcf80.firebaseapp.com",
+    projectId: "chat-3-bcf80",
+    storageBucket: "chat-3-bcf80.appspot.com",
+    messagingSenderId: "372676514129",
+    appId: "1:372676514129:web:55e7de9173144b5193c370"
 };
 
 const app = initializeApp(firebaseConfig);
