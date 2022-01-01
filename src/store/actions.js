@@ -44,7 +44,8 @@ import {
     setFindResults,
     setFindResultsFetching,
     setName,
-    setNickName
+    setNickName,
+    updateMessageTimestamp
 } from "./slices";
 
 import * as selectors from "./selectors"
@@ -107,15 +108,24 @@ export const sendMessage = (text) => {
         dispatch(setDialogFetching({dialogId, isFetching:true}))
         dispatch(addNewMessage(dialogId, message));
         const request = await DB.sendMessage(dialogId, message);
-        dispatch(setDialogFetching({dialogId, isFetching:false}))
+
 
         message = await DB.getDialogMessage(dialogId, messageId);
-        console.log(message.timestamp) ;
+        dispatch(setDialogFetching({dialogId, isFetching:false}))
+
+        dispatch(updateMessageTimestamp({dialogId, messageId, timestamp: message.timestamp}));
+
         // console.log(serverTimestamp())
 
 
     }
 }
+
+// export const updateTimestamp = () => {
+//
+//
+//
+//  }
 
 
 export const setCurrentDialog = (dialogId) => {
@@ -205,12 +215,14 @@ export const addDialogListeners = () => {
                 dialogId,
                 async (dialogId, message) => {
 
-                    // if (getLastMessage(dialogId, getState())) {
-                    //     const lastMessageTimestamp = getLastMessage(dialogId, getState()).timestamp.toMillis()
-                    //     if (message.timestamp.toMillis() > lastMessageTimestamp) {
-                    //         dispatch(addNewMessage(dialogId, message))
-                    //     }
-                    // }
+                    if (getLastMessage(dialogId, getState())) {
+                        if(!selectors.isDialogFetching(getState(),dialogId)) {
+                            const lastMessageTimestamp = getLastMessage(dialogId, getState()).timestamp.toMillis()
+                            if (message.timestamp.toMillis() > lastMessageTimestamp) {
+                                dispatch(addNewMessage(dialogId, message))
+                            }
+                        }
+                    }
                 });
         }
     }

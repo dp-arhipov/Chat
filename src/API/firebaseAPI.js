@@ -134,7 +134,6 @@ export class FirebaseDB {
         message = {...message, timestamp: serverTimestamp()}
         const docRef = doc(this.refs.dialogData(dialogId), message.messageId);
         const request = await setDoc(docRef, message);
-        console.log(request)
         return request;
 
     }
