@@ -105,18 +105,11 @@ export const sendMessage = (text) => {
             time: time,
         }
         // const message = await DB.sendMessage(currentDialogId, text);
-        dispatch(setDialogFetching({dialogId, isFetching:true}))
-        dispatch(addNewMessage(dialogId, message));
-        const request = await DB.sendMessage(dialogId, message);
-
-
-        message = await DB.getDialogMessage(dialogId, messageId);
-        dispatch(setDialogFetching({dialogId, isFetching:false}))
-
-        dispatch(updateMessageTimestamp({dialogId, messageId, timestamp: message.timestamp}));
-
-        // console.log(serverTimestamp())
-
+        dispatch(setDialogFetching({dialogId, isFetching: true}))
+        dispatch(addDialogMessage({dialogId, message}));
+        const messageFromServer = await DB.sendMessage(dialogId, message);
+        dispatch(setDialogFetching({dialogId, isFetching: false}))
+        dispatch(updateMessageTimestamp({dialogId, messageId, timestamp: messageFromServer.timestamp}));
 
     }
 }
@@ -214,12 +207,11 @@ export const addDialogListeners = () => {
             await DB.addDialogListener(
                 dialogId,
                 async (dialogId, message) => {
-
-                    if (getLastMessage(dialogId, getState())) {
-                        if(!selectors.isDialogFetching(getState(),dialogId)) {
-                            const lastMessageTimestamp = getLastMessage(dialogId, getState()).timestamp.toMillis()
-                            if (message.timestamp.toMillis() > lastMessageTimestamp) {
-                                dispatch(addNewMessage(dialogId, message))
+                    if (!selectors.isDialogFetching(getState(), dialogId)) {
+                        if (getLastMessage(dialogId, getState())) {
+                            const lastMessage = getLastMessage(dialogId, getState()).timestamp.toMillis()
+                            if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
+                                dispatch(addDialogMessage({dialogId, message}))
                             }
                         }
                     }
@@ -228,7 +220,7 @@ export const addDialogListeners = () => {
     }
 }
 
-const getLastMessage = (dialogId, state) => {
+const getLastMessage = (state, dialogId) => {
     const dialogMessages = selectors.dialogMessages(state, dialogId);
     if (dialogMessages != []) {
         const lastMessageId = dialogMessages[dialogMessages.length - 1].messageId
@@ -238,20 +230,14 @@ const getLastMessage = (dialogId, state) => {
     // return dialogMessages;
 }
 
-
-// const isMessageInCash = (messageId, dialogId, state) => {
-//     const dialogMessages = selectors.dialogMessages(state, dialogId);
-//     //console.log(messageId, dialogMessages)
-//     return dialogMessages.some(message => message.messageId == messageId);
+//
+// export const addNewMessage = (dialogId, message) => {
+//     return async function disp(dispatch, getState) {
+//         // if (!isMessageInCash(message.messageId, dialogId, getState())) {
+//         dispatch(addDialogMessage({dialogId, message}))
+//         // }
+//     }
 // }
-
-export const addNewMessage = (dialogId, message) => {
-    return async function disp(dispatch, getState) {
-        // if (!isMessageInCash(message.messageId, dialogId, getState())) {
-        dispatch(addDialogMessage({dialogId, message}))
-        // }
-    }
-}
 
 
 

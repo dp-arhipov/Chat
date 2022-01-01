@@ -133,8 +133,10 @@ export class FirebaseDB {
     sendMessage = async (dialogId, message, creatorId = this.currentUserId) => {
         message = {...message, timestamp: serverTimestamp()}
         const docRef = doc(this.refs.dialogData(dialogId), message.messageId);
-        const request = await setDoc(docRef, message);
-        return request;
+        await setDoc(docRef, message);
+        const docSnap = await getDoc(docRef);
+        const messageFromServer = docSnap.data();
+        return messageFromServer;
 
     }
 
