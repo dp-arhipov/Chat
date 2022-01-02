@@ -5,13 +5,16 @@ import reportWebVitals from './reportWebVitals';
 import App from "./App";
 import {store} from './store'
 import {Provider} from "react-redux";
+import { CookiesProvider } from 'react-cookie';
 
 
 ReactDOM.render(
     <React.StrictMode>
-        <Provider store={store}>
-            <App/>
-        </Provider>
+        <CookiesProvider>
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        </CookiesProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );

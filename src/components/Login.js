@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {logIn} from "../store/actions"
 import * as selectors from "../store/selectors";
-
+import { useCookies } from 'react-cookie';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -29,8 +29,10 @@ const Login = () => {
         //API.logIn();
         dispatch(logIn());
 
-
     }
+
+
+
     return (
         <Paper sx={{display: 'flex', alignItems:"center", justifyContent:"center", height: '100vh'}}>
             <Button onClick={loginButtonHandler}>Логин</Button>

@@ -15,6 +15,7 @@ import {
     where
 } from "firebase/firestore";
 import {nanoid} from "nanoid";
+import {Auth} from "./index";
 
 export class FirebaseAuth {
 
@@ -22,11 +23,18 @@ export class FirebaseAuth {
         this.auth = auth;
     }
 
+    authHandler = (callback) => {
+        this.auth.onAuthStateChanged(req => {
+            callback(req)
+        });
+    }
+
     googleLogin = async () => {
         const googleProvider = new GoogleAuthProvider();
-        const {user} = await signInWithPopup(this.auth, googleProvider);
+        const response = await signInWithPopup(this.auth, googleProvider);
+        const {user} = response;
         return {
-            id: user.uid,
+            uid: user.uid,
             name: user.displayName
         };
     }
@@ -135,8 +143,8 @@ export class FirebaseDB {
         const docRef = doc(this.refs.dialogData(dialogId), message.messageId);
         await setDoc(docRef, message);
         const docSnap = await getDoc(docRef);
-        const messageFromServer = docSnap.data();
-        return messageFromServer;
+        const request = docSnap.data();
+        return request;
 
     }
 

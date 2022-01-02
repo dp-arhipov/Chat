@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import Chat from "./components/Chat";
 import Login from "./components/Login";
@@ -6,10 +6,15 @@ import Test from "./components/Test";
 import NotFound from "./components/NotFound";
 import './App.scss';
 import UserProfile from "./components/UserProfile";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {initApp} from "./store/actions";
 
 function App() {
+    const dispatch = useDispatch();
 
+    useEffect(() => {
+        dispatch(initApp());
+    }, [])
 
     const currentUser = useSelector(state => state.currentUser);
 

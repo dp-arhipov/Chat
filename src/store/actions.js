@@ -29,6 +29,9 @@
 
 //переделать параметры по умолчанию на undefined вместо 0
 
+//исправить прокрутку при подгрузке сообщений
+//исправить статус -- отправляется, отправлено
+
 import {Auth, DB} from "../API";
 import {
     addDialogMessage,
@@ -54,11 +57,20 @@ import {serverTimestamp} from "firebase/firestore";
 
 const messageLoadLimit = 10;
 
+export const initApp = () => {
+    return async function disp(dispatch, getState) {
+        Auth.authHandler(async (user) => {
+            if (user) {
+                user = await DB.createUser(user.uid, user.name);
+                dispatch(setCurrentUser(user))
+            }
+        });
+    }
+}
+
 export const logIn = () => {
     return async function disp(dispatch, getState) {
-        let user = await Auth.googleLogin();
-        user = await DB.createUser(user.id, user.name);
-        dispatch(setCurrentUser(user));
+        await Auth.googleLogin();
     }
 }
 
@@ -82,6 +94,7 @@ export const loadDialogList = () => {
 
 export const logOut = () => {
     return async function disp(dispatch, getState) {
+        Auth.logOut();
         dispatch(resetUser())
         dispatch(resetFindResults())
         dispatch(resetDialogList())
@@ -104,22 +117,23 @@ export const sendMessage = (text) => {
             date: date,
             time: time,
         }
-        // const message = await DB.sendMessage(currentDialogId, text);
         dispatch(setDialogFetching({dialogId, isFetching: true}))
         dispatch(addDialogMessage({dialogId, message}));
-        const messageFromServer = await DB.sendMessage(dialogId, message);
+        const request = await DB.sendMessage(dialogId, message);
         dispatch(setDialogFetching({dialogId, isFetching: false}))
-        dispatch(updateMessageTimestamp({dialogId, messageId, timestamp: messageFromServer.timestamp}));
+        dispatch(updateMessageTimestamp({dialogId, messageId, timestamp: request.timestamp}));
 
     }
 }
 
-// export const updateTimestamp = () => {
-//
-//
-//
-//  }
 
+export const saveToCash = () => {
+    console.log(document.cookie);
+
+
+    return 0;
+
+}
 
 export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
@@ -208,8 +222,8 @@ export const addDialogListeners = () => {
                 dialogId,
                 async (dialogId, message) => {
                     if (!selectors.isDialogFetching(getState(), dialogId)) {
-                        if (getLastMessage(dialogId, getState())) {
-                            const lastMessage = getLastMessage(dialogId, getState()).timestamp.toMillis()
+                        const lastMessage = getLastMessage(getState(), dialogId)
+                        if (lastMessage.hasOwnProperty("timestamp")) {
                             if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
                                 dispatch(addDialogMessage({dialogId, message}))
                             }
@@ -230,14 +244,6 @@ const getLastMessage = (state, dialogId) => {
     // return dialogMessages;
 }
 
-//
-// export const addNewMessage = (dialogId, message) => {
-//     return async function disp(dispatch, getState) {
-//         // if (!isMessageInCash(message.messageId, dialogId, getState())) {
-//         dispatch(addDialogMessage({dialogId, message}))
-//         // }
-//     }
-// }
 
 
 
