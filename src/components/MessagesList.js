@@ -5,35 +5,40 @@ import {store} from '../store'
 import {useSelector} from "react-redux";
 import {useLazyLoading} from "../customHooks/useLazyLoading";
 import Container from "@mui/material/Container";
-const MessagesList = () => {
+const MessagesList = ({scrollBottom}) => {
 
     const currentUserId = useSelector(selectors.currentUserId);
     const messages = useSelector(selectors.currentDialogMessages);
     //console.log(messages)
     //const mRef = useRef();
 
-    // useEffect(() => {
-    //     if (mRef.current) {
-    //         mRef.current.scrollIntoView(
-    //             {
-    //                 behavior: 'smooth',
-    //                 block: 'end',
-    //                 inline: 'nearest'
-    //             })
-    //     }
-    // })
+    useEffect(() => {
+        scrollBottom();
+    },[messages])
 
 
     return (
         <Container>
-            {messages.map(message =>
-                <Message
-                    text={message.text}
-                    date={message.date}
-                    time={message.time}
-                    creatorId={message.creatorId}
-                    currentUserId={currentUserId}
-                />
+            {messages.map(message => {
+
+                let status="отправляется";
+                if(message.hasOwnProperty("timestamp")){
+                    const dateObj = message.timestamp.toDate()
+                    const date = dateObj.toLocaleDateString();
+                    const time = dateObj.toLocaleTimeString();
+                    status = "отправлено"
+                }
+
+                    return (
+                        <Message
+                            status={status}
+                            text={message.text}
+                            date={message.date}
+                            time={message.time}
+                            creatorId={message.creatorId}
+                            currentUserId={currentUserId}
+                        />)
+                }
             )}
         </Container>
     );

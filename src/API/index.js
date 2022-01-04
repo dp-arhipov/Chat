@@ -1,6 +1,6 @@
 import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
-import {getAuth} from "firebase/auth";
+import {getAuth, setPersistence, browserSessionPersistence} from "firebase/auth";
 import {FirebaseAuth, FirebaseDB} from "./firebaseAPI";
 import {useSelector} from "react-redux";
 import * as selectors from "../store/selectors";
@@ -17,6 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth();
+//setPersistence(auth, browserSessionPersistence); //сохранить токен в браузере
 
 export const Auth = new FirebaseAuth(auth);
 export const DB = new FirebaseDB(app, firestore);

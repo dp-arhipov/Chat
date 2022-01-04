@@ -4,7 +4,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-const Message = ({text, date, creatorId, currentUserId, time}) => {
+const Message = ({text, date, creatorId, currentUserId, time, status}) => {
 
     return (
 
@@ -19,7 +19,7 @@ const Message = ({text, date, creatorId, currentUserId, time}) => {
                 <Card elevation={1}>
                     <CardContent>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                            {date} {time}
+                            {date} {time} {status}
                         </Typography>
                         <Typography noWrap={false} component="div" variant="body1">
                             {text}

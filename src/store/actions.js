@@ -1,4 +1,4 @@
-//переделать споcоб логина с использованием опций firebase
+//--переделать споcоб логина с использованием опций firebase
 //разобраться, почему не работают операции с массивом, если их делать после строки с передачей массива в dispatch
 
 //добавить isFetching во все компоненты с крутилками
@@ -14,16 +14,16 @@
 //в компонентах сделать более логичное управление состояниями
 //сделать мемоизацию компонентов
 
-//разные форматы сообщений message, сделать однотипные
-//уровни доступа, безопасность
+//--разные форматы сообщений message, сделать однотипные
+//--уровни доступа, безопасность
 //добавить возможность тестить без регистрацц
 //добавить задержки в загрузки через trottling
 //исправить прокрутку
 
 //добавить отработку ошибкок, если сообщений в диалоге нет при подгрузке
-///почему сообщения загружаются несколько раз 2 раза added и 2 modified
-////переделать слушатель, добавляет лишнее. при создании диалога с уже имеющимся собеседником, добавляются его сообщения, сейчас слушатель слушает все диалоги
-////сохранение юзера в куках
+//--почему сообщения загружаются несколько раз 2 раза added и 2 modified
+//--переделать слушатель, добавляет лишнее. при создании диалога с уже имеющимся собеседником, добавляются его сообщения, сейчас слушатель слушает все диалоги
+//--сохранение юзера в куках
 
 //структура полей dialogs и message
 
@@ -31,6 +31,10 @@
 
 //исправить прокрутку при подгрузке сообщений
 //исправить статус -- отправляется, отправлено
+
+//добавить селекторы и в App.js
+
+//дописать запоминание скролла в диалоги
 
 import {Auth, DB} from "../API";
 import {
@@ -48,12 +52,12 @@ import {
     setFindResultsFetching,
     setName,
     setNickName,
-    updateMessageTimestamp
+    updateMessageTimestamp,
+    setDialogScrollPosition
 } from "./slices";
 
 import * as selectors from "./selectors"
 import {nanoid} from "nanoid";
-import {serverTimestamp} from "firebase/firestore";
 
 const messageLoadLimit = 10;
 
@@ -71,6 +75,9 @@ export const initApp = () => {
 export const logIn = () => {
     return async function disp(dispatch, getState) {
         await Auth.googleLogin();
+
+
+
     }
 }
 
@@ -116,6 +123,7 @@ export const sendMessage = (text) => {
             text: text,
             date: date,
             time: time,
+
         }
         dispatch(setDialogFetching({dialogId, isFetching: true}))
         dispatch(addDialogMessage({dialogId, message}));
@@ -129,10 +137,7 @@ export const sendMessage = (text) => {
 
 export const saveToCash = () => {
     console.log(document.cookie);
-
-
     return 0;
-
 }
 
 export const setCurrentDialog = (dialogId) => {
@@ -159,10 +164,11 @@ export const loadOldCurrentDialogMessages = () => {
         // const lastFirstId = DB.getFirstMessageId();
 
         const messages = await DB.getDialogMessages(dialogId, messageLoadLimit, lastVisibleMessageId)
-        console.log("new load: ");
-        console.log(messages);
+
         dispatch(addSomeOldCurrentDialogMessages(messages))
+        return messages;
     }
+
 }
 
 export const find = (searchString) => {
@@ -244,7 +250,13 @@ const getLastMessage = (state, dialogId) => {
     // return dialogMessages;
 }
 
-
+export const setCurrentDialogScrollPosition = (scrollPosition) => {
+    return async function disp(dispatch, getState) {
+        //console.log(selectors.currentDialogId(getState());)
+        const dialogId = selectors.currentDialogId(getState());
+        dispatch(setDialogScrollPosition({scrollPosition,dialogId}));
+    }
+ }
 
 
 

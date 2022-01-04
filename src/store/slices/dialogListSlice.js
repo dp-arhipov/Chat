@@ -14,6 +14,11 @@ const dialogListSlice = createSlice({
 
             state.isFetching = action.payload;
         },
+        setDialogScrollPosition(state, action) {
+            const id = action.payload.dialogId
+            const position = action.payload.scrollPosition
+            state.dialogs[id].scrollPosition = position;
+        },
         updateMessageTimestamp(state, action) {
 
             const messageId = action.payload.messageId;
@@ -25,7 +30,6 @@ const dialogListSlice = createSlice({
 
                 if (message.messageId == messageId) {
                     message.timestamp = timestamp;
-                    console.log(current(message));
 
                     break;
                 }
@@ -93,6 +97,6 @@ const dialogListSlice = createSlice({
 
 
 export const dialogListReducer = dialogListSlice.reducer;
-export const {setDialogList, setDialogFetching, addDialogMessage, addDialogMessages,updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
+export const {setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
 
 

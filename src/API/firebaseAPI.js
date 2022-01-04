@@ -30,6 +30,7 @@ export class FirebaseAuth {
     }
 
     googleLogin = async () => {
+
         const googleProvider = new GoogleAuthProvider();
         const response = await signInWithPopup(this.auth, googleProvider);
         const {user} = response;
@@ -51,7 +52,7 @@ export class FirebaseDB {
         this.nickNameTemplate = () => "user_" + nanoid(8);
         this.dialogIdTemplate = () => nanoid(8);
         this.dialogNameTemplate = name => "Диалог c " + name;
-        ;
+
         this.messageIdTemplate = () => nanoid(8);
 
         this.app = app;
@@ -119,13 +120,6 @@ export class FirebaseDB {
 
 
     addDialogListener = async (dialogId, callback) => {
-        // const unsub = onSnapshot(this.refs.dialogData(dialogId), (doc) => {
-        //     const isLocal = doc.metadata.hasPendingWrites ? true : false;
-        //
-        //     console.log(isLocal);
-        // });
-
-
         const subscribe = await onSnapshot(this.refs.dialogData(dialogId), (snapshot) => {
             const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach((change) => {
