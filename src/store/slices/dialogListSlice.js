@@ -6,31 +6,63 @@ const dialogListInitialState = {
     dialogs: {}
 }
 
+const dialogInitialState = {
+    isFetching: false,
+    dialogId: '',
+    scrollPosition: 0,
+    messages:[]
+}
+
 const dialogListSlice = createSlice({
     name: "dialogListSlice",
     initialState: dialogListInitialState,
     reducers: {
-        setCurrentDialogFetching(state, action) {
 
+        addCurrentDialogMessage(state, action) {
+            const id = state.currentDialogId
+            state.dialogs[id].messages.push(action.payload)
+        },
+        addDialogMessage(state, action) {
+            const id = action.payload.dialogId
+            const message = action.payload.message
+            state.dialogs[id].messages.push(message)
+        },
+
+        setCurrentDialogFetching(state, action) {
             state.isFetching = action.payload;
         },
+
+        addSomeLastCurrentDialogMessages(state, action) {
+            const id = state.currentDialogId
+            state.dialogs[id].messages = action.payload
+
+        },
+        setCurrentDialogId(state, action) {
+            //const currentDialog = action.payload;
+            state.currentDialogId = action.payload
+            // state.currentDialog.name = currentDialog.name
+            // state.currentDialog.memberId = currentDialog.memberId
+        },
+        addSomeOldCurrentDialogMessages(state, action) {
+            const dialogId = state.currentDialogId
+            state.dialogs[dialogId].messages = [...action.payload, ...state.dialogs[dialogId].messages]
+        },
+
+
+
         setDialogScrollPosition(state, action) {
             const id = action.payload.dialogId
             const position = action.payload.scrollPosition
             state.dialogs[id].scrollPosition = position;
         },
         updateMessageTimestamp(state, action) {
-
             const messageId = action.payload.messageId;
             const dialogId = action.payload.dialogId;
             const messages = state.dialogs[dialogId].messages;
             const timestamp = action.payload.timestamp;
-            //console.log(messageId, dialogId, timestamp);
             for (const message of messages) {
-
                 if (message.messageId == messageId) {
                     message.timestamp = timestamp;
-
                     break;
                 }
             }
@@ -52,41 +84,16 @@ const dialogListSlice = createSlice({
             }
             //return dialogList
         },
-        addDialogMessage(state, action) {
-
-            const id = action.payload.dialogId
-            const message = action.payload.message
-            state.dialogs[id].messages.push(message)
-        },
-        // addMessageTimestamp(state, action) {
-        //     const dialogId = action.payload.dialogId
-        //     const messageId  = action.payload.messageId
-        //     state.dialogs[dialogId].messages.find(message=>message.messageId == messageId)
+        // addDialogMessage(state, action) {
+        //     const id = action.payload.dialogId
+        //     const message = action.payload.message
+        //     state.dialogs[id].messages.push(message)
         // },
         addDialogMessages(state, action) {
             const id = action.payload.dialogId
             const messages = action.payload.messages
 
             state.dialogs[id].messages = messages;
-        },
-        addCurrentDialogMessage(state, action) {
-            const id = state.currentDialogId
-            state.dialogs[id].messages.push(action.payload)
-        },
-        addSomeLastCurrentDialogMessages(state, action) {
-            const id = state.currentDialogId
-            state.dialogs[id].messages = action.payload
-
-        },
-        setCurrentDialogId(state, action) {
-            //const currentDialog = action.payload;
-            state.currentDialogId = action.payload
-            // state.currentDialog.name = currentDialog.name
-            // state.currentDialog.memberId = currentDialog.memberId
-        },
-        addSomeOldCurrentDialogMessages(state, action) {
-            const dialogId = state.currentDialogId
-            state.dialogs[dialogId].messages = [...action.payload, ...state.dialogs[dialogId].messages]
         },
         resetDialogList(state, action) {
             Object.assign(state, dialogListInitialState)

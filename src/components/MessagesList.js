@@ -5,33 +5,32 @@ import {store} from '../store'
 import {useSelector} from "react-redux";
 import {useLazyLoading} from "../customHooks/useLazyLoading";
 import Container from "@mui/material/Container";
-const MessagesList = ({scrollBottom}) => {
 
-    const currentUserId = useSelector(selectors.currentUserId);
-    const messages = useSelector(selectors.currentDialogMessages);
-    //console.log(messages)
-    //const mRef = useRef();
+const MessagesList = ({scrollBottom, messages, currentUserId}) => {
 
+
+    console.log("render MessageList")
     useEffect(() => {
         scrollBottom();
-    },[messages])
+    }, [messages])
 
 
     return (
         <Container>
             {messages.map(message => {
 
-                let status="отправляется";
-                if(message.hasOwnProperty("timestamp")){
-                    const dateObj = message.timestamp.toDate()
-                    const date = dateObj.toLocaleDateString();
-                    const time = dateObj.toLocaleTimeString();
-                    status = "отправлено"
-                }
+                    let status = "отправляется";
+                    if (message.hasOwnProperty("timestamp")) {
+                        const dateObj = message.timestamp.toDate()
+                        const date = dateObj.toLocaleDateString();
+                        const time = dateObj.toLocaleTimeString();
+                        status = "отправлено"
+                    }
 
                     return (
                         <Message
                             status={status}
+                            key={message.messageId}
                             text={message.text}
                             date={message.date}
                             time={message.time}
@@ -44,4 +43,4 @@ const MessagesList = ({scrollBottom}) => {
     );
 };
 
-export default MessagesList;
+export default React.memo(MessagesList);

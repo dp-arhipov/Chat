@@ -1,10 +1,40 @@
+import {createDraftSafeSelector, createSelector} from "@reduxjs/toolkit";
+
+const dialogIdsAndNames = state => {
+    const dialogs = Object.values(state.dialogList.dialogs)
+    return dialogs.map((dialog)=>{
+        return {id: dialog.id, name: dialog.name}
+    });
+}
+
+
+export const dialogListArray = createSelector(
+    dialogIdsAndNames,
+    (all) => {
+        return all;
+    }
+)
+
 export const currentUser = state => state.currentUser
 export const currentUserId = state => currentUser(state).id
 export const currentUserName = state => currentUser(state).name
 export const currentUserNickName = state => currentUser(state).nickName
 
 
+
 export const dialogList = state => state.dialogList.dialogs
+export const dialogArrayOld = state => {
+    const dialogList = state.dialogList.dialogs
+    const items = Object.values(dialogList)
+    //console.log(items)
+    let arr = [];
+    for(const item of items){
+        const newItem = {id: item.id, name: item.name}
+        arr.push(newItem)
+    }
+    return arr;
+
+}
 export const dialogMessages = (state, dialogId) => dialogList(state)[dialogId].messages
 export const dialogLastMessageId = (state, dialogId) => dialogMessages(state, dialogId)[dialogMessages(state, dialogId).length-1]
 // export const messageById = (state, messageId) => dialogMessages(state, dialogId)[dialogMessages(state, dialogId).length-1]

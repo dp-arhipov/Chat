@@ -9,25 +9,19 @@ import {sendMessage, loadOldCurrentDialogMessages} from "../store/actions";
 import {useDispatch} from "react-redux";
 
 
-const MessageInput = () => {
+const MessageInput = ({sendMessage}) => {
 
 
     const [inputText, setInputText] = useState('');
-    const dispatch = useDispatch();
-
     const handleSubmit = (event) => {
         event.preventDefault();
         if (inputText.trim() != '') {
-            // API.sendMessage(inputText);
-            dispatch(sendMessage(inputText));
-            //dispatch(loadOldCurrentDialogMessages())
+            sendMessage(inputText);
         }
         setInputText('');
     }
 
     return (
-
-
         <Box component="form" onSubmit={handleSubmit} sx={{display: 'flex'}}>
             <TextField
                 sx={{flex: '1'}}
@@ -47,9 +41,7 @@ const MessageInput = () => {
 
             />
         </Box>
-
-
     );
 };
 
-export default MessageInput;
+export default React.memo(MessageInput);

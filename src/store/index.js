@@ -7,5 +7,10 @@ export const store = configureStore({
             findResults: findResultsReducer,
             dialogList: dialogListReducer
         },
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
     }
 );
+

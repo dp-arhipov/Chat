@@ -36,6 +36,10 @@
 
 //дописать запоминание скролла в диалоги
 
+//lazy loading сделать
+
+//переделать запись позиции диалога, перенести логику в DialogList
+
 import {Auth, DB} from "../API";
 import {
     addDialogMessage,
@@ -75,9 +79,6 @@ export const initApp = () => {
 export const logIn = () => {
     return async function disp(dispatch, getState) {
         await Auth.googleLogin();
-
-
-
     }
 }
 
@@ -148,11 +149,7 @@ export const setCurrentDialog = (dialogId) => {
             const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
             console.log("first load: ")
             console.log(messages)
-            //dispatch(addSomeLastCurrentDialogMessages(messages))
         }
-
-        //dispatch(setCurrentDialogFetching(false))
-        //dispatch(addDialogListeners())
     }
 }
 

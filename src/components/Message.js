@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
 const Message = ({text, date, creatorId, currentUserId, time, status}) => {
-
+    console.log("render Message")
     return (
 
         <Box display="flex">
@@ -33,4 +33,4 @@ const Message = ({text, date, creatorId, currentUserId, time, status}) => {
     );
 };
 
-export default Message;
+export default React.memo(Message);

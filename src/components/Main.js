@@ -9,57 +9,41 @@ import MessageInput from "./MessageInput";
 import Container from "@mui/material/Container";
 import {useLazyLoading} from "../customHooks/useLazyLoading";
 
-import {loadOldCurrentDialogMessages, setCurrentDialogScrollPosition} from "../store/actions";
+import {
+    loadOldCurrentDialogMessages,
+    sendMessage,
+    setCurrentDialogScrollPosition,
+    setDialogScrollPosition2
+} from "../store/actions";
 
 const Main = () => {
-
+    console.log("render Main")
     //const currentDialog = useSelector(state => state.currentDialog);
     const currentDialogName = useSelector(selectors.currentDialogName);
+    const currentUserId = useSelector(selectors.currentUserId);
     const currentDialogId = useSelector(selectors.currentDialogId);
+    const messages = useSelector(selectors.currentDialogMessages);
     const currentDialogScrollPosition = useSelector(selectors.currentDalogScrollPosition);
     const messageListContainerRef = useRef();
     const dispatch = useDispatch();
-    const messageHeight = 93
+    const messageHeight = 93;
 
-    //    //
     useEffect(() => {
         const messageListContainer = messageListContainerRef.current;
-        messageListContainer.scrollTop = messageListContainer.scrollHeight;
-       // messageListContainer.scrollTop = currentDialogScrollPosition;
-        console.log("load")
-        console.log(currentDialogScrollPosition)
-        // if (messageListContainerRef.current) {
-        //     messageListContainerRef.current.scrollIntoView(
-        //          {
-        //           behavior: 'smooth',
-        //
-        //      })
-        //   }
-    }, [])
+        messageListContainer.scrollTop = currentDialogScrollPosition
+    }, [currentDialogId])
 
 
     const scrollBottom = () => {
-
-
         const messageListContainer = messageListContainerRef.current;
         if (messageListContainer.scrollTop + messageListContainer.clientHeight + messageHeight == messageListContainer.scrollHeight) {
-            console.log("end")
             messageListContainer.scrollTop = messageListContainer.scrollHeight;
-            // messageListContainer.scrollIntoView(
-            //     {
-            //         behavior: 'smooth',
-            //
-            //     })
         }
-
-
     }
-
 
     const onScroll = async () => {
         const messageListContainer = messageListContainerRef.current;
-
-       // console.log(messageListContainer.scrollTop, " ", messageListContainer.scrollHeight, " ", messageListContainer.clientHeight)
+        dispatch(setCurrentDialogScrollPosition(messageListContainer.scrollTop))
         if (messageListContainer.scrollTop == 0) {
             const scrollHeightOld = messageListContainer.scrollHeight;
             await dispatch(loadOldCurrentDialogMessages());
@@ -67,9 +51,12 @@ const Main = () => {
             const scrollDifference = scrollHeightNew - scrollHeightOld;
             messageListContainer.scrollTop = scrollDifference;
         }
-        dispatch(setCurrentDialogScrollPosition(messageListContainer.scrollTop));
+
     }
 
+    const sendMessageHandler = (message) => {
+        dispatch(sendMessage(message));
+    }
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column'}}>
@@ -78,10 +65,10 @@ const Main = () => {
             </Typography>
             <Divider/>
             <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScroll}>
-                <MessagesList scrollBottom={scrollBottom}/>
+                <MessagesList scrollBottom={scrollBottom} currentUserId={currentUserId} messages={messages}/>
             </Box>
             <Box pt={'1rem'} mt={'auto'}>
-                <MessageInput/>
+                <MessageInput sendMessage={sendMessageHandler}/>
             </Box>
         </Box>
 
@@ -89,4 +76,6 @@ const Main = () => {
     );
 };
 
+
 export default Main;
+

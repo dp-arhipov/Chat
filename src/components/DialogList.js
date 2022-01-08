@@ -10,20 +10,25 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 
 const DialogList = () => {
-
-    const dialogListObj = useSelector(selectors.dialogList);
-    const dialogListArr = Object.values(dialogListObj)
+    //console.log("render DialogList")
+    const dialogListArray = useSelector(selectors.dialogListArray);
+    //const dialogArrayTest = useSelector(selectors.dialogArray);
+    //const dialogListObj = useSelector(selectors.dialogList);
+   // const dialogListArr = Object.values(dialogListObj)
     const dispatch = useDispatch();
     const itemClickHandle = (dialogID) => {
         dispatch(setCurrentDialog(dialogID));
     }
+   // console.log(dialogListArray)
+
+
 
     return (
         <List>
-            {dialogListArr.map((dialog) => {
+            {dialogListArray.map((dialog) => {
                 return (
-                    <Fragment>
-                        <ListItem sx={{cursor: "pointer"}} alignItems="flex-start" key={dialog.id}
+                    <Fragment  key={dialog.id}>
+                        <ListItem sx={{cursor: "pointer"}} alignItems="flex-start"
                                   onClick={() => itemClickHandle(dialog.id)}>
                             <ListItemAvatar>
                                 <Avatar alt={dialog.name} src="/static/images/avatar/1.jpg"/>
@@ -32,6 +37,7 @@ const DialogList = () => {
                                 primary={dialog.name}
                                 secondary={"Текст последнего сообщения"}
                             />
+
                         </ListItem>
                         <Divider variant="inset" component="li"/>
                     </Fragment>
@@ -42,4 +48,4 @@ const DialogList = () => {
     );
 };
 
-export default DialogList;
+export default React.memo( DialogList);
