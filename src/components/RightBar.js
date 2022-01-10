@@ -13,7 +13,7 @@ import {
     loadOldCurrentDialogMessages,
     sendMessage,
     setCurrentDialogScrollPosition,
-    setDialogScrollPosition2
+    setCurrentDialogScrollPosition22
 } from "../store/actions";
 
 const Main = () => {
@@ -23,14 +23,19 @@ const Main = () => {
     const currentUserId = useSelector(selectors.currentUserId);
     const currentDialogId = useSelector(selectors.currentDialogId);
     const messages = useSelector(selectors.currentDialogMessages);
+
+
     const currentDialogScrollPosition = useSelector(selectors.currentDalogScrollPosition);
+
+
     const messageListContainerRef = useRef();
     const dispatch = useDispatch();
     const messageHeight = 93;
 
     useEffect(() => {
         const messageListContainer = messageListContainerRef.current;
-        messageListContainer.scrollTop = currentDialogScrollPosition
+        messageListContainer.scrollTop = messageListContainer.scrollHeight
+        //messageListContainer.scrollTop = currentDialogScrollPosition
     }, [currentDialogId])
 
 
@@ -43,7 +48,8 @@ const Main = () => {
 
     const onScroll = async () => {
         const messageListContainer = messageListContainerRef.current;
-        dispatch(setCurrentDialogScrollPosition(messageListContainer.scrollTop))
+       // dispatch(setCurrentDialogScrollPosition(messageListContainer.scrollTop))
+       dispatch(setCurrentDialogScrollPosition22(messageListContainer.scrollTop))
         if (messageListContainer.scrollTop == 0) {
             const scrollHeightOld = messageListContainer.scrollHeight;
             await dispatch(loadOldCurrentDialogMessages());
@@ -61,7 +67,7 @@ const Main = () => {
     return (
         <Box sx={{display: 'flex', flexDirection: 'column'}}>
             <Typography variant="h5" p={"1rem"} color="text.secondary" component="div">
-                {currentDialogName}
+                Диалог: {currentDialogName}
             </Typography>
             <Divider/>
             <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScroll}>

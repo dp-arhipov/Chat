@@ -8,37 +8,36 @@
 ///обработка ошибок в redux thunk
 ///поработать с временем сообщений
 //при создании нового диалога ничего не происходит, добавить экшна
-//при создании диалога другим юзером нужно чтобы он появлялся у собеседника сразу
+//повесить слушатель на создание диалога
 //передавать части стора через компоненты
 
 //в компонентах сделать более логичное управление состояниями
-//сделать мемоизацию компонентов
+//--сделать мемоизацию компонентов
 
 //--разные форматы сообщений message, сделать однотипные
 //--уровни доступа, безопасность
-//добавить возможность тестить без регистрацц
 //добавить задержки в загрузки через trottling
-//исправить прокрутку
 
 //добавить отработку ошибкок, если сообщений в диалоге нет при подгрузке
 //--почему сообщения загружаются несколько раз 2 раза added и 2 modified
 //--переделать слушатель, добавляет лишнее. при создании диалога с уже имеющимся собеседником, добавляются его сообщения, сейчас слушатель слушает все диалоги
 //--сохранение юзера в куках
 
-//структура полей dialogs и message
+//--структура полей dialogs и message
 
 //переделать параметры по умолчанию на undefined вместо 0
 
-//исправить прокрутку при подгрузке сообщений
-//исправить статус -- отправляется, отправлено
+//--исправить прокрутку при подгрузке сообщений
+//--исправить статус -- отправляется, отправлено
 
 //добавить селекторы и в App.js
 
-//дописать запоминание скролла в диалоги
+//--дописать запоминание скролла в диалоги
 
 //lazy loading сделать
 
-//переделать запись позиции диалога, перенести логику в DialogList
+//--переделать запись позиции диалога, перенести логику в DialogList
+//--удалить все слушатели после логаута
 
 import {Auth, DB} from "../API";
 import {
@@ -57,19 +56,22 @@ import {
     setName,
     setNickName,
     updateMessageTimestamp,
-    setDialogScrollPosition
+    setDialogScrollPosition,
+    setCurrentDialogScrollPosition2,
+    addDialog
+
 } from "./slices";
 
 import * as selectors from "./selectors"
 import {nanoid} from "nanoid";
 
-const messageLoadLimit = 10;
+const messageLoadLimit = 5;
 
 export const initApp = () => {
     return async function disp(dispatch, getState) {
         Auth.authHandler(async (user) => {
             if (user) {
-                user = await DB.createUser(user.uid, user.name);
+                user = await DB.createUser(user.uid, user.displayName);
                 dispatch(setCurrentUser(user))
             }
         });
@@ -85,19 +87,20 @@ export const logIn = () => {
 
 export const initChat = () => {
     return async function disp(dispatch, getState) {
-        await dispatch(loadDialogList());
-        dispatch(addDialogListeners())
+        //await dispatch(loadDialogList());
 
+        await dispatch(addDialogListListener())
+        //dispatch(addDialogListeners())
     }
 }
 
-export const loadDialogList = () => {
-    return async function disp(dispatch, getState) {
-        const currentUserId = selectors.currentUserId(getState());
-        let dialogList = await DB.getUserDialogList(currentUserId);
-        dispatch(setDialogList(dialogList))
-    }
-}
+// export const loadDialogList = () => {
+//     return async function disp(dispatch, getState) {
+//         const currentUserId = selectors.currentUserId(getState());
+//         let dialogList = await DB.getUserDialogList(currentUserId);
+//         dispatch(setDialogList(dialogList))
+//     }
+// }
 
 
 export const logOut = () => {
@@ -106,6 +109,7 @@ export const logOut = () => {
         dispatch(resetUser())
         dispatch(resetFindResults())
         dispatch(resetDialogList())
+        DB.removeListeners();
     }
 }
 
@@ -144,12 +148,16 @@ export const saveToCash = () => {
 export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
         //dispatch(setCurrentDialogFetching(true))
-        dispatch(setCurrentDialogId(dialogId));
-        if (selectors.currentDialogMessages(getState()).length == 0) {
-            const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
-            console.log("first load: ")
-            console.log(messages)
+        const dialogIdPrevious = selectors.currentDialogId(getState());
+
+        if (dialogIdPrevious) {
+            //console.log(dialogIdPrevious)
+            const scrollPosition = selectors.currentDialogScroll2(getState());
+            console.log(scrollPosition)
+            dispatch(setDialogScrollPosition({dialogId: dialogIdPrevious, scrollPosition: scrollPosition}))
         }
+        dispatch(setCurrentDialogId(dialogId));
+
     }
 }
 
@@ -185,8 +193,9 @@ export const createDialogWith = (userId) => {
         let dialogId = await DB.findDialogByCompanionId(userId);
         if (!dialogId) {
             dialogId = await DB.createDialogWith(userId);
+            //await dispatch(loadDialogList());
         }
-        await dispatch(loadDialogList());
+
         dispatch(setCurrentDialog(dialogId));
 
     };
@@ -211,29 +220,41 @@ export const isNickNameBusy = async (nickName) => {
 }
 
 
-export const addDialogListeners = () => {
+export const addDialogListener = (dialogId) => {
     return async function disp(dispatch, getState) {
-        let dialogIds = [];
-        let dialogList = await selectors.dialogList(getState());
-        dialogIds = Object.keys(dialogList);
-
-        for (const dialogId of dialogIds) {
-            const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
-            dispatch(addDialogMessages({dialogId, messages}))
+            //const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
+            //dispatch(addDialogMessages({dialogId, messages}))
 
             await DB.addDialogListener(
                 dialogId,
+                messageLoadLimit,
                 async (dialogId, message) => {
                     if (!selectors.isDialogFetching(getState(), dialogId)) {
-                        const lastMessage = getLastMessage(getState(), dialogId)
-                        if (lastMessage.hasOwnProperty("timestamp")) {
-                            if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
-                                dispatch(addDialogMessage({dialogId, message}))
-                            }
-                        }
+                        dispatch(addDialogMessage({dialogId, message}))
+                        // const lastMessage = getLastMessage(getState(), dialogId)
+                        // if (lastMessage.hasOwnProperty("timestamp")) {
+                        //     if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
+                        //         dispatch(addDialogMessage({dialogId, message}))
+                        //     }
+                        // }
                     }
                 });
-        }
+
+    }
+}
+
+
+
+export const addDialogListListener = () => {
+    return async function disp(dispatch, getState) {
+        const currentUserId = selectors.currentUserId(getState());
+        const r = await DB.addDialogListListener(currentUserId, (dialog) => {
+            dispatch(addDialog(dialog))
+            dispatch(addDialogListener(dialog.id))
+            //DB.addDialogListenerTest(dialog.id)
+        })
+
+        return r;
     }
 }
 
@@ -251,9 +272,16 @@ export const setCurrentDialogScrollPosition = (scrollPosition) => {
     return async function disp(dispatch, getState) {
         //console.log(selectors.currentDialogId(getState());)
         const dialogId = selectors.currentDialogId(getState());
-        dispatch(setDialogScrollPosition({scrollPosition,dialogId}));
+        dispatch(setDialogScrollPosition({scrollPosition, dialogId}));
     }
- }
+}
+
+export const setCurrentDialogScrollPosition22 = (scrollPosition) => {
+    return async function disp(dispatch, getState) {
+
+        dispatch(setCurrentDialogScrollPosition2({scrollPosition}));
+    }
+}
 
 
 

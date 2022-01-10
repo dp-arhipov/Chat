@@ -7,8 +7,6 @@ import {useLazyLoading} from "../customHooks/useLazyLoading";
 import Container from "@mui/material/Container";
 
 const MessagesList = ({scrollBottom, messages, currentUserId}) => {
-
-
     console.log("render MessageList")
     useEffect(() => {
         scrollBottom();

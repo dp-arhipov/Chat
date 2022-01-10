@@ -30,14 +30,9 @@ export class FirebaseAuth {
     }
 
     googleLogin = async () => {
-
         const googleProvider = new GoogleAuthProvider();
         const response = await signInWithPopup(this.auth, googleProvider);
-        const {user} = response;
-        return {
-            uid: user.uid,
-            name: user.displayName
-        };
+        return response;
     }
 
     logOut = async () => {
@@ -51,12 +46,13 @@ export class FirebaseDB {
 
         this.nickNameTemplate = () => "user_" + nanoid(8);
         this.dialogIdTemplate = () => nanoid(8);
-        this.dialogNameTemplate = name => "Диалог c " + name;
+        this.dialogNameTemplate = name => name;
 
         this.messageIdTemplate = () => nanoid(8);
 
         this.app = app;
         this.firestore = firestore;
+        this.listeners = [];
 
         this.refs = {}
         this.refs.users = collection(this.firestore, "Users")
@@ -95,6 +91,7 @@ export class FirebaseDB {
         const user = await getDoc(this.refs.user(userId));
         const nickName = this.nickNameTemplate();
         if (!user.exists()) {
+            console.log(userName)
             setDoc(this.refs.user(userId), {
                 name: userName,
                 nickName: nickName
@@ -118,9 +115,14 @@ export class FirebaseDB {
         }
     }
 
+    removeListeners = () => {
+        this.listeners.forEach((unsubscribe) => unsubscribe())
 
-    addDialogListener = async (dialogId, callback) => {
-        const subscribe = await onSnapshot(this.refs.dialogData(dialogId), (snapshot) => {
+    }
+
+    addDialogListener = async (dialogId, loadLimit, callback) => {
+        let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(loadLimit))
+        const unsubscribe = await onSnapshot(q, (snapshot) => {
             const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach((change) => {
                 if (!isLocal) {
@@ -129,6 +131,43 @@ export class FirebaseDB {
                 }
             });
         })
+        this.listeners.push(unsubscribe)
+        return unsubscribe;
+    }
+
+    addDialogListenerTest = async (dialogId) => {
+        let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(5))
+        const unsubscribe = await onSnapshot(q, (snapshot) => {
+            const isLocal = snapshot.metadata.hasPendingWrites;
+            snapshot.docChanges().forEach((change) => {
+                if (!isLocal) {
+                    //callback(dialogId, change.doc.data());
+                    console.log(change.doc.data());
+                }
+            });
+        })
+        this.listeners.push(unsubscribe)
+        return unsubscribe;
+    }
+
+    addDialogListListener = async (userId, callback) => {
+        const unsubscribe = await onSnapshot(this.refs.userDialogList(userId), (snapshot) => {
+            const isLocal = snapshot.metadata.hasPendingWrites;
+            snapshot.docChanges().forEach((change) => {
+                if (!isLocal) {
+                    const dialog = {
+                        id: change.doc.id,
+                        name: change.doc.data().dialogName,
+                        companionId: change.doc.data().companionId
+                    };
+                    callback(dialog);
+                    //console.log(change.doc.data());
+                }
+            });
+        })
+        this.listeners.push(unsubscribe)
+        return unsubscribe;
+
     }
 
 
@@ -229,12 +268,13 @@ export class FirebaseDB {
     findUserByNickName = async (nickName) => {
         let user = false;
         const docs = await getDocs(this.refs.users);
+
         docs.forEach((doc) => {
             if (doc.data().nickName == nickName) {
                 user = {id: doc.id, name: doc.data().name}
             }
         });
-        // console.log(docs)
+
         return user;
     }
 

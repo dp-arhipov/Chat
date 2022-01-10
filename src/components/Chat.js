@@ -1,5 +1,5 @@
 import React, {Fragment, useEffect} from 'react';
-import Main from "./Main";
+import RightBar from "./RightBar";
 import Header from "./Header";
 import Box from "@mui/material/Box";
 import LeftBar from "./LeftBar";
@@ -21,7 +21,7 @@ const Chat = () => {
             <Header/>
             <Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>
                 <LeftBar/>
-                {(currentDialogId) && <Main/>}
+                {(currentDialogId)? <RightBar/>:<Box sx={{display: "flex", alignItems: "center",justifyContent:"center"}}>Выберите существующий диалог или создайте новый при помощи поиска</Box>}
             </Box>
         </Fragment>
     );

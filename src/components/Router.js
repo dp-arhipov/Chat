@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import Main from "./Main";
+import RightBar from "./RightBar";
 import NotFound from "./NotFound";
 import App from "../App";
 import Chat from "./Chat";

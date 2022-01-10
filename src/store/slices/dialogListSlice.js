@@ -3,6 +3,7 @@ import {createSlice, current} from "@reduxjs/toolkit";
 const dialogListInitialState = {
     isFetching: false,
     currentDialogId: '',
+    currentDialogScrollPosition: 0,
     dialogs: {}
 }
 
@@ -50,6 +51,11 @@ const dialogListSlice = createSlice({
 
 
 
+        setCurrentDialogScrollPosition2(state, action) {
+
+                state.currentDialogScrollPosition = action.payload.scrollPosition
+        },
+
         setDialogScrollPosition(state, action) {
             const id = action.payload.dialogId
             const position = action.payload.scrollPosition
@@ -73,6 +79,15 @@ const dialogListSlice = createSlice({
             const isFetching = action.payload.isFetching
             state.dialogs[id].isFetching = isFetching
         },
+        addDialog(state, action){
+
+            const id = action.payload.id;
+            //delete action.payload.id;
+            state.dialogs[id] = {...action.payload, messages: []}
+
+
+    //state.dialogs
+},
         setDialogList(state, action) {
 
             const dialogList = action.payload;
@@ -104,6 +119,6 @@ const dialogListSlice = createSlice({
 
 
 export const dialogListReducer = dialogListSlice.reducer;
-export const {setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
+export const {addDialog, setCurrentDialogScrollPosition2, setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
 
 

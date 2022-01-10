@@ -41,11 +41,12 @@ export const dialogLastMessageId = (state, dialogId) => dialogMessages(state, di
 
 
 export const currentDialogId = state => state.dialogList.currentDialogId
+export const currentDialogScroll2 = state => state.dialogList.currentDialogScrollPosition
 
 export const currentDialog = state => dialogList(state)[currentDialogId(state)]
 export const currentDialogName = state => currentDialog(state).name
 export const currentDialogMessages = state => currentDialog(state).messages
-export const currentDialogFirstMessageId = state => currentDialogMessages(state)[0].messageId
+export const currentDialogFirstMessageId = state => currentDialogMessages(state)[0]?.messageId
 export const currentDalogScrollPosition = state => currentDialog(state).scrollPosition
 export const currentDialogLastMessageId = state => currentDialogMessages(state)[currentDialogMessages(state).length-1].messageId
 
