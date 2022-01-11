@@ -16,7 +16,7 @@ import {
     setCurrentDialogScrollPosition22
 } from "../store/actions";
 
-const Main = () => {
+const RightBar = () => {
     console.log("render Main")
     //const currentDialog = useSelector(state => state.currentDialog);
     const currentDialogName = useSelector(selectors.currentDialogName);
@@ -83,5 +83,5 @@ const Main = () => {
 };
 
 
-export default Main;
+export default RightBar;
 

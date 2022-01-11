@@ -10,6 +10,8 @@ import {initChat} from "../store/actions"
 const Chat = () => {
     const dispatch = useDispatch();
     const currentDialogId = useSelector(selectors.currentDialogId);
+    const currentDialogName = useSelector(selectors.currentDialogName);
+    const isDialogListFetching = useSelector(selectors.isDialogListFetching);
     useEffect(() => {
         dispatch(initChat());
 
@@ -21,7 +23,7 @@ const Chat = () => {
             <Header/>
             <Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>
                 <LeftBar/>
-                {(currentDialogId)? <RightBar/>:<Box sx={{display: "flex", alignItems: "center",justifyContent:"center"}}>Выберите существующий диалог или создайте новый при помощи поиска</Box>}
+                {(currentDialogId&&currentDialogName)? <RightBar/>:<Box sx={{display: "flex", alignItems: "center",justifyContent:"center"}}>Выберите существующий диалог или создайте новый при помощи поиска</Box>}
             </Box>
         </Fragment>
     );

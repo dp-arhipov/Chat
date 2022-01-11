@@ -35,7 +35,7 @@ export const dialogArrayOld = state => {
     return arr;
 
 }
-export const dialogMessages = (state, dialogId) => dialogList(state)[dialogId].messages
+export const dialogMessages = (state, dialogId) => dialogList(state)[dialogId]?.messages
 export const dialogLastMessageId = (state, dialogId) => dialogMessages(state, dialogId)[dialogMessages(state, dialogId).length-1]
 // export const messageById = (state, messageId) => dialogMessages(state, dialogId)[dialogMessages(state, dialogId).length-1]
 
@@ -44,7 +44,7 @@ export const currentDialogId = state => state.dialogList.currentDialogId
 export const currentDialogScroll2 = state => state.dialogList.currentDialogScrollPosition
 
 export const currentDialog = state => dialogList(state)[currentDialogId(state)]
-export const currentDialogName = state => currentDialog(state).name
+export const currentDialogName = state => currentDialog(state)?.name
 export const currentDialogMessages = state => currentDialog(state).messages
 export const currentDialogFirstMessageId = state => currentDialogMessages(state)[0]?.messageId
 export const currentDalogScrollPosition = state => currentDialog(state).scrollPosition
@@ -55,6 +55,7 @@ export const currentDialogLastMessageId = state => currentDialogMessages(state)[
 
 
 export const isDialogFetching = (state, dialogId) => dialogList(state)[dialogId].isFetching
+export const isDialogListFetching = (state, dialogId) => state.dialogList.isFetching
 export const dialogScrollPosition = (state, dialogId) => dialogList(state)[dialogId].scrollPosition
 
 export const isCurrentDialogFetching = state => state.currentDialog.isFetching

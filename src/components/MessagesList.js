@@ -5,6 +5,7 @@ import {store} from '../store'
 import {useSelector} from "react-redux";
 import {useLazyLoading} from "../customHooks/useLazyLoading";
 import Container from "@mui/material/Container";
+import {nanoid} from "nanoid";
 
 const MessagesList = ({scrollBottom, messages, currentUserId}) => {
     console.log("render MessageList")

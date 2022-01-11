@@ -1,7 +1,7 @@
 import {createSlice, current} from "@reduxjs/toolkit";
 
 const dialogListInitialState = {
-    isFetching: false,
+    isFetching: true,
     currentDialogId: '',
     currentDialogScrollPosition: 0,
     dialogs: {}
@@ -11,7 +11,7 @@ const dialogInitialState = {
     isFetching: false,
     dialogId: '',
     scrollPosition: 0,
-    messages:[]
+    messages: []
 }
 
 const dialogListSlice = createSlice({
@@ -50,10 +50,9 @@ const dialogListSlice = createSlice({
         },
 
 
-
         setCurrentDialogScrollPosition2(state, action) {
 
-                state.currentDialogScrollPosition = action.payload.scrollPosition
+            state.currentDialogScrollPosition = action.payload.scrollPosition
         },
 
         setDialogScrollPosition(state, action) {
@@ -79,15 +78,20 @@ const dialogListSlice = createSlice({
             const isFetching = action.payload.isFetching
             state.dialogs[id].isFetching = isFetching
         },
-        addDialog(state, action){
+        setDialogListFetching(state, action) {
+            const isFetching = action.payload
+            state.isFetching = isFetching
+        },
+
+        addDialog(state, action) {
 
             const id = action.payload.id;
             //delete action.payload.id;
             state.dialogs[id] = {...action.payload, messages: []}
 
 
-    //state.dialogs
-},
+            //state.dialogs
+        },
         setDialogList(state, action) {
 
             const dialogList = action.payload;
@@ -119,6 +123,6 @@ const dialogListSlice = createSlice({
 
 
 export const dialogListReducer = dialogListSlice.reducer;
-export const {addDialog, setCurrentDialogScrollPosition2, setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
+export const {setDialogListFetching, addDialogMessageBefore, addDialog, setCurrentDialogScrollPosition2, setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
 
 

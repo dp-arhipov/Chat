@@ -38,7 +38,7 @@
 
 //--переделать запись позиции диалога, перенести логику в DialogList
 //--удалить все слушатели после логаута
-
+//--перенести логику сообщений в firebseAPI
 import {Auth, DB} from "../API";
 import {
     addDialogMessage,
@@ -58,14 +58,17 @@ import {
     updateMessageTimestamp,
     setDialogScrollPosition,
     setCurrentDialogScrollPosition2,
-    addDialog
+    addDialog,
+    addDialogMessageBefore,
+    setDialogListFetching
 
 } from "./slices";
 
 import * as selectors from "./selectors"
 import {nanoid} from "nanoid";
+import * as selector from "./selectors";
 
-const messageLoadLimit = 5;
+const messageLoadLimit = 10;
 
 export const initApp = () => {
     return async function disp(dispatch, getState) {
@@ -148,6 +151,7 @@ export const saveToCash = () => {
 export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
         //dispatch(setCurrentDialogFetching(true))
+        //const isDialogListFetching = selectors.isDialogListFetching(getState())
         const dialogIdPrevious = selectors.currentDialogId(getState());
 
         if (dialogIdPrevious) {
@@ -157,6 +161,7 @@ export const setCurrentDialog = (dialogId) => {
             dispatch(setDialogScrollPosition({dialogId: dialogIdPrevious, scrollPosition: scrollPosition}))
         }
         dispatch(setCurrentDialogId(dialogId));
+
 
     }
 }
@@ -192,7 +197,9 @@ export const createDialogWith = (userId) => {
     return async function disp(dispatch, getState) {
         let dialogId = await DB.findDialogByCompanionId(userId);
         if (!dialogId) {
+            dispatch(setDialogListFetching(true))
             dialogId = await DB.createDialogWith(userId);
+            //dispatch(setDialogListFetching(false))
             //await dispatch(loadDialogList());
         }
 
@@ -220,52 +227,54 @@ export const isNickNameBusy = async (nickName) => {
 }
 
 
-export const addDialogListener = (dialogId) => {
+export const addDialogMessagesListener = (dialogId) => {
     return async function disp(dispatch, getState) {
-            //const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
-            //dispatch(addDialogMessages({dialogId, messages}))
-
-            await DB.addDialogListener(
-                dialogId,
-                messageLoadLimit,
-                async (dialogId, message) => {
-                    if (!selectors.isDialogFetching(getState(), dialogId)) {
+        const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
+        dispatch(addDialogMessages({dialogId, messages}))
+        await DB.addDialogMessagesListener(
+            dialogId,
+            async (dialogId, message) => {
+                //if (!selectors.isDialogFetching(getState(), dialogId)) {
+                //dispatch(addDialogMessage({dialogId, message}))
+                console.log(message)
+                const lastMessage = getLastMessage(getState(), dialogId)
+                if (lastMessage == false) {
+                    dispatch(addDialogMessage({dialogId, message}))
+                }
+                console.log(lastMessage)
+                if (lastMessage.hasOwnProperty("timestamp")) {
+                    if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
                         dispatch(addDialogMessage({dialogId, message}))
-                        // const lastMessage = getLastMessage(getState(), dialogId)
-                        // if (lastMessage.hasOwnProperty("timestamp")) {
-                        //     if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
-                        //         dispatch(addDialogMessage({dialogId, message}))
-                        //     }
-                        // }
                     }
-                });
+                }
+            });
 
     }
 }
-
 
 
 export const addDialogListListener = () => {
     return async function disp(dispatch, getState) {
         const currentUserId = selectors.currentUserId(getState());
         const r = await DB.addDialogListListener(currentUserId, (dialog) => {
+
             dispatch(addDialog(dialog))
-            dispatch(addDialogListener(dialog.id))
+            dispatch(addDialogMessagesListener(dialog.id))
+
             //DB.addDialogListenerTest(dialog.id)
         })
-
+        //dispatch(setDialogListFetching(false))
         return r;
     }
 }
 
 const getLastMessage = (state, dialogId) => {
     const dialogMessages = selectors.dialogMessages(state, dialogId);
-    if (dialogMessages != []) {
+    if (dialogMessages.length != 0) {
         const lastMessageId = dialogMessages[dialogMessages.length - 1].messageId
         return dialogMessages.find(message => message.messageId == lastMessageId);
     } else return false;
 
-    // return dialogMessages;
 }
 
 export const setCurrentDialogScrollPosition = (scrollPosition) => {
