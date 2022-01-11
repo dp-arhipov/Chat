@@ -15,7 +15,8 @@ const ModalUserProfile = ({open,handleClose}) => {
         bgcolor: 'background.paper',
         border: '0px solid #000',
         boxShadow: 24,
-        p: 4,
+        p: 5,
+
     };
 
     return (

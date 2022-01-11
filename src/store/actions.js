@@ -210,14 +210,14 @@ export const createDialogWith = (userId) => {
 
 export const changeCurrentUserNickName = (nickName) => {
     return async function disp(dispatch, getState) {
-        nickName = await DB.setNickName(nickName);
+        await DB.setNickName(nickName);
         dispatch(setNickName(nickName))
     };
 }
 
 export const changeCurrentUserName = (name) => {
     return async function disp(dispatch, getState) {
-        name = await DB.setName(name);
+        await DB.setName(name);
         dispatch(setName(name))
     };
 }

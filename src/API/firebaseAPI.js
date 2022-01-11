@@ -294,11 +294,11 @@ export class FirebaseDB {
     }
 
     setNickName = async (nickName, userId = this.currentUserId) => {
-        updateDoc(this.refs.user(userId), {nickName: nickName});
+       return updateDoc(this.refs.user(userId), {nickName: nickName});
     }
 
     setName = async (name, userId = this.currentUserId) => {
-        updateDoc(this.refs.user(userId), {name: name});
+        return updateDoc(this.refs.user(userId), {name: name});
     }
 
 }
