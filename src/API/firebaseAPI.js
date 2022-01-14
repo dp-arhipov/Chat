@@ -62,7 +62,7 @@ export class FirebaseDB {
         this.refs.dialogs = collection(this.firestore, "Dialogs")
         this.refs.dialog = dialogId => doc(this.refs.dialogs, dialogId)
         this.refs.dialogData = dialogId => collection(this.refs.dialog(dialogId), "data")
-        this.refs.dialogInfo = dialogId => collection(this.refs.dialog(dialogId), "info")
+        this.refs.dialogInfo = dialogId => doc(this.refs.dialog(dialogId), "info", "properties")
 
     }
 
@@ -121,7 +121,7 @@ export class FirebaseDB {
     }
 
     addDialogMessagesListener = async (dialogId, callback) => {
-        const q = query(this.refs.dialogData(dialogId),orderBy("timestamp", "desc"), limit(1))
+        const q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(1))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
             const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach((change) => {
@@ -139,25 +139,48 @@ export class FirebaseDB {
         //const q = query(this.refs.userDialogList(userId),orderBy("timestamp", "desc"), limit(1))
         const q = query(this.refs.userDialogList(userId))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
-            console.log(snapshot)
-            const isLocal = snapshot.metadata.hasPendingWrites;
-            snapshot.docChanges().forEach((change) => {
-                //if (!isLocal) {
-                    console.log(change)
-                    const dialog = {
-                        id: change.doc.id,
-                        name: change.doc.data().dialogName,
-                        companionId: change.doc.data().companionId
-                    };
-                    callback(dialog);
-                    //console.log(change.doc.data());
-                //}
+
+            //const isLocal = snapshot.metadata.hasPendingWrites;
+            snapshot.docChanges().forEach(async (change) => {
+
+                console.log(change)
+                const dialogId = change.doc.id
+                const dialogInfo = await getDoc(this.refs.dialogInfo(dialogId));
+                const companionId = dialogInfo.data().companionId;
+                const creatorId = dialogInfo.data().creatorId;
+                let dialogName;
+
+                if (userId == companionId) {
+                    const companionInfo = await getDoc(this.refs.user(creatorId));
+                    const companionName = companionInfo.data().name;
+                    dialogName = companionName;
+                }else{
+                    const userInfo = await getDoc(this.refs.user(companionId));
+                    const userName = userInfo.data().name;
+                    dialogName=userName
+                }
+
+                const dialog = {id: dialogId, name: dialogName, ...dialogInfo.data()}
+                callback(dialog);
+
             });
         })
         this.listeners.push(unsubscribe)
         return unsubscribe;
 
     }
+
+    addUserInfoListener = async (userId, callback) => {
+        const unsubscribe = await onSnapshot(this.refs.user(userId), (snapshot) => {
+            callback(snapshot.data());
+        })
+        this.listeners.push(unsubscribe)
+        return unsubscribe;
+    }
+
+    // updateDialogName = async (dialogId, newDialogName) => {
+    //     return await updateDoc(doc(this.refs.dialogInfo(dialogId), {name: newDialogName}))
+    // }
 
 
     sendMessage = async (dialogId, message, creatorId = this.currentUserId) => {
@@ -214,30 +237,49 @@ export class FirebaseDB {
         return messages;
     }
 
+    //
+    // getUserDialogList = async (userId) => {
+    //     let dialogList = [];
+    //
+    //     const docs = await getDocs(this.refs.userDialogList(userId));
+    //     if (docs) {
+    //         docs.forEach((doc) => {
+    //             dialogList.push({id: doc.id, name: doc.data().dialogName, companionId: doc.data().companionId});
+    //         });
+    //     }
+    //     return dialogList;
+    // }
+    getUserDialogsInfo = async (currentUserId = this.currentUserId) => {
+        const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
 
-    getUserDialogList = async (userId) => {
-        let dialogList = [];
+        const dialogIds = []
+        dialogList.forEach((dialog) => dialogIds.push(dialog.id));
 
-        const docs = await getDocs(this.refs.userDialogList(userId));
-        if (docs) {
-            docs.forEach((doc) => {
-                dialogList.push({id: doc.id, name: doc.data().dialogName, companionId: doc.data().companionId});
-            });
+        const dialogInfoArr = []
+        for (const dialogId of dialogIds) {
+            const dialogInfo = await getDoc(this.refs.dialogInfo(dialogId));
+            dialogInfoArr.push({id: dialogId, ...dialogInfo.data()})
         }
-        return dialogList;
+
+        // console.log(dialogInfoArr)
+        return dialogInfoArr;
     }
 
     findDialogByCompanionId = async (companionId, currentUserId = this.currentUserId) => {
         //const docRef = collection(this.firestore, "Users", currentUserId, "dialogList");
-        const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
-        let dialogID;
+        //const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
+        const dialogList = await this.getUserDialogsInfo(currentUserId)
+        console.log(dialogList)
+        let dialogID=false;
         dialogList.forEach((dialog) => {
-            if (dialog.data().companionId == companionId) {
+            if (dialog.companionId == companionId||dialog.creatorId == companionId) {
                 dialogID = dialog.id;
+                console.log(dialogID)
             }
         });
-        return (dialogID) ? dialogID : false;
+        return dialogID;
     }
+
 
     createDialogWith = async (companionId, currentUserId = this.currentUserId, currentUserName = this.currentUserName) => {
 
@@ -247,13 +289,18 @@ export class FirebaseDB {
         const dialogName = this.dialogNameTemplate(user.data().name);
 
         const docRef1 = doc(this.refs.userDialogList(currentUserId), dialogId);
-        setDoc(docRef1, {dialogName: dialogName, companionId: companionId});
-
+        setDoc(docRef1, {});
         const docRef2 = doc(this.refs.userDialogList(companionId), dialogId);
-        setDoc(docRef2, {dialogName: currentUserName, companionId: currentUserId});
+        setDoc(docRef2, {});
 
-        const docRef3 = doc(this.refs.dialogInfo(dialogId), "properties");
-        setDoc(docRef3, {dialogName: dialogName, companionId: companionId, creatorId: currentUserId});
+        // const docRef1 = doc(this.refs.userDialogList(currentUserId), dialogId);
+        // setDoc(docRef1, {name: dialogName, companionId: companionId});
+        //
+        // const docRef2 = doc(this.refs.userDialogList(companionId), dialogId);
+        // setDoc(docRef2, {name: currentUserName, companionId: currentUserId});
+
+        const docRef3 = this.refs.dialogInfo(dialogId);
+        setDoc(docRef3, {companionId: companionId, creatorId: currentUserId});
 
         // const docRef4 = doc(this.refs.dialogInfo(dialogId), "dialogName");
         // setDoc(docRef4, dialogName);
@@ -294,7 +341,7 @@ export class FirebaseDB {
     }
 
     setNickName = async (nickName, userId = this.currentUserId) => {
-       return updateDoc(this.refs.user(userId), {nickName: nickName});
+        return updateDoc(this.refs.user(userId), {nickName: nickName});
     }
 
     setName = async (name, userId = this.currentUserId) => {

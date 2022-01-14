@@ -18,10 +18,14 @@ const DialogList = () => {
     const dispatch = useDispatch();
     const itemClickHandle = (dialogID) => {
         dispatch(setCurrentDialog(dialogID));
+
     }
    // console.log(dialogListArray)
-
-
+   //
+   //  console.log(lastMessage)
+   //  const lastMessage = (dialogID)=>{
+   //      const lastMessage = useSelector(selectors.dialogLastMessage(dialogID))
+   //  }
 
     return (
         <List>
@@ -35,8 +39,10 @@ const DialogList = () => {
                             </ListItemAvatar>
                             <ListItemText
                                 primary={dialog.name}
-                                secondary={"Текст последнего сообщения"}
+                                secondary={dialog.lastMessage.slice(0,30)+"..."}
                             />
+
+
 
                         </ListItem>
                         <Divider variant="inset" component="li"/>

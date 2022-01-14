@@ -27,7 +27,6 @@ const FindResList = ({handleItemClick, findResult, isFindResultsFetching}) => {
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={user.name}
-                                        secondary={"Текст последнего сообщения"}
                                     />
                                 </ListItem>
                                 <Divider variant="inset"/>

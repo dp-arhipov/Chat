@@ -44,12 +44,17 @@ const dialogListSlice = createSlice({
             // state.currentDialog.name = currentDialog.name
             // state.currentDialog.memberId = currentDialog.memberId
         },
+
         addSomeOldCurrentDialogMessages(state, action) {
             const dialogId = state.currentDialogId
             state.dialogs[dialogId].messages = [...action.payload, ...state.dialogs[dialogId].messages]
         },
 
 
+        updateDialogName(state, action) {
+            const dialogId = action.payload.dialogId
+            state.dialogs[dialogId].name = action.payload.name
+        },
         setCurrentDialogScrollPosition2(state, action) {
 
             state.currentDialogScrollPosition = action.payload.scrollPosition
@@ -123,6 +128,6 @@ const dialogListSlice = createSlice({
 
 
 export const dialogListReducer = dialogListSlice.reducer;
-export const {setDialogListFetching, addDialogMessageBefore, addDialog, setCurrentDialogScrollPosition2, setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
+export const {updateDialogName, setDialogListFetching, addDialogMessageBefore, addDialog, setCurrentDialogScrollPosition2, setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
 
 

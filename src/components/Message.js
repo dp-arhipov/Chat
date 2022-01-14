@@ -21,7 +21,7 @@ const Message = ({text, date, creatorId, currentUserId, time, status}) => {
                         <Typography variant="subtitle2" color="text.secondary" component="div">
                             {date} {time} {status}
                         </Typography>
-                        <Typography noWrap={false} component="div" variant="body1">
+                        <Typography noWrap={false} component="div" variant="body1" sx={{overflowWrap: "break-word"}}>
                             {text}
                         </Typography>
 

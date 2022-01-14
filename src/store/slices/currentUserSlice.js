@@ -6,12 +6,6 @@ const currentUserInitialState = {
     nickName: '',
     name: '',
 }
-const currentLoggedInUserInitialState = {
-    isFetching: false,
-    id: 'yJiN8j3mxxVhT7mejKfXnhW0OfF3',
-    nickName: 'user_9zBQN6aK',
-    name: 'Даниил Архипов',
-}
 
 const currentUserSlice = createSlice({
     name: "currentUser",

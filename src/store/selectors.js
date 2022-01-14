@@ -1,19 +1,6 @@
 import {createDraftSafeSelector, createSelector} from "@reduxjs/toolkit";
 
-const dialogIdsAndNames = state => {
-    const dialogs = Object.values(state.dialogList.dialogs)
-    return dialogs.map((dialog)=>{
-        return {id: dialog.id, name: dialog.name}
-    });
-}
 
-
-export const dialogListArray = createSelector(
-    dialogIdsAndNames,
-    (all) => {
-        return all;
-    }
-)
 
 export const currentUser = state => state.currentUser
 export const currentUserId = state => currentUser(state).id
@@ -23,20 +10,56 @@ export const currentUserNickName = state => currentUser(state).nickName
 
 
 export const dialogList = state => state.dialogList.dialogs
-export const dialogArrayOld = state => {
-    const dialogList = state.dialogList.dialogs
-    const items = Object.values(dialogList)
-    //console.log(items)
-    let arr = [];
-    for(const item of items){
-        const newItem = {id: item.id, name: item.name}
-        arr.push(newItem)
-    }
-    return arr;
+// export const dialogIdsArray = state => {
+//     const dialogList = state.dialogList.dialogs
+//     const items = Object.values(dialogList)
+//     //console.log(items)
+//     let arr = [];
+//     for(const item of items){
+//         const newItem = {id: item.id}
+//         arr.push(newItem)
+//     }
+//     return arr;
+//
+// }
+
+export const dialogMessages = (state, dialogId) => dialogList(state)[dialogId]?.messages
+export const dialog = (state, dialogId) => dialogList(state)[dialogId]
+
+const dialogLastMessage = (state, dialogId) => {
+    const dialogMessagesArr = dialogMessages(state, dialogId)
+    if (dialogMessagesArr.length != 0) {
+        const lastMessageId = dialogMessagesArr[dialogMessagesArr.length - 1].messageId
+        const lastMessage = dialogMessagesArr.find(message => message.messageId == lastMessageId);
+        return lastMessage.text
+    } else return '';
+
 
 }
-export const dialogMessages = (state, dialogId) => dialogList(state)[dialogId]?.messages
-export const dialogLastMessageId = (state, dialogId) => dialogMessages(state, dialogId)[dialogMessages(state, dialogId).length-1]
+
+const dialogIdsAndNames = state => {
+    const dialogs = Object.values(state.dialogList.dialogs)
+    return dialogs.map((dialog)=>{
+        const lastMessage = dialogLastMessage(state, dialog.id)
+        return {id: dialog.id, name: dialog.name, lastMessage: lastMessage}
+    });
+}
+
+
+
+export const dialogListArray = createSelector(
+    dialogIdsAndNames,
+    (all) => {
+        return all;
+    }
+)
+// export const dialogLastMessage = (state, dialogId) => {
+//     const dialogMessages = dialogMessages(state, dialogId)
+//     if (dialogMessages.length != 0) {
+//     const lastMessageId = dialogMessages[dialogMessages.length - 1].messageId
+//     return dialogMessages.find(message => message.messageId == lastMessageId);
+//     } else return false;
+// }
 // export const messageById = (state, messageId) => dialogMessages(state, dialogId)[dialogMessages(state, dialogId).length-1]
 
 
