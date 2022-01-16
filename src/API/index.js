@@ -2,8 +2,6 @@ import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
 import {getAuth, setPersistence, browserSessionPersistence} from "firebase/auth";
 import {FirebaseAuth, FirebaseDB} from "./firebaseAPI";
-import {useSelector} from "react-redux";
-import * as selectors from "../store/selectors";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCVwzZ5D0PyOuiAdr2QKbtErjYOTZD4uws",

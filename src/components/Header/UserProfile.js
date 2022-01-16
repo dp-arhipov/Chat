@@ -1,14 +1,13 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import validator from 'validator'
 
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import {changeCurrentUserName, changeCurrentUserNickName, isNickNameBusy} from '../store/actions'
+import {changeCurrentUserName, changeCurrentUserNickName, isNickNameBusy} from '../../store/actions'
 
 import {useDispatch, useSelector} from "react-redux";
-import * as selectors from "../store/selectors"
+import * as selectors from "../../store/selectors"
 import Stack from "@mui/material/Stack";
 
 const UserProfile = () => {

@@ -1,11 +1,12 @@
 import {configureStore} from "@reduxjs/toolkit";
-import {currentUserReducer, findResultsReducer, dialogListReducer} from "./slices/"
+import {currentUserReducer, finderReducer, dialogListReducer, currentDialogReducer} from "./slices/"
 
 export const store = configureStore({
         reducer: {
             currentUser: currentUserReducer,
-            findResults: findResultsReducer,
-            dialogList: dialogListReducer
+            dialogs: dialogListReducer,
+            currentDialog: currentDialogReducer,
+            finder: finderReducer,
         },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware({

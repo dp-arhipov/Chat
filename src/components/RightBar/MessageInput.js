@@ -4,10 +4,6 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
-import * as API from "../API";
-import {sendMessage, loadOldCurrentDialogMessages} from "../store/actions";
-import {useDispatch} from "react-redux";
-
 
 const MessageInput = ({sendMessage}) => {
 

@@ -1,16 +1,14 @@
 import {createSlice, current} from "@reduxjs/toolkit";
-
 const dialogListInitialState = {
-    isFetching: true,
-    currentDialogId: '',
-    currentDialogScrollPosition: 0,
-    dialogs: {}
+
+    status:'LOADED',
+    dialogList: {}
 }
 
 const dialogInitialState = {
-    isFetching: false,
+    status:'FETCHING',
     dialogId: '',
-    scrollPosition: 0,
+    scrollPosition: -1,
     messages: []
 }
 
@@ -19,106 +17,45 @@ const dialogListSlice = createSlice({
     initialState: dialogListInitialState,
     reducers: {
 
-        addCurrentDialogMessage(state, action) {
-            const id = state.currentDialogId
-            state.dialogs[id].messages.push(action.payload)
+
+        pushDialogMessages(state, action){
+            let {dialogId, messages,message} = action.payload
+            const messagesInState = state.dialogList[dialogId].messages
+            if(message) messagesInState.push(message)
+            if(messages) messagesInState.push(...messages)
         },
-        addDialogMessage(state, action) {
-            const id = action.payload.dialogId
-            const message = action.payload.message
-            state.dialogs[id].messages.push(message)
+        shiftDialogMessages(state, action){
+            let {dialogId, messages,message} = action.payload
+            if(message) state.dialogList[dialogId].messages = [message, ...state.dialogList[dialogId].messages]
+            if(messages) state.dialogList[dialogId].messages = [...messages, ...state.dialogList[dialogId].messages]
         },
 
-        setCurrentDialogFetching(state, action) {
-            state.isFetching = action.payload;
+        setDialogMessageProps(state, action) {
+            const {dialogId, messageId, status, timestamp} = action.payload
+            const messagesInState = state.dialogList[dialogId].messages
+            if(status) messagesInState.find(message=>message.messageId == messageId).status = status
+            if(timestamp) messagesInState.find(message=>message.messageId == messageId).timestamp = timestamp
         },
 
-        addSomeLastCurrentDialogMessages(state, action) {
-            const id = state.currentDialogId
-            state.dialogs[id].messages = action.payload
-
-        },
-        setCurrentDialogId(state, action) {
-            //const currentDialog = action.payload;
-            state.currentDialogId = action.payload
-            // state.currentDialog.name = currentDialog.name
-            // state.currentDialog.memberId = currentDialog.memberId
+        setDialogProps(state, action) {
+            const {dialogId, status, name, scrollPosition} = action.payload
+            const dialogInState = state.dialogList[dialogId]
+            if(status) dialogInState.status = status
+            if(name) dialogInState.name = name
+            if(scrollPosition) dialogInState.scrollPosition = scrollPosition
         },
 
-        addSomeOldCurrentDialogMessages(state, action) {
-            const dialogId = state.currentDialogId
-            state.dialogs[dialogId].messages = [...action.payload, ...state.dialogs[dialogId].messages]
-        },
-
-
-        updateDialogName(state, action) {
-            const dialogId = action.payload.dialogId
-            state.dialogs[dialogId].name = action.payload.name
-        },
-        setCurrentDialogScrollPosition2(state, action) {
-
-            state.currentDialogScrollPosition = action.payload.scrollPosition
-        },
-
-        setDialogScrollPosition(state, action) {
-            const id = action.payload.dialogId
-            const position = action.payload.scrollPosition
-            state.dialogs[id].scrollPosition = position;
-        },
-        updateMessageTimestamp(state, action) {
-            const messageId = action.payload.messageId;
-            const dialogId = action.payload.dialogId;
-            const messages = state.dialogs[dialogId].messages;
-            const timestamp = action.payload.timestamp;
-            for (const message of messages) {
-                if (message.messageId == messageId) {
-                    message.timestamp = timestamp;
-                    break;
-                }
-            }
-        },
-        setDialogFetching(state, action) {
-
-            const id = action.payload.dialogId
-            const isFetching = action.payload.isFetching
-            state.dialogs[id].isFetching = isFetching
-        },
-        setDialogListFetching(state, action) {
-            const isFetching = action.payload
-            state.isFetching = isFetching
-        },
+        setDialogListProps(state, action) {
+            const {status} = action.payload;
+            if(status) state.status = status
+           },
 
         addDialog(state, action) {
-
-            const id = action.payload.id;
-            //delete action.payload.id;
-            state.dialogs[id] = {...action.payload, messages: []}
-
-
-            //state.dialogs
+            const {dialogId} = action.payload;
+            state.dialogList[dialogId] = {...dialogInitialState,...action.payload}
         },
-        setDialogList(state, action) {
 
-            const dialogList = action.payload;
-            //state.dialogs = dialogList
 
-            for (const dialog of dialogList) {
-                state.dialogs[dialog.id] = {...dialog, messages: []};
-                //state.dialogs.push({...dialog, messages:[]});
-            }
-            //return dialogList
-        },
-        // addDialogMessage(state, action) {
-        //     const id = action.payload.dialogId
-        //     const message = action.payload.message
-        //     state.dialogs[id].messages.push(message)
-        // },
-        addDialogMessages(state, action) {
-            const id = action.payload.dialogId
-            const messages = action.payload.messages
-
-            state.dialogs[id].messages = messages;
-        },
         resetDialogList(state, action) {
             Object.assign(state, dialogListInitialState)
         }
@@ -128,6 +65,14 @@ const dialogListSlice = createSlice({
 
 
 export const dialogListReducer = dialogListSlice.reducer;
-export const {updateDialogName, setDialogListFetching, addDialogMessageBefore, addDialog, setCurrentDialogScrollPosition2, setDialogScrollPosition, setDialogList, setDialogFetching, addDialogMessage, addDialogMessages, updateMessageTimestamp, addCurrentDialogMessage, setCurrentDialogId, addSomeLastCurrentDialogMessages, addSomeOldCurrentDialogMessages, resetDialogList} = dialogListSlice.actions
+export const {
+    setDialogListProps,
+    setDialogProps,
+    setDialogMessageProps,
+    shiftDialogMessages,
+    pushDialogMessages,
+    addDialog,
+    resetDialogList
+} = dialogListSlice.actions
 
 
