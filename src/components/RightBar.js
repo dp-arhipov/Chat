@@ -25,7 +25,7 @@ const RightBar = () => {
     const messages = useSelector(selectors.currentDialogMessages);
 
 
-    const currentDialogScrollPosition = useSelector(selectors.currentDalogScrollPosition);
+    const currentDialogScrollPosition = useSelector(selectors.currentDialogScrollPosition);
 
 
     const messageListContainerRef = useRef();

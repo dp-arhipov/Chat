@@ -2,6 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 
 const findResultsInitialState = {
     isFetching: false,
+    status:"FETCHING",
     data: []
 }
 
@@ -9,11 +10,11 @@ const findResultsSlice = createSlice({
     name: "findResults",
     initialState: findResultsInitialState,
     reducers: {
-        setFindResultsFetching(state, action) {
-            state.isFetching = action.payload;
-        },
-        setFindResults(state, action) {
+        setFindResultsData(state, action) {
             state.data = action.payload
+        },
+        setFindResultsStatus(state, action) {
+            state.status = action.payload
         },
         resetFindResults(state, action) {
             Object.assign(state, findResultsInitialState)
@@ -26,6 +27,6 @@ const findResultsSlice = createSlice({
 export const findResultsReducer = findResultsSlice.reducer;
 
 
-export const {setFindResultsFetching, setFindResults, resetFindResults} = findResultsSlice.actions
+export const {setFindResultsStatus, setFindResultsFetching, setFindResultsData, resetFindResults} = findResultsSlice.actions
 
 
