@@ -160,12 +160,13 @@ export class FirebaseDB {
                     dialogName=userName
                 }
 
-                const dialog = {id: dialogId, name: dialogName, ...dialogInfo.data()}
+                const dialog = {dialogId: dialogId, name: dialogName, ...dialogInfo.data()}
                 callback(dialog);
 
             });
         })
         this.listeners.push(unsubscribe)
+        console.log(1111111)
         return unsubscribe;
 
     }
@@ -201,7 +202,8 @@ export class FirebaseDB {
         //
         // }
         const docRef = doc(this.refs.dialogData(dialogId), message.messageId);
-        await setDoc(docRef, message);
+        const r = await setDoc(docRef, message);
+       
         const docSnap = await getDoc(docRef);
         const request = docSnap.data();
         return request;

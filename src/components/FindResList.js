@@ -7,11 +7,11 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
-const FindResList = ({handleItemClick, findResult, isFindResultsFetching}) => {
+const FindResList = ({handleItemClick, findResult, isFindResultsFetching, status}) => {
    // console.log(findResult.length);
     return (
         <Box>
-            {(isFindResultsFetching)
+            {(status=="FETCHING")
                 ? <Typography variant="subtitle1" color="text.secondary" component="div">
                     Идет поиск...
                 </Typography>

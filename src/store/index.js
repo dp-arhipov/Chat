@@ -5,7 +5,7 @@ export const store = configureStore({
         reducer: {
             currentUser: currentUserReducer,
             findResults: findResultsReducer,
-            dialogList: dialogListReducer
+            dialogs: dialogListReducer
         },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware({

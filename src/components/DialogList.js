@@ -1,57 +1,38 @@
 import React, {Fragment} from 'react';
-import List from "@mui/material/List";
 import {useDispatch, useSelector} from "react-redux";
-import * as selectors from "../store/selectors"
+
+import {dialogsInfo} from "../store/selectors"
 import {setCurrentDialog} from "../store/actions";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import ListItemText from "@mui/material/ListItemText";
+import Dialog from "./Dialog";
+
 import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
 
 const DialogList = () => {
     //console.log("render DialogList")
-    const dialogListArray = useSelector(selectors.dialogListArray);
-    //const dialogArrayTest = useSelector(selectors.dialogArray);
-    //const dialogListObj = useSelector(selectors.dialogList);
-   // const dialogListArr = Object.values(dialogListObj)
+    const _dialogsInfo = useSelector(dialogsInfo);
     const dispatch = useDispatch();
-    const itemClickHandle = (dialogID) => {
-        dispatch(setCurrentDialog(dialogID));
-
+    const dialogClickHandle = (dialogId) => {
+        dispatch(setCurrentDialog(dialogId));
     }
-   // console.log(dialogListArray)
-   //
-   //  console.log(lastMessage)
-   //  const lastMessage = (dialogID)=>{
-   //      const lastMessage = useSelector(selectors.dialogLastMessage(dialogID))
-   //  }
 
     return (
         <List>
-            {dialogListArray.map((dialog) => {
+            {_dialogsInfo.map((dialog) => {
                 return (
-                    <Fragment  key={dialog.id}>
-                        <ListItem sx={{cursor: "pointer"}} alignItems="flex-start"
-                                  onClick={() => itemClickHandle(dialog.id)}>
-                            <ListItemAvatar>
-                                <Avatar alt={dialog.name} src="/static/images/avatar/1.jpg"/>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={dialog.name}
-                                secondary={dialog.lastMessage.slice(0,30)+"..."}
-                            />
-
-
-
-                        </ListItem>
+                    <Fragment key={dialog.id}>
+                        <Dialog id={dialog.id}
+                                name={dialog.name}
+                                lastMessage={(dialog.lastMessage)?(dialog.lastMessage.slice(0,30)+'...'):''}
+                                dialogClickHandle={dialogClickHandle}/>
                         <Divider variant="inset" component="li"/>
                     </Fragment>
                 )
             })}
         </List>
 
-    );
+    )
+        ;
 };
 
-export default React.memo( DialogList);
+export default React.memo(DialogList);

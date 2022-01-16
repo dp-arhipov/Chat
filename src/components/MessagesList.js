@@ -17,18 +17,9 @@ const MessagesList = ({scrollBottom, messages, currentUserId}) => {
     return (
         <Container>
             {messages.map(message => {
-
-                    let status = "отправляется";
-                    if (message.hasOwnProperty("timestamp")) {
-                        const dateObj = message.timestamp.toDate()
-                        const date = dateObj.toLocaleDateString();
-                        const time = dateObj.toLocaleTimeString();
-                        status = "отправлено"
-                    }
-
                     return (
                         <Message
-                            status={status}
+                            status={message.status}
                             key={message.messageId}
                             text={message.text}
                             date={message.date}

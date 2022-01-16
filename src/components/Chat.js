@@ -11,7 +11,7 @@ const Chat = () => {
     const dispatch = useDispatch();
     const currentDialogId = useSelector(selectors.currentDialogId);
     const currentDialogName = useSelector(selectors.currentDialogName);
-    const isDialogListFetching = useSelector(selectors.isDialogListFetching);
+    //const dialogListStatus = useSelector(selectors.dialogListStatus);
     useEffect(() => {
         dispatch(initChat());
 

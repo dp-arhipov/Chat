@@ -11,19 +11,13 @@ const currentUserSlice = createSlice({
     name: "currentUser",
     initialState: currentUserInitialState,
     reducers: {
-        setCurrentUserFetching(state, action) {
-            state.isFetching = action.payload;
-        },
-        setCurrentUser(state, action) {
-            state.id = action.payload.id
-            state.nickName = action.payload.nickName
-            state.name = action.payload.name
-        },
-        setNickName(state, action) {
-            state.nickName = action.payload
-        },
-        setName(state, action) {
-            state.name = action.payload
+
+        setCurrentUserProps(state, action){
+            const {id,name,nickName,status} = action.payload;
+            if(id)state.id = id;
+            if(name)state.name = name;
+            if(nickName)state.nickName = nickName;
+            if(status)state.status = status;
         },
         resetUser(state, action) {
             Object.assign(state, currentUserInitialState)
@@ -35,4 +29,4 @@ const currentUserSlice = createSlice({
 export const currentUserReducer = currentUserSlice.reducer;
 
 
-export const {setCurrentUserFetching, setCurrentUser, setNickName, setName, resetUser} = currentUserSlice.actions
+export const {setCurrentUserProps, setCurrentUser, setNickName, setName, resetUser} = currentUserSlice.actions
