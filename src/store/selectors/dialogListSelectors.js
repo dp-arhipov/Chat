@@ -40,7 +40,7 @@ export const dialogsInfo = (state) => {
 }
 
 export const currentDialogId = state => state.dialogs?.currentDialogId
-export const currentDialogScroll = state => state.dialogs?.currentDialogScrollPosition
+export const currentDialogScrollPositionTemp = state => state.dialogs?.currentDialogScrollPosition
 
 export const currentDialog = state => dialog(state,currentDialogId(state))
 export const currentDialogName = state => dialogName(state, currentDialogId(state))

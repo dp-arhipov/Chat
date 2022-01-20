@@ -6,7 +6,7 @@ import {
     resetFinder,
     resetUser,
     setCurrentDialogId,
-    setCurrentDialogScrollPosition2,
+    setCurrentDialogScrollPositionTemp,
     addDialog,
     pushDialogMessages,
     setDialogMessageProps,
@@ -188,7 +188,7 @@ export const setCurrentDialog = (dialogId) => {
 
         if (dialogIdPrevious) {
             //console.log(dialogIdPrevious)
-            const scrollPosition = selectors.currentDialogScroll(getState());
+            const scrollPosition = selectors.currentDialogScrollPositionTemp(getState());
             console.log(scrollPosition)
             dispatch(setDialogProps({dialogId: dialogIdPrevious, scrollPosition: scrollPosition}))
         }
@@ -271,9 +271,9 @@ export const setCurrentDialogScrollPosition = (scrollPosition) => {
     }
 }
 
-export const setCurrentDialogScrollPosition22 = (scrollPosition) => {
+export const setCurrentDialogTempScrollPosition = (scrollPosition) => {
     return async function disp(dispatch, getState) {
-        dispatch(setCurrentDialogScrollPosition2({scrollPosition}));
+        dispatch(setCurrentDialogScrollPositionTemp({scrollPosition}));
     }
 }
 

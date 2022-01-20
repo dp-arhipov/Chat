@@ -3,14 +3,14 @@ const dialogListInitialState = {
 
     status:'LOADED',
     currentDialogId: '',
-    currentDialogScrollPosition: 0,
+    currentDialogScrollPositionTemp: 0,
     dialogList: {}
 }
 
 const dialogInitialState = {
     status:'FETCHING',
     dialogId: '',
-    scrollPosition: 0,
+    scrollPosition: -1,
     messages: []
 }
 
@@ -60,8 +60,8 @@ const dialogListSlice = createSlice({
         setCurrentDialogId(state, action) {
             state.currentDialogId = action.payload
         },
-        setCurrentDialogScrollPosition2(state, action) {
-            state.currentDialogScrollPosition = action.payload.scrollPosition
+        setCurrentDialogScrollPositionTemp(state, action) {
+            state.currentDialogScrollPositionTemp = action.payload.scrollPosition
         },
 
 
@@ -81,7 +81,7 @@ export const {
     shiftDialogMessages,
     pushDialogMessages,
     addDialog,
-    setCurrentDialogScrollPosition2,
+    setCurrentDialogScrollPositionTemp,
     setCurrentDialogId,
     resetDialogList
 } = dialogListSlice.actions
