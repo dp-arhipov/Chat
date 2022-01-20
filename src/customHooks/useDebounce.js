@@ -17,3 +17,4 @@ export default function useDebounce(func, delay, cleanUp = false) {
         timeoutRef.current = setTimeout(() => func(...args), delay);
     };
 }
+

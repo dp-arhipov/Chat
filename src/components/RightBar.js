@@ -8,12 +8,13 @@ import MessagesList from "./MessagesList";
 import MessageInput from "./MessageInput";
 import Container from "@mui/material/Container";
 import {useLazyLoading} from "../customHooks/useLazyLoading";
+import useDebounce from "../customHooks/useDebounce";
 
 import {
     loadOldCurrentDialogMessages,
     sendMessage,
     setCurrentDialogScrollPosition,
-    setCurrentDialogScrollPosition22
+    setCurrentDialogTempScrollPosition
 } from "../store/actions";
 
 const RightBar = () => {
@@ -23,10 +24,7 @@ const RightBar = () => {
     const currentUserId = useSelector(selectors.currentUserId);
     const currentDialogId = useSelector(selectors.currentDialogId);
     const messages = useSelector(selectors.currentDialogMessages);
-
-
     const currentDialogScrollPosition = useSelector(selectors.currentDialogScrollPosition);
-
 
     const messageListContainerRef = useRef();
     const dispatch = useDispatch();
@@ -34,8 +32,8 @@ const RightBar = () => {
 
     useEffect(() => {
         const messageListContainer = messageListContainerRef.current;
-        messageListContainer.scrollTop = messageListContainer.scrollHeight
-        //messageListContainer.scrollTop = currentDialogScrollPosition
+        if(currentDialogScrollPosition==-1) messageListContainer.scrollTop = messageListContainer.scrollHeight
+        else messageListContainer.scrollTop = currentDialogScrollPosition
     }, [currentDialogId])
 
 
@@ -46,10 +44,10 @@ const RightBar = () => {
         }
     }
 
-    const onScroll = async () => {
+    const onScroll = async (ref) => {
         const messageListContainer = messageListContainerRef.current;
        // dispatch(setCurrentDialogScrollPosition(messageListContainer.scrollTop))
-       dispatch(setCurrentDialogScrollPosition22(messageListContainer.scrollTop))
+       dispatch(setCurrentDialogTempScrollPosition(messageListContainer.scrollTop))
         if (messageListContainer.scrollTop == 0) {
             const scrollHeightOld = messageListContainer.scrollHeight;
             await dispatch(loadOldCurrentDialogMessages());
@@ -59,6 +57,8 @@ const RightBar = () => {
         }
 
     }
+
+    const onScrollDebounced = useDebounce(onScroll, 300);
 
     const sendMessageHandler = (message) => {
         dispatch(sendMessage(message));
@@ -70,7 +70,7 @@ const RightBar = () => {
                 Диалог: {currentDialogName}
             </Typography>
             <Divider/>
-            <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScroll}>
+            <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScrollDebounced}>
                 <MessagesList scrollBottom={scrollBottom} currentUserId={currentUserId} messages={messages}/>
             </Box>
             <Box pt={'1rem'} mt={'auto'}>
