@@ -32,6 +32,25 @@ const RightBar = () => {
     const dispatch = useDispatch();
     const messageHeight = 93;
 
+    function useDebounce(func, delay, cleanUp = false) {
+        const timeoutRef = useRef();
+
+        function clearTimer() {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = undefined;
+            }
+        }
+
+        useEffect(() => (cleanUp ? clearTimer : undefined), [cleanUp]);
+
+        return (...args) => {
+            clearTimer();
+            timeoutRef.current = setTimeout(() => func(...args), delay);
+        };
+    }
+
+
     useEffect(() => {
         const messageListContainer = messageListContainerRef.current;
         messageListContainer.scrollTop = messageListContainer.scrollHeight
@@ -60,6 +79,8 @@ const RightBar = () => {
 
     }
 
+    const onScrollDebounced = useDebounce(onScroll, 300);
+
     const sendMessageHandler = (message) => {
         dispatch(sendMessage(message));
     }
@@ -70,7 +91,7 @@ const RightBar = () => {
                 Диалог: {currentDialogName}
             </Typography>
             <Divider/>
-            <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScroll}>
+            <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScrollDebounced}>
                 <MessagesList scrollBottom={scrollBottom} currentUserId={currentUserId} messages={messages}/>
             </Box>
             <Box pt={'1rem'} mt={'auto'}>
