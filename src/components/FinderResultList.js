@@ -6,20 +6,35 @@ import Avatar from "@mui/material/Avatar";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import {useDispatch, useSelector} from "react-redux";
+import * as selectors from "../store/selectors";
+import {createDialogWith} from "../store/actions";
 
-const FindResList = ({handleItemClick, findResult, isFindResultsFetching, status}) => {
-   // console.log(findResult.length);
+const FinderResultList = () => {
+
+
+    const finderData = useSelector(selectors.finderData);
+    const finderStatus = useSelector(selectors.finderStatus);
+    const dispatch = useDispatch();
+
+    const handleItemClick = (userId) => {
+        dispatch(createDialogWith(userId));
+    }
+
     return (
         <Box>
-            {(status=="FETCHING")
-                ? <Typography variant="subtitle1" color="text.secondary" component="div">
+            {(finderStatus =="FETCHING")
+                ? <Typography variant="subtitle1" color="text.secondary" component="div" sx={{padding:"10px"}}>
                     Идет поиск...
                 </Typography>
 
-                : (findResult.length!=0)
-                    ? findResult.map((user) => {
+                : (finderData.length!=0)
+                    ? finderData.map((user) => {
                         return (
                             <Fragment>
+                                <Typography variant="subtitle1" color="text.secondary" component="div" sx={{padding:"10px"}}>
+                                    Результаты поиска:
+                                </Typography>
                                 <ListItem onClick={() => handleItemClick(user.id)} sx={{cursor: "pointer"}}
                                           alignItems="flex-start" key={user.id}>
                                     <ListItemAvatar>
@@ -33,7 +48,7 @@ const FindResList = ({handleItemClick, findResult, isFindResultsFetching, status
                             </Fragment>
                         )
                     })
-                    : <Typography variant="subtitle1" color="text.secondary" component="div">
+                    : <Typography variant="subtitle1" color="text.secondary" component="div" sx={{padding:"10px"}}>
                         Ничего не найдено
                     </Typography>
 
@@ -42,4 +57,4 @@ const FindResList = ({handleItemClick, findResult, isFindResultsFetching, status
     );
 };
 
-export default FindResList;
+export default FinderResultList;
