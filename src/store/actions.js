@@ -3,7 +3,7 @@ import {
 
     shiftDialogMessages,
     resetDialogList,
-    resetFindResults,
+    resetFinder,
     resetUser,
     setCurrentDialogId,
     setCurrentDialogScrollPosition2,
@@ -12,8 +12,8 @@ import {
     setDialogMessageProps,
     setDialogProps,
     setDialogListProps,
-    setFindResultsStatus,
-    setFindResultsData,
+    setFinderStatus,
+    setFinderResults,
     setCurrentUserProps
 
 } from "./slices";
@@ -137,7 +137,7 @@ export const logOut = () => {
     return async function disp(dispatch, getState) {
         Auth.logOut();
         dispatch(resetUser())
-        dispatch(resetFindResults())
+        dispatch(resetFinder())
         dispatch(resetDialogList())
         DB.removeListeners();
     }
@@ -216,11 +216,11 @@ export const find = (searchString) => {
     return async function disp(dispatch, getState) {
         let result = [];
 
-        dispatch(setFindResultsStatus("FETCHING"))
+        dispatch(setFinderStatus("FETCHING"))
         const user = await DB.findUserByNickName(searchString)
         if (user) result.push(user)
-        dispatch(setFindResultsData(result))
-        dispatch(setFindResultsStatus("LOADED"))
+        dispatch(setFinderResults(result))
+        dispatch(setFinderStatus("LOADED"))
 
     }
 }
