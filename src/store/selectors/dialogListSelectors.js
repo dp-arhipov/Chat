@@ -1,3 +1,5 @@
+import {currentDialogId} from "./currentDialogSelectors"
+
 export const dialogList = state => state.dialogs.dialogList
 
 export const dialogListStatus = state => state.dialogs.status
@@ -38,9 +40,6 @@ export const dialogsInfo = (state) => {
         return dialogInfo(state, dialogId)
     })
 }
-
-export const currentDialogId = state => state.dialogs?.currentDialogId
-export const currentDialogScrollPositionTemp = state => state.dialogs?.currentDialogScrollPosition
 
 export const currentDialog = state => dialog(state,currentDialogId(state))
 export const currentDialogName = state => dialogName(state, currentDialogId(state))

@@ -14,7 +14,7 @@ import {
     setDialogListProps,
     setFinderStatus,
     setFinderResults,
-    setCurrentUserProps
+    setCurrentUserProps, resetCurrentDialog
 
 } from "./slices";
 
@@ -139,6 +139,7 @@ export const logOut = () => {
         dispatch(resetUser())
         dispatch(resetFinder())
         dispatch(resetDialogList())
+        dispatch(resetCurrentDialog())
         DB.removeListeners();
     }
 }
@@ -273,7 +274,7 @@ export const setCurrentDialogScrollPosition = (scrollPosition) => {
 
 export const setCurrentDialogTempScrollPosition = (scrollPosition) => {
     return async function disp(dispatch, getState) {
-        dispatch(setCurrentDialogScrollPositionTemp({scrollPosition}));
+        dispatch(setCurrentDialogScrollPositionTemp(scrollPosition));
     }
 }
 

@@ -2,8 +2,6 @@ import {createSlice, current} from "@reduxjs/toolkit";
 const dialogListInitialState = {
 
     status:'LOADED',
-    currentDialogId: '',
-    currentDialogScrollPositionTemp: 0,
     dialogList: {}
 }
 
@@ -57,13 +55,6 @@ const dialogListSlice = createSlice({
             state.dialogList[dialogId] = {...dialogInitialState,...action.payload}
         },
 
-        setCurrentDialogId(state, action) {
-            state.currentDialogId = action.payload
-        },
-        setCurrentDialogScrollPositionTemp(state, action) {
-            state.currentDialogScrollPositionTemp = action.payload.scrollPosition
-        },
-
 
         resetDialogList(state, action) {
             Object.assign(state, dialogListInitialState)
@@ -81,8 +72,6 @@ export const {
     shiftDialogMessages,
     pushDialogMessages,
     addDialog,
-    setCurrentDialogScrollPositionTemp,
-    setCurrentDialogId,
     resetDialogList
 } = dialogListSlice.actions
 
