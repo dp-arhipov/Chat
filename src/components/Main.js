@@ -6,25 +6,57 @@ import LeftBar from "./LeftBar/LeftBar";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
 import {init} from "../store/actions"
+import Grid from "@mui/material/Grid";
+import {Divider} from "@mui/material";
+import Paper from "@mui/material/Paper";
+
+import { ThemeProvider, createTheme, useTheme } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles'
+
 
 const Main = () => {
     const dispatch = useDispatch();
     const currentDialogId = useSelector(selectors.currentDialogId);
     const currentDialogName = useSelector(selectors.currentDialogName);
-    //const dialogListStatus = useSelector(selectors.dialogListStatus);
+
     useEffect(() => {
         dispatch(init());
 
     }, [])
 
-    //console.log(currentDialogId)
+    const theme = useTheme()
+    console.log(currentDialogId=='none' || currentDialogId=='')
+    const useStyles = makeStyles(()=> ({
+        leftBar: {
+            [theme.breakpoints.down('md')]: {
+                display: (currentDialogId!='none' && currentDialogId!='')?'none':'',
+            },
+        },
+        rightBar: {
+            [theme.breakpoints.down('md')]: {
+                display: (currentDialogId=='none' || currentDialogId=='')?'none':'',
+            },
+        }
+    }))
+
+    const classes = useStyles();
     return (
+
         <Fragment>
-            <Header/>
-            <Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>
-                <LeftBar/>
-                {(currentDialogId&&currentDialogName)? <RightBar/>:<Box sx={{display: "flex", alignItems: "center",justifyContent:"center"}}>Выберите существующий диалог или создайте новый при помощи поиска</Box>}
-            </Box>
+            <Grid container height={'100vh'} direction="column" >
+                <Grid item>
+                    <Header/>
+                </Grid>
+                <Grid container flex={'1'} >
+                    <Grid container sm={12} md={3} className={classes.leftBar}>
+                        <LeftBar />
+                    </Grid>
+
+                    <Grid container sm={12} md={9} className={classes.rightBar} >
+                        <RightBar/>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Fragment>
     );
 };

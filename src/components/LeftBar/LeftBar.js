@@ -5,18 +5,23 @@ import FinderInput from "./FinderInput";
 import FinderResultList from "./FinderResultList";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors"
+import Paper from "@mui/material/Paper";
+
 const LeftBar = () => {
 
     const finderStatus = useSelector(selectors.finderStatus);
 
     return (
-        <Box p={'1rem'}>
-            <FinderInput/>
+        <Box display={'flex'} flex={'1'} flexDirection={'column'} sx={{minWidth: '0', borderRight: '1px solid lightgray'}} pt={1}>
+            <Box p={3}>
+                <FinderInput/>
+            </Box>
 
-            {(finderStatus!='INIT')
+            {(finderStatus != 'INIT')
                 ? <FinderResultList/>
-                : <DialogList/>
+                : <DialogList flex='1 0 0'/>
             }
+
         </Box>
     );
 };

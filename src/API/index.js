@@ -4,12 +4,12 @@ import {getAuth, setPersistence, browserSessionPersistence} from "firebase/auth"
 import {FirebaseAuth, FirebaseDB} from "./firebaseAPI";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCVwzZ5D0PyOuiAdr2QKbtErjYOTZD4uws",
-    authDomain: "chat-3-bcf80.firebaseapp.com",
-    projectId: "chat-3-bcf80",
-    storageBucket: "chat-3-bcf80.appspot.com",
-    messagingSenderId: "372676514129",
-    appId: "1:372676514129:web:55e7de9173144b5193c370"
+    apiKey: "AIzaSyDmB2BUfUuAaQQ3qxjOz8dKCk9big-TcUs",
+    authDomain: "chat-4-e32f2.firebaseapp.com",
+    projectId: "chat-4-e32f2",
+    storageBucket: "chat-4-e32f2.appspot.com",
+    messagingSenderId: "113749571947",
+    appId: "1:113749571947:web:32766f39ad4317981fb42e"
 };
 
 const app = initializeApp(firebaseConfig);

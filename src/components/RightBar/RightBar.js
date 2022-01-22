@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {Fragment, useCallback, useEffect, useRef, useState} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import * as selectors from "../../store/selectors"
 import Box from "@mui/material/Box";
@@ -7,78 +7,68 @@ import Divider from "@mui/material/Divider";
 import MessagesList from "./MessageList";
 import MessageInput from "./MessageInput";
 
-import useDebounce from "../../customHooks/useDebounce";
 
 import {
-    loadOldCurrentDialogMessages,
-    sendMessage,
-    setCurrentDialogScrollPosition,
-    setCurrentDialogTempScrollPosition
+    sendMessage, setCurrentDialog,
 } from "../../store/actions";
+import Grid from "@mui/material/Grid";
+import SendIcon from "@mui/icons-material/Send";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {setCurrentDialogId} from "../../store/slices";
+
+//import * as actions from "../../store/actions";
 
 const RightBar = () => {
     console.log("render Main")
-    //const currentDialog = useSelector(state => state.currentDialog);
+
     const currentDialogName = useSelector(selectors.currentDialogName);
-    const currentUserId = useSelector(selectors.currentUserId);
-    const currentDialogId = useSelector(selectors.currentDialogId);
-    const messages = useSelector(selectors.currentDialogMessages);
-    const currentDialogScrollPosition = useSelector(selectors.currentDialogScrollPosition);
-
-    const messageListContainerRef = useRef();
     const dispatch = useDispatch();
-    const messageHeight = 93;
 
-    useEffect(() => {
-        const messageListContainer = messageListContainerRef.current;
-        if(currentDialogScrollPosition==-1) messageListContainer.scrollTop = messageListContainer.scrollHeight
-        else messageListContainer.scrollTop = currentDialogScrollPosition
-    }, [currentDialogId])
-
-
-    const scrollBottom = () => {
-        const messageListContainer = messageListContainerRef.current;
-        if (messageListContainer.scrollTop + messageListContainer.clientHeight + messageHeight == messageListContainer.scrollHeight) {
-            messageListContainer.scrollTop = messageListContainer.scrollHeight;
-        }
-    }
-
-    const onScroll = async (ref) => {
-        const messageListContainer = messageListContainerRef.current;
-       // dispatch(setCurrentDialogScrollPosition(messageListContainer.scrollTop))
-       dispatch(setCurrentDialogTempScrollPosition(messageListContainer.scrollTop))
-        if (messageListContainer.scrollTop == 0) {
-            const scrollHeightOld = messageListContainer.scrollHeight;
-            await dispatch(loadOldCurrentDialogMessages());
-            const scrollHeightNew = messageListContainer.scrollHeight;
-            const scrollDifference = scrollHeightNew - scrollHeightOld;
-            messageListContainer.scrollTop = scrollDifference;
-        }
-
-    }
-
-    const onScrollDebounced = useDebounce(onScroll, 300);
-
-    const sendMessageHandler = (message) => {
+    const sendMessage_ = (message) => {
         dispatch(sendMessage(message));
     }
 
+    const onBackButtonClick = () => {
+        dispatch(setCurrentDialog('none'))
+    }
+
+
     return (
-        <Box sx={{display: 'flex', flexDirection: 'column'}}>
-            <Typography variant="h5" p={"1rem"} color="text.secondary" component="div">
-                Диалог: {currentDialogName}
-            </Typography>
-            <Divider/>
-            <Box sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScrollDebounced}>
-                <MessagesList scrollBottom={scrollBottom} currentUserId={currentUserId} messages={messages}/>
-            </Box>
-            <Box pt={'1rem'} mt={'auto'}>
-                <MessageInput sendMessage={sendMessageHandler}/>
-            </Box>
+
+        <Box display={'flex'} flexDirection={'column'} flex={'1'} sx={{minWidth: '0'}}>
+            {
+                currentDialogName
+                    ?
+                    <Fragment>
+                        <Box display={'flex'}>
+                            <IconButton onClick={onBackButtonClick}>
+                                <ArrowBackIcon/>
+                            </IconButton>
+                            <Typography variant="h6" p={2} color="text.secondary">
+                                Диалог: {currentDialogName}
+                            </Typography>
+                        </Box>
+                        <Divider/>
+                        <MessagesList flex='1 0 0'/>
+                        <Box pl={1} pt={1} mt={'auto'}>
+                            <MessageInput submitHandler={sendMessage_}/>
+                        </Box>
+
+                    </Fragment>
+                    :
+                    <Box display={'flex'} flexDirection={'column'} flex={'1'} alignItems={'center'}
+                         justifyContent={'center'}>
+                        <Typography variant="body1" color="text.secondary">
+                            Выберите существующий диалог или создайте новый при помощи поиска
+                        </Typography>
+                    </Box>
+            }
         </Box>
 
 
-    );
+    )
+
 };
 
 

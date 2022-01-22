@@ -9,7 +9,9 @@ import UserProfileModal from "./UserProfileModal";
 import {logOut} from "../../store/actions"
 import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
+import ExploreIcon from '@mui/icons-material/Explore';
 import * as selectors from "../../store/selectors";
+import Box from "@mui/material/Box";
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
@@ -25,14 +27,12 @@ const Header = () => {
     // const currentUser = store.getState().currentUser;
     const currentUserName = useSelector(selectors.currentUserName);
     return (
-        <Fragment>
-            <AppBar position="static">
-                <Toolbar>
-                    {/*<img src={avatar} alt="Avatar"/>*/}
-                    <Typography variant="h5" component="div" sx={{flexGrow: 1}}>
-                        AMessanger
-                    </Typography>
-                    <Typography variant="h6" component="div" onClick={handleOpen} sx={{cursor:"pointer"}}>
+        <AppBar position="static">
+            <Toolbar sx={{display: 'flex'}}>
+                {/*<img src={avatar} alt="Avatar"/>*/}
+                <ExploreIcon/>
+                <Box display={'flex'} marginLeft={'auto'} alignItems={'center'}>
+                    <Typography variant="h6" component="div" onClick={handleOpen} sx={{cursor: "pointer"}}>
                         {currentUserName}
                     </Typography>
                     <IconButton color="inherit" onClick={handleOpen}>
@@ -42,12 +42,11 @@ const Header = () => {
                     <IconButton color="inherit" onClick={logOutButtonHandler}>
                         <LogoutRoundedIcon fontSize="medium"/>
                     </IconButton>
-                </Toolbar>
-            </AppBar>
+                </Box>
 
+            </Toolbar>
             <UserProfileModal handleClose={handleClose} handleOpen={handleOpen} open={open}/>
-        </Fragment>
-
+        </AppBar>
     );
 };
 

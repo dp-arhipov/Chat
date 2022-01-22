@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors";
 import {createDialogWith} from "../../store/actions";
+import Dialog from "./Dialog";
 
 const FinderResultList = () => {
 
@@ -35,16 +36,18 @@ const FinderResultList = () => {
                                 <Typography variant="subtitle1" color="text.secondary" component="div" sx={{padding:"10px"}}>
                                     Результаты поиска:
                                 </Typography>
-                                <ListItem onClick={() => handleItemClick(user.id)} sx={{cursor: "pointer"}}
-                                          alignItems="flex-start" key={user.id}>
-                                    <ListItemAvatar>
-                                        <Avatar alt={user.name} src="/static/images/avatar/1.jpg"/>
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={user.name}
-                                    />
-                                </ListItem>
-                                <Divider variant="inset"/>
+
+                                <Dialog
+                                    key={user.id}
+                                    onClick={() => handleItemClick(user.id)}
+                                    sx={{cursor: "pointer"}}
+                                    id={user.id}
+                                    name={user.name}
+                                    caption={user.nickName}
+                                    button
+                                    divider
+                                />
+
                             </Fragment>
                         )
                     })

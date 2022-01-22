@@ -121,13 +121,16 @@ export class FirebaseDB {
     }
 
     addDialogMessagesListener = async (dialogId, callback) => {
-        const q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(1))
+        const q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(10))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
-            const isLocal = snapshot.metadata.hasPendingWrites;
+           // const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach((change) => {
-                if (!isLocal) {
+                //console.log(change.doc.data())
+               // if (!isLocal) {
+
                     callback(dialogId, change.doc.data());
-                }
+
+                //}
             });
         })
         this.listeners.push(unsubscribe)
@@ -210,6 +213,18 @@ export class FirebaseDB {
 
     }
 
+    setDialogMessageProps = async (dialogId, messageId, props) => {
+        console.log(props)
+        const docRef = doc(this.refs.dialogData(dialogId), messageId);
+        const {status} = props;
+        let result;
+        if (status) result = await updateDoc(docRef, {status});
+
+        return result;
+
+    }
+
+
     getDialogMessage = async (dialogId, messageId) => {
         let q = doc(this.refs.dialogData(dialogId), messageId)
         const docSnap = await getDoc(q);
@@ -239,7 +254,7 @@ export class FirebaseDB {
         return messages;
     }
 
-    //
+
     // getUserDialogList = async (userId) => {
     //     let dialogList = [];
     //
@@ -324,7 +339,7 @@ export class FirebaseDB {
 
         docs.forEach((doc) => {
             if (doc.data().nickName == nickName) {
-                user = {id: doc.id, name: doc.data().name}
+                user = {id: doc.id, name: doc.data().name, nickName: doc.data().nickName}
             }
         });
 

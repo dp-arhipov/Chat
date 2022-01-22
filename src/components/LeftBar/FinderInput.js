@@ -32,9 +32,11 @@ const FinderInput = ({handleFinder}) => {
     const handleChangeDebounce = useDebounce(handleChange, 300);
 
     return (
-        <Box component="form" sx={{display: 'flex'}}>
+        <Box component="form" >
             <TextField
-                sx={{flex: '1'}}
+                noValidate
+                autoComplete='off'
+                sx={{width: '100%'}}
                 placeholder="Найти..."
                 defaultValue=''
                 inputRef={searchRef}

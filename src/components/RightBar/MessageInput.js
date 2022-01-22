@@ -4,38 +4,63 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import SendIcon from '@mui/icons-material/Send';
 
-const MessageInput = ({sendMessage}) => {
-
+const MessageInput = ({submitHandler, ...props}) => {
 
     const [inputText, setInputText] = useState('');
-    const handleSubmit = (event) => {
-        event.preventDefault();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
         if (inputText.trim() != '') {
-            sendMessage(inputText);
+            submitHandler(inputText);
         }
         setInputText('');
     }
 
-    return (
-        <Box component="form" onSubmit={handleSubmit} sx={{display: 'flex'}}>
-            <TextField
-                sx={{flex: '1'}}
-                variant="outlined"
-                size="small"
-                placeholder="Введите сообщение..."
-                value={inputText}
-                onChange={e => setInputText(e.target.value)}
-                InputProps={{
-                    endAdornment:
-                        <InputAdornment position="end">
-                            <Button type="submit" variant="filled">
-                                Отправить
-                            </Button>
-                        </InputAdornment>
-                }}
+    const onChange = (e) => {
+        setInputText(e.target.value)
+    }
 
-            />
+    const onKey = (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault()
+            if (e.shiftKey) {
+                setInputText(inputText + '\r')
+            }
+            if (!e.shiftKey) {
+                handleSubmit(e)
+            }
+        }
+    }
+
+    return (
+        <Box {...props} >
+            <form onSubmit={handleSubmit}>
+                <TextField
+                    onKeyDown={onKey}
+                    onChange={onChange}
+                    value={inputText}
+                    multiline
+                    maxRows={10}
+                    size="small"
+                    placeholder="Введите сообщение..."
+                    fullWidth
+                    autoFocus
+                    noValidate
+                    autoComplete='off'
+                    InputProps={{
+                        endAdornment:
+                            <InputAdornment position="end">
+                                <IconButton aria-label="send" type="submit">
+                                    <SendIcon/>
+                                </IconButton>
+                            </InputAdornment>
+                    }}
+
+                />
+            </form>
         </Box>
     );
 };
