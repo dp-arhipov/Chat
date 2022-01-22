@@ -76,15 +76,14 @@ export const addDialogMessagesListener = (dialogId) => {
         const r = await DB.addDialogMessagesListener(
             dialogId,
             (dialogId, message) => {
-
                 const lastMessage =  selectors.dialogLastMessage(getState(), dialogId)
                 if (lastMessage == false) {
-                    dispatch(pushDialogMessages({dialogId, messages}))
+                    dispatch(pushDialogMessages({dialogId, message}))
                 }
 
                 if (lastMessage.hasOwnProperty("timestamp")) {
                     if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
-                        dispatch(pushDialogMessages({dialogId, messages}))
+                        dispatch(pushDialogMessages({dialogId, message}))
                     }
                 }
 
