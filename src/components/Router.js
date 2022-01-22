@@ -1,9 +1,8 @@
 import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import RightBar from "./RightBar";
 import NotFound from "./NotFound";
 import App from "../App";
-import Chat from "./Chat";
+import Main from "./Main";
 
 const Router =()=>{
 
@@ -11,7 +10,7 @@ const Router =()=>{
         <BrowserRouter>
             <Switch>
                 <Route exact path="/" component={App}></Route>
-                <Route exact path="/dialog/:id" component={Chat}></Route>
+                <Route exact path="/dialog/:id" component={Main}></Route>
                 <Route component={NotFound}></Route>
             </Switch>
         </BrowserRouter>

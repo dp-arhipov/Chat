@@ -1,21 +1,20 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useSelector, useDispatch} from "react-redux";
-import * as selectors from "../store/selectors"
+import * as selectors from "../../store/selectors"
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import MessagesList from "./MessagesList";
+import MessagesList from "./MessageList";
 import MessageInput from "./MessageInput";
-import Container from "@mui/material/Container";
-import {useLazyLoading} from "../customHooks/useLazyLoading";
-import useDebounce from "../customHooks/useDebounce";
+
+import useDebounce from "../../customHooks/useDebounce";
 
 import {
     loadOldCurrentDialogMessages,
     sendMessage,
     setCurrentDialogScrollPosition,
     setCurrentDialogTempScrollPosition
-} from "../store/actions";
+} from "../../store/actions";
 
 const RightBar = () => {
     console.log("render Main")

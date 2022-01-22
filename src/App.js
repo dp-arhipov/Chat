@@ -1,11 +1,9 @@
 import React, {useEffect} from "react";
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
-import Chat from "./components/Chat";
+import Main from "./components/Main";
 import Login from "./components/Login";
-import Test from "./components/Test";
 import NotFound from "./components/NotFound";
 import './App.scss';
-import UserProfile from "./components/UserProfile";
 import {useDispatch, useSelector} from "react-redux";
 import {initApp} from "./store/actions";
 import {isCurrentUserLoggedIn} from "./store/selectors";
@@ -24,7 +22,7 @@ function App() {
             <BrowserRouter>
                 <Switch>
                     {(_isCurrentUserLoggedIn)
-                        ? <Route exact path="/" component={Chat}></Route>
+                        ? <Route exact path="/" component={Main}></Route>
                         : <Route exact path="/" component={Login}></Route>
                     }
                     <Route component={NotFound}></Route>

@@ -1,18 +1,15 @@
 import React, {Fragment, useContext} from 'react';
 import {AppBar, IconButton, Typography} from '@mui/material';
-import * as API from "../API"
 
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Toolbar from "@mui/material/Toolbar";
 import {AccountCircle} from "@mui/icons-material";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import ModalUserProfile from "./ModalUserProfile";
-import {store} from '../store'
-import {logOut} from "../store/actions"
+import UserProfileModal from "./UserProfileModal";
+
+import {logOut} from "../../store/actions"
 import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
-import * as selectors from "../store/selectors";
+import * as selectors from "../../store/selectors";
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
@@ -48,7 +45,7 @@ const Header = () => {
                 </Toolbar>
             </AppBar>
 
-            <ModalUserProfile handleClose={handleClose} handleOpen={handleOpen} open={open}/>
+            <UserProfileModal handleClose={handleClose} handleOpen={handleOpen} open={open}/>
         </Fragment>
 
     );

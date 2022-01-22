@@ -4,8 +4,7 @@ import Box from "@mui/material/Box";
 import FinderInput from "./FinderInput";
 import FinderResultList from "./FinderResultList";
 import {useDispatch, useSelector} from "react-redux";
-import {createDialogWith} from "../store/actions"
-import * as selectors from "../store/selectors"
+import * as selectors from "../../store/selectors"
 const LeftBar = () => {
 
     const finderStatus = useSelector(selectors.finderStatus);

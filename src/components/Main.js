@@ -1,19 +1,19 @@
 import React, {Fragment, useEffect} from 'react';
-import RightBar from "./RightBar";
-import Header from "./Header";
+import RightBar from "./RightBar/RightBar";
+import Header from "./Header/Header";
 import Box from "@mui/material/Box";
-import LeftBar from "./LeftBar";
+import LeftBar from "./LeftBar/LeftBar";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
-import {initChat} from "../store/actions"
+import {init} from "../store/actions"
 
-const Chat = () => {
+const Main = () => {
     const dispatch = useDispatch();
     const currentDialogId = useSelector(selectors.currentDialogId);
     const currentDialogName = useSelector(selectors.currentDialogName);
     //const dialogListStatus = useSelector(selectors.dialogListStatus);
     useEffect(() => {
-        dispatch(initChat());
+        dispatch(init());
 
     }, [])
 
@@ -29,4 +29,4 @@ const Chat = () => {
     );
 };
 
-export default Chat;
+export default Main;

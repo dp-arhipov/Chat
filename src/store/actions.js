@@ -42,7 +42,7 @@ export const logIn = () => {
 }
 
 
-export const initChat = () => {
+export const init = () => {
     return async function disp(dispatch, getState) {
         dispatch(addUserInfoListener());
         await dispatch(addDialogListListener())

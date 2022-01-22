@@ -7,8 +7,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import {useDispatch, useSelector} from "react-redux";
-import * as selectors from "../store/selectors";
-import {createDialogWith} from "../store/actions";
+import * as selectors from "../../store/selectors";
+import {createDialogWith} from "../../store/actions";
 
 const FinderResultList = () => {
 

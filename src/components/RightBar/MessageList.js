@@ -1,13 +1,12 @@
 import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import Message from "./Message";
-import * as selectors from "../store/selectors"
-import {store} from '../store'
+import * as selectors from "../../store/selectors"
 import {useSelector} from "react-redux";
-import {useLazyLoading} from "../customHooks/useLazyLoading";
+
 import Container from "@mui/material/Container";
 import {nanoid} from "nanoid";
 
-const MessagesList = ({scrollBottom, messages, currentUserId}) => {
+const MessageList = ({scrollBottom, messages, currentUserId}) => {
     console.log("render MessageList")
     useEffect(() => {
         scrollBottom();
@@ -33,4 +32,4 @@ const MessagesList = ({scrollBottom, messages, currentUserId}) => {
     );
 };
 
-export default React.memo(MessagesList);
+export default React.memo(MessageList);

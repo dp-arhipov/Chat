@@ -1,10 +1,9 @@
 import React, {Fragment, useState} from 'react';
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import {Typography} from "@mui/material";
 import UserProfile from "./UserProfile";
 
-const ModalUserProfile = ({open,handleClose}) => {
+const UserProfileModal = ({open,handleClose}) => {
 
     const style = {
         position: 'absolute',
@@ -33,4 +32,4 @@ const ModalUserProfile = ({open,handleClose}) => {
     );
 };
 
-export default ModalUserProfile;
+export default UserProfileModal;
