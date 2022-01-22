@@ -12,6 +12,17 @@ const dialogInitialState = {
     messages: []
 }
 
+
+const messageInitialState = {
+    status:'FETCHING',
+    messageId: '',
+    creatorId: '',
+    text: '',
+    date: '',
+    time: '',
+    timestamp: ''
+}
+
 const dialogListSlice = createSlice({
     name: "dialogListSlice",
     initialState: dialogListInitialState,
@@ -35,6 +46,7 @@ const dialogListSlice = createSlice({
             const messagesInState = state.dialogList[dialogId].messages
             if(status) messagesInState.find(message=>message.messageId == messageId).status = status
             if(timestamp) messagesInState.find(message=>message.messageId == messageId).timestamp = timestamp
+            // if(isReaded) messagesInState.find(message=>message.messageId == messageId).isReaded = isReaded
         },
 
         setDialogProps(state, action) {

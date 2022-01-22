@@ -7,6 +7,7 @@ import {
 } from "../slices";
 
 import * as selectors from "../selectors"
+import {setMessageIsReaded} from "./dialogActions";
 
 
 const messageLoadLimit = 10;
@@ -76,12 +77,16 @@ export const addDialogMessagesListener = (dialogId) => {
         const r = await DB.addDialogMessagesListener(
             dialogId,
             (dialogId, message) => {
+
+                //console.log(message)
+                if(message.status=="READED") dispatch(setMessageIsReaded(dialogId, message.messageId));
+
+
                 const lastMessage =  selectors.dialogLastMessage(getState(), dialogId)
-                if (lastMessage == false) {
+                if (!lastMessage) {
                     dispatch(pushDialogMessages({dialogId, message}))
                 }
-
-                if (lastMessage.hasOwnProperty("timestamp")) {
+                else if (lastMessage.hasOwnProperty("timestamp")) {
                     if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
                         dispatch(pushDialogMessages({dialogId, message}))
                     }

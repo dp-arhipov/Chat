@@ -27,6 +27,7 @@ export const sendMessage = (text) => {
         let message = {
             messageId,
             creatorId: creatorId,
+            isReaded: false,
             text: text,
             date: date,
             time: time,
@@ -37,14 +38,20 @@ export const sendMessage = (text) => {
         dispatch(pushDialogMessages({dialogId, message}));
         dispatch(setDialogMessageProps({dialogId, messageId, status: "FETCHING"}));
         const request = await DB.sendMessage(dialogId, message);
-        dispatch(setDialogMessageProps({dialogId, messageId, timestamp: request.timestamp, status:"LOADED"}));
+        dispatch(setDialogMessageProps({dialogId, messageId, timestamp: request.timestamp, status: "LOADED"}));
         dispatch(setDialogProps({dialogId, status: "LOADED"}))
 
-        const test = selectors.test(getState(),dialogId);
+        const test = selectors.test(getState(), dialogId);
         //dispatch(setDialogMessageProperty({dialogId: dialogId,messageId:messageId, status:"1" }))
     }
 }
 
+export const setMessageIsReaded = (dialogId, messageId) => {
+    return async function disp(dispatch, getState) {
+        dispatch(setDialogMessageProps({dialogId, messageId, status: "READED"}))
+        await DB.setDialogMessageProps(dialogId, messageId, {status: "READED"} );
+    }
+}
 
 export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
@@ -80,16 +87,15 @@ export const loadOldCurrentDialogMessages = () => {
 }
 
 
-
 export const createDialogWith = (userId) => {
     return async function disp(dispatch, getState) {
         if (userId != selectors.currentUserId(getState())) {
             let dialogId = await DB.findDialogByCompanionId(userId);
             console.log(dialogId)
             if (!dialogId) {
-                dispatch(setDialogListProps({status:"FETCHING"}))
+                dispatch(setDialogListProps({status: "FETCHING"}))
                 dialogId = await DB.createDialogWith(userId);
-                dispatch(setDialogListProps({status:"LOADED"}))
+                dispatch(setDialogListProps({status: "LOADED"}))
                 //await dispatch(loadDialogList());
             }
 
