@@ -34,6 +34,8 @@ const FinderInput = ({handleFinder}) => {
     return (
         <Box component="form" sx={{display: 'flex'}}>
             <TextField
+                noValidate
+                autoComplete='off'
                 sx={{flex: '1'}}
                 placeholder="Найти..."
                 defaultValue=''

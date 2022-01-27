@@ -46,7 +46,7 @@ const UserProfile = () => {
     return (
         <Fragment>
 
-            <FormControl sx={{width: '100%'}}>
+            <FormControl sx={{width: '100%'}} noValidate autoComplete='off'>
                 <Stack direction="column" spacing={3}>
                     <TextField label="Никнейм"
                                id="filled-basic" variant="filled"

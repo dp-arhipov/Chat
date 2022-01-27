@@ -46,7 +46,7 @@ export const sendMessage = (text) => {
     }
 }
 
-export const setMessageIsReaded = (dialogId, messageId) => {
+export const setDialogMessageIsReaded = (dialogId, messageId) => {
     return async function disp(dispatch, getState) {
         dispatch(setDialogMessageProps({dialogId, messageId, status: "READED"}))
         await DB.setDialogMessageProps(dialogId, messageId, {status: "READED"} );
