@@ -15,15 +15,14 @@ import useDebounce from "../../customHooks/useDebounce";
 
 const MessageList = ({...props}) => {
     const currentUserId = useSelector(selectors.currentUserId);
-    const dialogId = useSelector(selectors.currentDialogId);
     const messages = useSelector(selectors.currentDialogMessages);
-    const dispatch = useDispatch();
-
-
     const currentDialogId = useSelector(selectors.currentDialogId);
     const currentDialogScrollPosition = useSelector(selectors.currentDialogScrollPosition);
+
+    const dispatch = useDispatch();
     const messageListContainerRef = useRef();
     const messageHeight = 93;
+
 
     const scrollBottom = () => {
         const messageListContainer = messageListContainerRef.current;
@@ -45,7 +44,7 @@ const MessageList = ({...props}) => {
 
 
     const onRead = (messageId) => {
-        dispatch(setDialogMessageIsReaded(dialogId, messageId))
+        dispatch(setDialogMessageIsReaded(currentDialogId, messageId))
     }
 
 
@@ -67,7 +66,7 @@ const MessageList = ({...props}) => {
 
 
     return (
-        <Box {...props} sx={{overflow: 'auto'}} ref={messageListContainerRef} onScroll={onScrollDebounced}>
+        <Box {...props}  overflow='auto' ref={messageListContainerRef} onScroll={onScrollDebounced}>
             {messages.map(message => {
                     const isCurrentUserMessage = (message.creatorId == currentUserId)
                     return (

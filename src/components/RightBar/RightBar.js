@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {Fragment, useCallback, useEffect, useRef, useState} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import * as selectors from "../../store/selectors"
 import Box from "@mui/material/Box";
@@ -11,6 +11,7 @@ import MessageInput from "./MessageInput";
 import {
     sendMessage,
 } from "../../store/actions";
+import Grid from "@mui/material/Grid";
 
 //import * as actions from "../../store/actions";
 
@@ -24,18 +25,34 @@ const RightBar = () => {
         dispatch(sendMessage(message));
     }
 
+
     return (
-        <Box sx={{display: 'flex', flexDirection: 'column'}}>
-            <Typography variant="h5" p={"1rem"} color="text.secondary" component="div">
-                Диалог: {currentDialogName}
-            </Typography>
-            <Divider/>
-            <MessagesList/>
-            <MessageInput pt={'1rem'} mt={'auto'} submitHandler={sendMessage_}/>
+
+
+        <Box display={'flex'} flexDirection={'column'} flex={'1'} sx={{minWidth:'0'}}>
+            {
+                currentDialogName
+                    ?
+                    <Fragment>
+                        <Typography variant="h6" pb={2} pl={2} color="text.secondary">
+                            Диалог: {currentDialogName}
+                        </Typography>
+                        <Divider/>
+                        <MessagesList flex='1 0 0'/>
+                        <MessageInput pt={1} mt={'auto'} submitHandler={sendMessage_}/>
+                    </Fragment>
+                    :
+                    <Box display={'flex'} flexDirection={'column'} flex={'1'} alignItems={'center'} justifyContent={'center'}>
+                        <Typography variant="body1" color="text.secondary">
+                            Выберите существующий диалог или создайте новый при помощи поиска
+                        </Typography>
+                    </Box>
+            }
         </Box>
 
 
-    );
+    )
+
 };
 
 

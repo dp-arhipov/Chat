@@ -25,7 +25,6 @@ const Header = () => {
     // const currentUser = store.getState().currentUser;
     const currentUserName = useSelector(selectors.currentUserName);
     return (
-        <Fragment>
             <AppBar position="static">
                 <Toolbar>
                     {/*<img src={avatar} alt="Avatar"/>*/}
@@ -43,11 +42,8 @@ const Header = () => {
                         <LogoutRoundedIcon fontSize="medium"/>
                     </IconButton>
                 </Toolbar>
+                <UserProfileModal handleClose={handleClose} handleOpen={handleOpen} open={open}/>
             </AppBar>
-
-            <UserProfileModal handleClose={handleClose} handleOpen={handleOpen} open={open}/>
-        </Fragment>
-
     );
 };
 

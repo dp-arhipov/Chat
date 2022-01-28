@@ -339,7 +339,7 @@ export class FirebaseDB {
 
         docs.forEach((doc) => {
             if (doc.data().nickName == nickName) {
-                user = {id: doc.id, name: doc.data().name}
+                user = {id: doc.id, name: doc.data().name, nickName: doc.data().nickName}
             }
         });
 

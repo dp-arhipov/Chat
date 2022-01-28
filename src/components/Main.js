@@ -6,6 +6,7 @@ import LeftBar from "./LeftBar/LeftBar";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
 import {init} from "../store/actions"
+import Grid from "@mui/material/Grid";
 
 const Main = () => {
     const dispatch = useDispatch();
@@ -20,11 +21,19 @@ const Main = () => {
     //console.log(currentDialogId)
     return (
         <Fragment>
-            <Header/>
-            <Box sx={{display: "grid", grid: "93vh/1fr 3fr"}}>
-                <LeftBar/>
-                {(currentDialogId&&currentDialogName)? <RightBar/>:<Box sx={{display: "flex", alignItems: "center",justifyContent:"center"}}>Выберите существующий диалог или создайте новый при помощи поиска</Box>}
-            </Box>
+            <Grid container height={'100vh'} direction="column">
+                <Grid item>
+                    <Header/>
+                </Grid>
+                <Grid container flex={'1'} pt={2}>
+                    <Grid container xs={4}>
+                        <LeftBar/>
+                    </Grid>
+                    <Grid container xs={8} >
+                        <RightBar/>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Fragment>
     );
 };

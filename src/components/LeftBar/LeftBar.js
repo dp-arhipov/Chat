@@ -10,12 +10,12 @@ const LeftBar = () => {
     const finderStatus = useSelector(selectors.finderStatus);
 
     return (
-        <Box p={'1rem'}>
+        <Box display={'flex'} flexDirection={'column'} sx={{minWidth:'0'}}>
             <FinderInput/>
 
             {(finderStatus!='INIT')
                 ? <FinderResultList/>
-                : <DialogList/>
+                : <DialogList flex='1 0 0'/>
             }
         </Box>
     );
