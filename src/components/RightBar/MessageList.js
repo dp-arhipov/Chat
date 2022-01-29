@@ -66,7 +66,7 @@ const MessageList = ({...props}) => {
 
 
     return (
-        <Box {...props}  overflow='auto' ref={messageListContainerRef} onScroll={onScrollDebounced}>
+        <Box {...props}  overflow='auto' ref={messageListContainerRef} onScroll={onScrollDebounced} p={2}>
             {messages.map(message => {
                     const isCurrentUserMessage = (message.creatorId == currentUserId)
                     return (

@@ -28,18 +28,20 @@ const RightBar = () => {
 
     return (
 
-
-        <Box display={'flex'} flexDirection={'column'} flex={'1'} sx={{minWidth:'0'}}>
+        <Box display={'flex'} flexDirection={'column'} flex={'1'} >
             {
                 currentDialogName
                     ?
                     <Fragment>
-                        <Typography variant="h6" pb={2} pl={2} color="text.secondary">
+                        <Typography variant="h6" p={2} color="text.secondary">
                             Диалог: {currentDialogName}
                         </Typography>
                         <Divider/>
                         <MessagesList flex='1 0 0'/>
-                        <MessageInput pt={1} mt={'auto'} submitHandler={sendMessage_}/>
+                        <Box pl={1} pt={1} mt={'auto'}>
+                            <MessageInput  submitHandler={sendMessage_}/>
+                        </Box>
+
                     </Fragment>
                     :
                     <Box display={'flex'} flexDirection={'column'} flex={'1'} alignItems={'center'} justifyContent={'center'}>

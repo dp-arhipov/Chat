@@ -9,12 +9,16 @@ import Typography from "@mui/material/Typography";
 
 const Dialog = ({name, caption, ...props}) => {
     return (
-        <ListItem {...props} >
+        <ListItem {...props}>
             <ListItemAvatar>
                 <Avatar alt={name} src="/static/images/avatar/1.jpg"/>
             </ListItemAvatar>
             <ListItemText
-                primary={name}
+                primary={
+                    <Typography sx={{overflow:'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color:'text.primary'}}>
+                        {name}
+                    </Typography>
+                }
                 secondary={
                     <Typography sx={{overflow:'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color:'text.secondary'}}>
                         {caption}

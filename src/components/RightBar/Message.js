@@ -31,9 +31,9 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage}) 
                     backgroundColor: isCurrentUserMessage ? 'inherit' : 'rgba(25,118,210,0.11)',
                     marginLeft: isCurrentUserMessage ? 'auto' : 0,
                     marginBottom:1,
-                    width: '25rem',
+                    width: '30rem',
                 }}>
-                    <CardContent >
+                    <CardContent>
                         <Box sx={{ display:"flex"}}>
                             <Typography variant="caption" color="textSecondary">
                                 {time}

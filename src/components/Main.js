@@ -7,6 +7,8 @@ import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
 import {init} from "../store/actions"
 import Grid from "@mui/material/Grid";
+import {Divider} from "@mui/material";
+import Paper from "@mui/material/Paper";
 
 const Main = () => {
     const dispatch = useDispatch();
@@ -25,11 +27,12 @@ const Main = () => {
                 <Grid item>
                     <Header/>
                 </Grid>
-                <Grid container flex={'1'} pt={2}>
-                    <Grid container xs={4}>
+                <Grid container flex={'1'}>
+                    <Grid container xs={3}>
                         <LeftBar/>
                     </Grid>
-                    <Grid container xs={8} >
+
+                    <Grid container xs={9}>
                         <RightBar/>
                     </Grid>
                 </Grid>
