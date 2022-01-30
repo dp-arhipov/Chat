@@ -9,9 +9,13 @@ import MessageInput from "./MessageInput";
 
 
 import {
-    sendMessage,
+    sendMessage, setCurrentDialog,
 } from "../../store/actions";
 import Grid from "@mui/material/Grid";
+import SendIcon from "@mui/icons-material/Send";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {setCurrentDialogId} from "../../store/slices";
 
 //import * as actions from "../../store/actions";
 
@@ -25,26 +29,36 @@ const RightBar = () => {
         dispatch(sendMessage(message));
     }
 
+    const onBackButtonClick = () => {
+        dispatch(setCurrentDialog('none'))
+    }
+
 
     return (
 
-        <Box display={'flex'} flexDirection={'column'} flex={'1'} >
+        <Box display={'flex'} flexDirection={'column'} flex={'1'} sx={{minWidth: '0'}}>
             {
                 currentDialogName
                     ?
                     <Fragment>
-                        <Typography variant="h6" p={2} color="text.secondary">
-                            Диалог: {currentDialogName}
-                        </Typography>
+                        <Box display={'flex'}>
+                            <IconButton onClick={onBackButtonClick}>
+                                <ArrowBackIcon/>
+                            </IconButton>
+                            <Typography variant="h6" p={2} color="text.secondary">
+                                Диалог: {currentDialogName}
+                            </Typography>
+                        </Box>
                         <Divider/>
                         <MessagesList flex='1 0 0'/>
                         <Box pl={1} pt={1} mt={'auto'}>
-                            <MessageInput  submitHandler={sendMessage_}/>
+                            <MessageInput submitHandler={sendMessage_}/>
                         </Box>
 
                     </Fragment>
                     :
-                    <Box display={'flex'} flexDirection={'column'} flex={'1'} alignItems={'center'} justifyContent={'center'}>
+                    <Box display={'flex'} flexDirection={'column'} flex={'1'} alignItems={'center'}
+                         justifyContent={'center'}>
                         <Typography variant="body1" color="text.secondary">
                             Выберите существующий диалог или создайте новый при помощи поиска
                         </Typography>

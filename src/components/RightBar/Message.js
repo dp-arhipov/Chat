@@ -15,7 +15,7 @@ import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import StatusIcon from "./StatusIcon";
 import Button from "@mui/material/Button";
-const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage}) => {
+const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,...props}) => {
 
 
     const {ref, inView, entry} = useInView({
@@ -27,12 +27,7 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage}) 
     }, [inView])
 
     return (
-                <Card elevation={1} sx={{
-                    backgroundColor: isCurrentUserMessage ? 'inherit' : 'rgba(25,118,210,0.11)',
-                    marginLeft: isCurrentUserMessage ? 'auto' : 0,
-                    marginBottom:1,
-                    width: '30rem',
-                }}>
+                <Card {...props} elevation={1} >
                     <CardContent>
                         <Box sx={{ display:"flex"}}>
                             <Typography variant="caption" color="textSecondary">

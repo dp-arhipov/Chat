@@ -22,14 +22,23 @@ const MessageList = ({...props}) => {
     const dispatch = useDispatch();
     const messageListContainerRef = useRef();
     const messageHeight = 93;
-
+    const messageListContainer = messageListContainerRef.current;
+    const [last, setLast] = useState();
 
     const scrollBottom = () => {
         const messageListContainer = messageListContainerRef.current;
-        if (messageListContainer.scrollTop + messageListContainer.clientHeight + messageHeight == messageListContainer.scrollHeight) {
+        console.log(last)
+        console.log(messageListContainer.scrollTop)
+        if (last==messageListContainer.scrollTop) {
             messageListContainer.scrollTop = messageListContainer.scrollHeight;
         }
+        setLast(messageListContainer.scrollHeight - messageListContainer.offsetHeight)
     }
+
+    useEffect(()=>{
+        const messageListContainer = messageListContainerRef.current;
+        setLast(messageListContainer.scrollHeight - messageListContainer.offsetHeight)
+    },[])
 
     useEffect(() => {
         scrollBottom();
@@ -71,6 +80,14 @@ const MessageList = ({...props}) => {
                     const isCurrentUserMessage = (message.creatorId == currentUserId)
                     return (
                         <Message
+                            sx={{
+                                backgroundColor: isCurrentUserMessage ? 'inherit' : 'rgba(25,118,210,0.11)',
+                                marginLeft: isCurrentUserMessage ? 'auto' : 0,
+                                marginBottom:1,
+                                width: 'max-content',
+                                maxWidth:'60%'
+                            }}
+
                             isCurrentUserMessage={isCurrentUserMessage}
                             status={message.status}
                             key={nanoid(8)}

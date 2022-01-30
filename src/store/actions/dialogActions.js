@@ -60,7 +60,7 @@ export const setCurrentDialog = (dialogId) => {
         const dialogIdPrevious = selectors.currentDialogId(getState());
 
 
-        if (dialogIdPrevious) {
+        if (dialogIdPrevious&&dialogIdPrevious!='none') {
             //console.log(dialogIdPrevious)
             const scrollPosition = selectors.currentDialogScrollPositionTemp(getState());
             console.log(scrollPosition)
