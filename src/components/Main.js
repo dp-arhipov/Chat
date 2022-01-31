@@ -18,9 +18,11 @@ const Main = () => {
     const dispatch = useDispatch();
     const currentDialogId = useSelector(selectors.currentDialogId);
     const currentDialogName = useSelector(selectors.currentDialogName);
+    const currentUserName = useSelector(selectors.currentUserName);
+
 
     useEffect(() => {
-        dispatch(init());
+        if(currentUserName) dispatch(init());
 
     }, [])
 
