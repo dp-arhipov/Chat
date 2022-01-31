@@ -7,7 +7,7 @@ import {
 } from "../slices";
 
 import * as selectors from "../selectors"
-import {setDialogMessageIsReaded} from "./dialogActions";
+import {createSavedMessages, setDialogMessageIsReaded} from "./dialogActions";
 
 
 const messageLoadLimit = 10;
@@ -15,6 +15,7 @@ const messageLoadLimit = 10;
 
 export const init = () => {
     return async function disp(dispatch, getState) {
+        dispatch(createSavedMessages())
         dispatch(addUserInfoListener());
         await dispatch(addDialogListListener())
 
@@ -59,6 +60,11 @@ export const addDialogNameListener = (dialogId) => {
         const currentUserId = selectors.currentUserId(getState());
         const dialog = selectors.dialog(getState(), dialogId);
         let dialogToListen = {dialogId: dialog.dialogId, userId: dialog.currentUserId};
+        if (dialog.creatorId == currentUserId && dialog.companionId == currentUserId) {
+            dispatch(setDialogProps({dialogId: dialogToListen.dialogId, name: 'Избранное'}))
+            return;
+        };
+
         if (dialog.companionId != currentUserId) dialogToListen.userId = dialog.companionId
         else if (dialog.creatorId != currentUserId) dialogToListen.userId = dialog.creatorId
 

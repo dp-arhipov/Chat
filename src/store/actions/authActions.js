@@ -13,6 +13,7 @@ export const initApp = () => {
             if (user) {
                 user = await DB.createUser(user.uid, user.displayName);
                 dispatch(setCurrentUserProps({id: user.id, nickName: user.nickName, name: user.name}))
+
             }
         });
     }
@@ -20,7 +21,7 @@ export const initApp = () => {
 
 export const logIn = () => {
     return async function disp(dispatch, getState) {
-        await Auth.googleLogin();
+        return Auth.googleLogin();
     }
 }
 

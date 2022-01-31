@@ -146,7 +146,6 @@ export class FirebaseDB {
             //const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach(async (change) => {
 
-                console.log(change)
                 const dialogId = change.doc.id
                 const dialogInfo = await getDoc(this.refs.dialogInfo(dialogId));
                 const companionId = dialogInfo.data().companionId;
@@ -287,23 +286,34 @@ export class FirebaseDB {
         //const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
         const dialogList = await this.getUserDialogsInfo(currentUserId)
         console.log(dialogList)
-        let dialogID=false;
+        let dialogId=false;
         dialogList.forEach((dialog) => {
             if (dialog.companionId == companionId||dialog.creatorId == companionId) {
-                dialogID = dialog.id;
-                console.log(dialogID)
+                dialogId = dialog.id;
+
             }
         });
-        return dialogID;
+        return dialogId;
     }
 
+    isSavedMessagesExist = async (companionId, currentUserId = this.currentUserId) => {
+        const dialogList = await this.getUserDialogsInfo(currentUserId)
+        let dialogId = false;
+        dialogList.forEach((dialog) => {
+            if (dialog.companionId == companionId && dialog.creatorId == companionId) {
+                dialogId = dialog.id;
+            }
+        });
+        return dialogId;
+
+    }
 
     createDialogWith = async (companionId, currentUserId = this.currentUserId, currentUserName = this.currentUserName) => {
 
         const dialogId = this.dialogIdTemplate();
 
-        const user = await getDoc(this.refs.user(companionId));
-        const dialogName = this.dialogNameTemplate(user.data().name);
+        //const user = await getDoc(this.refs.user(companionId));
+        //const dialogName = this.dialogNameTemplate(user.data().name);
 
         const docRef1 = doc(this.refs.userDialogList(currentUserId), dialogId);
         setDoc(docRef1, {});

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button} from "react-bootstrap";
 import Paper from "@mui/material/Paper";
 import {useDispatch, useSelector} from "react-redux";
-import {logIn} from "../store/actions"
+import {createSavedMessages, logIn} from "../store/actions"
 import * as selectors from "../store/selectors";
 import { useCookies } from 'react-cookie';
 
@@ -21,9 +21,9 @@ const Login = () => {
 // },[currentDialog])
 
 
-    const loginButtonHandler = ( ) => {
-        //API.logIn();
-        dispatch(logIn());
+    const loginButtonHandler = async ( ) => {        //API.logIn();
+        await dispatch(logIn());
+
 
     }
 
