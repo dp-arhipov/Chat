@@ -29,12 +29,14 @@ const DialogList = ({...props}) => {
                 {_dialogsInfo.map((dialog) => {
                     return (
                         <Dialog
+                            sx={{height:'5rem'}}
                             selected={selectedId === dialog.id}
                             key={dialog.id}
                             onClick={(e) => onClickHandle(e,dialog.id)}
                             id={dialog.id}
                             name={dialog.name}
                             caption={(dialog.lastMessage) ? (dialog.lastMessage) : ''}
+                            hasUnreadedMessages = {(dialog.name!='Избранное')?dialog.hasUnreadedMessages:false}
                             button
                             divider
                         />

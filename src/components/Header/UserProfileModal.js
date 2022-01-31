@@ -26,7 +26,7 @@ const UserProfileModal = ({open,handleClose}) => {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <UserProfile/>
+                <UserProfile handleClose={handleClose}/>
             </Box>
         </Modal>
     );

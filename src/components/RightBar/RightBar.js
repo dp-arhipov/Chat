@@ -41,12 +41,12 @@ const RightBar = () => {
                 currentDialogName
                     ?
                     <Fragment>
-                        <Box display={'flex'}>
-                            <IconButton onClick={onBackButtonClick}>
-                                <ArrowBackIcon/>
+                        <Box display={'flex'} alignItems={'center'} p={2}>
+                            <IconButton onClick={onBackButtonClick} sx={{marginRight:'1rem'}}>
+                                <ArrowBackIcon />
                             </IconButton>
-                            <Typography variant="h6" p={2} color="text.secondary">
-                                Диалог: {currentDialogName}
+                            <Typography variant="h6"  color="text.secondary">
+                                {currentDialogName}
                             </Typography>
                         </Box>
                         <Divider/>

@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors";
 import {createDialogWith} from "../../store/actions";
 import Dialog from "./Dialog";
+import {setFinderStatus} from "../../store/slices";
 
 const FinderResultList = () => {
 
@@ -20,6 +21,7 @@ const FinderResultList = () => {
 
     const handleItemClick = (userId) => {
         dispatch(createDialogWith(userId));
+        dispatch(setFinderStatus('INIT'));
     }
 
     return (

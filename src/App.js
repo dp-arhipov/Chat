@@ -5,35 +5,24 @@ import Login from "./components/Login";
 import NotFound from "./components/NotFound";
 import './App.scss';
 import {useDispatch, useSelector} from "react-redux";
-import {initApp} from "./store/actions";
+import {initAuth} from "./store/actions";
 import {isCurrentUserLoggedIn} from "./store/selectors";
+import Auth from "./components/Auth";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
-    const dispatch = useDispatch();
-    const _isCurrentUserLoggedIn = useSelector(isCurrentUserLoggedIn);
-    useEffect(() => {
-        dispatch(initApp());
-    }, [])
-
-
     return (
-
         <div className="App">
-
-            <BrowserRouter>
-                <Switch>
-                    {(_isCurrentUserLoggedIn)
-                        ? <Route exact path="/" component={Main}></Route>
-                        : <Route exact path="/" component={Login}></Route>
-                    }
-                    <Route component={NotFound}></Route>
-                </Switch>
-            </BrowserRouter>
-
-
+            <Auth>
+                <BrowserRouter>
+                    <Switch>
+                        <PrivateRoute exact path="/" component={Main}/>
+                        <Route exact path="/login" component={Login}/>
+                        <Route component={NotFound}/>
+                    </Switch>
+                </BrowserRouter>
+            </Auth>
         </div>
-
-
     );
 }
 

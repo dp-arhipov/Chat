@@ -4,4 +4,4 @@ export const currentUserName = state => currentUser(state).name
 export const currentUserNickName = state => currentUser(state).nickName
 export const currentUserStatus = state => currentUser(state).status
 
-export const isCurrentUserLoggedIn = state => currentUserId(state)?true:false
+export const isCurrentUserLoggedIn = state => currentUser(state).isLoggedIn

@@ -18,6 +18,8 @@ const MessageList = ({...props}) => {
     const messages = useSelector(selectors.currentDialogMessages);
     const currentDialogId = useSelector(selectors.currentDialogId);
     const currentDialogScrollPosition = useSelector(selectors.currentDialogScrollPosition);
+    const currentDialogStatus = useSelector(selectors.currentDialogStatus);
+
 
     const dispatch = useDispatch();
     const messageListContainerRef = useRef();
@@ -27,28 +29,32 @@ const MessageList = ({...props}) => {
 
     const scrollBottom = () => {
         const messageListContainer = messageListContainerRef.current;
-        console.log(last)
-        console.log(messageListContainer.scrollTop)
+        //console.log(last)
+        // console.log("st ", messageListContainer.scrollTop)
         if (last==messageListContainer.scrollTop) {
             messageListContainer.scrollTop = messageListContainer.scrollHeight;
         }
         setLast(messageListContainer.scrollHeight - messageListContainer.offsetHeight)
+        // console.log("last", messageListContainer.scrollHeight - messageListContainer.offsetHeight)
     }
 
     useEffect(()=>{
         const messageListContainer = messageListContainerRef.current;
         setLast(messageListContainer.scrollHeight - messageListContainer.offsetHeight)
-    },[])
+        // console.log("last uf ", messageListContainer.scrollTop)
+        // console.log(messages)
+    })
 
     useEffect(() => {
         scrollBottom();
-    }, [messages])
+    }, [messages.length])
 
 
     useEffect(() => {
         const messageListContainer = messageListContainerRef.current;
         if (currentDialogScrollPosition == -1) messageListContainer.scrollTop = messageListContainer.scrollHeight
         else messageListContainer.scrollTop = currentDialogScrollPosition
+        // console.log("last uf 2", messageListContainer.scrollTop)
     }, [currentDialogId])
 
 

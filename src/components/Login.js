@@ -1,38 +1,133 @@
-import React, {useEffect, useState} from 'react';
-import {Button} from "react-bootstrap";
-import Paper from "@mui/material/Paper";
+import React, {Fragment, useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {logIn} from "../store/actions"
-import * as selectors from "../store/selectors";
-import { useCookies } from 'react-cookie';
+import {createSavedMessages, emailLogin, googleLogIn, emailSignUp} from "../store/actions"
+import {isCurrentUserLoggedIn} from "../store/selectors";
+import {Redirect} from "react-router-dom";
 
-const Login = () => {
+
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Button from '@mui/material/Button';
+
+import CenterXY from "../HOC/CenterXY";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faGoogle} from '@fortawesome/free-brands-svg-icons/faGoogle';
+
+import {useForm} from "react-hook-form";
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+import FormControl from "@mui/material/FormControl";
+
+const Login = ({history}) => {
     const dispatch = useDispatch();
+    const _isCurrentUserLoggedIn = useSelector(isCurrentUserLoggedIn);
+
+    const googleLoginHandler = useCallback(
+        async event => {
+            event.preventDefault();
+            try {
+                await dispatch(googleLogIn());
+                
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        [history]
+    );
+
+    const schema = yup.object({
+        email: yup.string().email('это не email').required('это поле нужно заполнить'),
+        password: yup.string().min(5, 'введите больше 5 символов').required('это поле нужно заполнить'),
+    }).required();
+
+    const {register, handleSubmit, setError, formState: {errors}} = useForm({
+        mode: 'onChange',
+        resolver: yupResolver(schema),
+    });
 
 
-    // const currentUser = useSelector(selectors.currentUser);
-    // const currentDialog = useSelector(selectors.currentDialogId);
+    const emailLoginHandler = async (data) => {
+        const responce = await dispatch(emailLogin(data.email, data.password));
 
-//
-// useEffect(()=>{
-//     DB.addListeners(currentDialog)
-//     console.log("**")
-//
-// },[currentDialog])
+        if (responce && responce.code == 'auth/user-not-found') {
+            setError("email", {
+                type: 'server',
+                message: "такого пользователя не существует"
+            });
 
+        }
+        if (responce && responce.code == 'auth/wrong-password') {
+            setError("password", {
+                type: 'custom',
+                message: "пароль неправильный"
+            });
+        }
+        if (responce && responce.code == 'auth/too-many-requests') {
+            setError("email", {
+                type: 'custom',
+                message: "слишком много попыток входа"
+            });
+        }
+    }
 
-    const loginButtonHandler = ( ) => {
-        //API.logIn();
-        dispatch(logIn());
+    const emailSignUpHandler = async (data) => {
+        const responce = await dispatch(emailSignUp(data.email, data.password));
+        if (responce && responce.code == 'auth/email-already-in-use') {
+            setError("email", {
+                type: 'custom',
+                message: "такой пользователь уже существует"
+            });
+        }
+    }
 
+    if (_isCurrentUserLoggedIn) {
+        return <Redirect to="/"/>;
     }
 
 
-
     return (
-        <Paper sx={{display: 'flex', alignItems:"center", justifyContent:"center", height: '100vh'}}>
-            <Button onClick={loginButtonHandler}>Логин</Button>
-        </Paper>
+        <Fragment>
+            <CenterXY>
+                <Box sx={{display: 'flex', flexDirection: 'column', width: '20%', minWidth: '300px'}}>
+                    <Typography variant={'h4'} sx={{flex: "1", textAlign: 'center', marginBottom: '5rem'}}>
+                        Вход/Регистрация</Typography>
+                    <form>
+                        <Box sx={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                            <TextField
+                                {...register("email")}
+                                label="email"
+                                error={errors.email}
+                                helperText={errors?.email?.message}
+                                fullWidth
+                                noValidate
+                            />
+                            <TextField
+                                {...register("password")}
+                                label="пароль"
+                                error={errors.password}
+                                helperText={errors?.password?.message}
+                                fullWidth
+                                noValidate
+                                sx={{marginBottom: '2rem'}}
+                            />
+
+                            <Button variant="contained" size="large" onClick={handleSubmit(emailLoginHandler)}>
+                                Войти
+                            </Button>
+                            <Button variant="contained" size="large" onClick={handleSubmit(emailSignUpHandler)}>
+                                Зарегистрироваться
+                            </Button>
+
+                            <Button variant="contained" size="large" onClick={googleLoginHandler}
+                                    startIcon={<FontAwesomeIcon icon={faGoogle}/>}>
+                                +
+                            </Button>
+                        </Box>
+                    </form>
+                </Box>
+            </CenterXY>
+        </Fragment>
     );
 };
 

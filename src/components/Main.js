@@ -18,11 +18,11 @@ const Main = () => {
     const dispatch = useDispatch();
     const currentDialogId = useSelector(selectors.currentDialogId);
     const currentDialogName = useSelector(selectors.currentDialogName);
+    const currentUserId = useSelector(selectors.currentUserId);
 
     useEffect(() => {
-        dispatch(init());
-
-    }, [])
+        if(currentUserId) dispatch(init());
+    }, [currentUserId])
 
     const theme = useTheme()
     console.log(currentDialogId=='none' || currentDialogId=='')

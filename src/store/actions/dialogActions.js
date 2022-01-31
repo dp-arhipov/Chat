@@ -106,6 +106,21 @@ export const createDialogWith = (userId) => {
     };
 }
 
+export const createSavedMessages = () => {
+    return async function disp(dispatch, getState) {
+        const userId = selectors.currentUserId(getState())
+            let dialogId = await DB.isSavedMessagesExist(userId);
+        console.log(userId)
+            if (!dialogId) {
+                dispatch(setDialogListProps({status: "FETCHING"}))
+                return DB.createDialogWith(userId);
+                dispatch(setDialogListProps({status: "LOADED"}))
+                //await dispatch(loadDialogList());
+            }
+        }
+
+}
+
 
 export const setCurrentDialogScrollPosition = (scrollPosition) => {
     return async function disp(dispatch, getState) {

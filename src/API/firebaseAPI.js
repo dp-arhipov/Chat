@@ -1,4 +1,4 @@
-import {GoogleAuthProvider, signInWithPopup, signOut} from "firebase/auth";
+import {GoogleAuthProvider, signInWithPopup, signOut, browserLocalPersistence, setPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth";
 import {
     collection,
     doc,
@@ -17,14 +17,19 @@ import {
 import {nanoid} from "nanoid";
 import {Auth} from "./index";
 
+
+// import {browserSessionPersistence, setPersistence} from "firebase/firebase-auth";
+
 export class FirebaseAuth {
 
     constructor(auth) {
         this.auth = auth;
+        // console.log('setpers')
+        //setPersistence(this.auth, browserLocalPersistence);
     }
 
     authHandler = (callback) => {
-        this.auth.onAuthStateChanged(req => {
+        return this.auth.onAuthStateChanged(req => {
             callback(req)
         });
     }
@@ -33,6 +38,46 @@ export class FirebaseAuth {
         const googleProvider = new GoogleAuthProvider();
         const response = await signInWithPopup(this.auth, googleProvider);
         return response;
+    }
+
+    emailLogin  = async (email, password) => {
+        // return await createUserWithEmailAndPassword(this.auth, email, password)
+        console.log(email)
+        return await signInWithEmailAndPassword(this.auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                //console.log(user)
+                // ...
+            })
+            .catch((error) => {
+
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                //console.log(errorCode)
+                return error;
+                // ..
+            });
+    }
+
+    emailSignUp  = async (email, password) => {
+        // return await createUserWithEmailAndPassword(this.auth, email, password)
+        console.log(email)
+        return await createUserWithEmailAndPassword(this.auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                //console.log(user)
+                // ...
+            })
+            .catch((error) => {
+
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                //console.log(errorCode)
+                return error;
+                // ..
+            });
     }
 
     logOut = async () => {
@@ -146,7 +191,6 @@ export class FirebaseDB {
             //const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach(async (change) => {
 
-                console.log(change)
                 const dialogId = change.doc.id
                 const dialogInfo = await getDoc(this.refs.dialogInfo(dialogId));
                 const companionId = dialogInfo.data().companionId;
@@ -287,23 +331,34 @@ export class FirebaseDB {
         //const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
         const dialogList = await this.getUserDialogsInfo(currentUserId)
         console.log(dialogList)
-        let dialogID=false;
+        let dialogId=false;
         dialogList.forEach((dialog) => {
             if (dialog.companionId == companionId||dialog.creatorId == companionId) {
-                dialogID = dialog.id;
-                console.log(dialogID)
+                dialogId = dialog.id;
+
             }
         });
-        return dialogID;
+        return dialogId;
     }
 
+    isSavedMessagesExist = async (companionId, currentUserId = this.currentUserId) => {
+        const dialogList = await this.getUserDialogsInfo(currentUserId)
+        let dialogId = false;
+        dialogList.forEach((dialog) => {
+            if (dialog.companionId == companionId && dialog.creatorId == companionId) {
+                dialogId = dialog.id;
+            }
+        });
+        return dialogId;
+
+    }
 
     createDialogWith = async (companionId, currentUserId = this.currentUserId, currentUserName = this.currentUserName) => {
 
         const dialogId = this.dialogIdTemplate();
 
-        const user = await getDoc(this.refs.user(companionId));
-        const dialogName = this.dialogNameTemplate(user.data().name);
+        //const user = await getDoc(this.refs.user(companionId));
+        //const dialogName = this.dialogNameTemplate(user.data().name);
 
         const docRef1 = doc(this.refs.userDialogList(currentUserId), dialogId);
         setDoc(docRef1, {});

@@ -1,4 +1,5 @@
 import {currentDialogId} from "./currentDialogSelectors"
+import {currentUserId} from "./currentUserSelectors"
 
 export const dialogList = state => state.dialogs.dialogList
 
@@ -27,10 +28,12 @@ export const dialogLastMessageId = (state, dialogId) =>  dialogLastMessage(state
 
 export const dialogInfo = (state, dialogId) => {
     const _dialog = dialog(state,dialogId);
+    const lastMessage = dialogLastMessage(state,dialogId)
     return {
         id: _dialog.dialogId,
         name: _dialog.name,
-        lastMessage: dialogLastMessageText(state,dialogId)
+        lastMessage: dialogLastMessageText(state,dialogId),
+        hasUnreadedMessages: (lastMessage)&&(lastMessage?.status!='READED')&&(lastMessage?.creatorId!=currentUserId(state,dialogId))
     }
 }
 
