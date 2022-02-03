@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -25,9 +25,14 @@ const FinderInput = ({handleFinder}) => {
     }
 
     const handleDeleteButton = () => {
-        searchRef.current.value = '';
         dispatch(setFinderStatus('INIT'));
      }
+
+     useEffect(()=>{
+         if(finderStatus=='INIT'){
+             searchRef.current.value = '';
+         }
+     },[finderStatus])
 
     const handleChangeDebounce = useDebounce(handleChange, 300);
 
