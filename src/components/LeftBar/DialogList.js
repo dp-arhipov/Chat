@@ -29,6 +29,7 @@ const DialogList = ({...props}) => {
                 {_dialogsInfo.map((dialog) => {
                     return (
                         <Dialog
+                            sx={{height:'5rem'}}
                             selected={selectedId === dialog.id}
                             key={dialog.id}
                             onClick={(e) => onClickHandle(e,dialog.id)}
