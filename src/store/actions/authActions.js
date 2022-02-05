@@ -7,23 +7,41 @@ import {
     resetCurrentDialog
 } from "../slices";
 
-export const initApp = () => {
+export const initAuth = () => {
     return async function disp(dispatch, getState) {
-        Auth.authHandler(async (user) => {
+        return Auth.authHandler(async (user) => {
             if (user) {
+                dispatch(setCurrentUserProps({isLoggedIn:true, status: 'LOADED'}))
                 user = await DB.createUser(user.uid, user.displayName);
+                console.log(user.name)
+                if(user.name==null){user.name="Юзер Юзерович"}
                 dispatch(setCurrentUserProps({id: user.id, nickName: user.nickName, name: user.name}))
-
+            }else{
+                dispatch(setCurrentUserProps({isLoggedIn:false, status: 'LOADED'}))
             }
         });
     }
 }
 
-export const logIn = () => {
+export const emailLogin = (email, password) => {
+    return async function disp(dispatch, getState) {
+        console.log(email, password)
+        return  Auth.emailLogin(email, password) ;
+    }
+}
+export const emailSignUp = (email, password) => {
+    return async function disp(dispatch, getState) {
+        console.log(email, password)
+        return  Auth.emailSignUp(email, password) ;
+    }
+}
+
+export const googleLogIn = () => {
     return async function disp(dispatch, getState) {
         return Auth.googleLogin();
     }
 }
+
 
 
 export const logOut = () => {

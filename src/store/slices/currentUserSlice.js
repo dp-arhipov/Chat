@@ -1,10 +1,11 @@
 import {createSlice} from "@reduxjs/toolkit";
 
 const currentUserInitialState = {
-    isFetching: false,
+    status: 'FETCHING',
     id: '',
     nickName: '',
     name: '',
+    isLoggedIn:false
 }
 
 const currentUserSlice = createSlice({
@@ -13,11 +14,12 @@ const currentUserSlice = createSlice({
     reducers: {
 
         setCurrentUserProps(state, action){
-            const {id,name,nickName,status} = action.payload;
+            const {id,name,nickName,status, isLoggedIn} = action.payload;
             if(id)state.id = id;
             if(name)state.name = name;
             if(nickName)state.nickName = nickName;
             if(status)state.status = status;
+            if(isLoggedIn)state.isLoggedIn = isLoggedIn;
         },
         resetUser(state, action) {
             Object.assign(state, currentUserInitialState)

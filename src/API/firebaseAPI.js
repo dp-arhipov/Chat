@@ -1,4 +1,4 @@
-import {GoogleAuthProvider, signInWithPopup, signOut} from "firebase/auth";
+import {GoogleAuthProvider, signInWithPopup, signOut, browserLocalPersistence, setPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth";
 import {
     collection,
     doc,
@@ -17,14 +17,19 @@ import {
 import {nanoid} from "nanoid";
 import {Auth} from "./index";
 
+
+// import {browserSessionPersistence, setPersistence} from "firebase/firebase-auth";
+
 export class FirebaseAuth {
 
     constructor(auth) {
         this.auth = auth;
+        // console.log('setpers')
+        //setPersistence(this.auth, browserLocalPersistence);
     }
 
     authHandler = (callback) => {
-        this.auth.onAuthStateChanged(req => {
+        return this.auth.onAuthStateChanged(req => {
             callback(req)
         });
     }
@@ -33,6 +38,46 @@ export class FirebaseAuth {
         const googleProvider = new GoogleAuthProvider();
         const response = await signInWithPopup(this.auth, googleProvider);
         return response;
+    }
+
+    emailLogin  = async (email, password) => {
+        // return await createUserWithEmailAndPassword(this.auth, email, password)
+        console.log(email)
+        return await signInWithEmailAndPassword(this.auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                //console.log(user)
+                // ...
+            })
+            .catch((error) => {
+
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                //console.log(errorCode)
+                return error;
+                // ..
+            });
+    }
+
+    emailSignUp  = async (email, password) => {
+        // return await createUserWithEmailAndPassword(this.auth, email, password)
+        console.log(email)
+        return await createUserWithEmailAndPassword(this.auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                //console.log(user)
+                // ...
+            })
+            .catch((error) => {
+
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                //console.log(errorCode)
+                return error;
+                // ..
+            });
     }
 
     logOut = async () => {
