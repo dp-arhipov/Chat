@@ -19,7 +19,7 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,..
 
 
     const {ref, inView, entry} = useInView({
-        threshold: 0,
+        threshold: 0.5,
     });
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,..
     }, [inView])
 
     return (
-                <Card {...props} elevation={1} >
+                <Card {...props} elevation={1}  ref={ref} >
                     <CardContent>
                         <Box sx={{ display:"flex"}}>
                             <Typography variant="caption" color="textSecondary">
@@ -37,7 +37,7 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,..
                                 (isCurrentUserMessage) && <StatusIcon sx={{marginLeft: 'auto', height: 16}} status={status}/>
                             }
                         </Box>
-                        <Typography  ref={ref}  component="pre" variant="body1" sx={{overflowWrap: "break-word", whiteSpace:"pre-wrap"}}>
+                        <Typography component="pre" variant="body1" sx={{overflowWrap: "break-word", whiteSpace:"pre-wrap"}}>
                            {text}
                         </Typography>
                     </CardContent>

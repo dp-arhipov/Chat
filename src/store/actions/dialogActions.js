@@ -27,7 +27,6 @@ export const sendMessage = (text) => {
         let message = {
             messageId,
             creatorId: creatorId,
-            isReaded: false,
             text: text,
             date: date,
             time: time,

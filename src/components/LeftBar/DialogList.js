@@ -36,7 +36,7 @@ const DialogList = ({...props}) => {
                             id={dialog.id}
                             name={dialog.name}
                             caption={(dialog.lastMessage) ? (dialog.lastMessage) : ''}
-                            hasUnreadedMessages = {(dialog.name!='Избранное')?dialog.hasUnreadedMessages:false}
+                            unreadMessagesNumber = {dialog.unreadMessagesNumber}
                             button
                             divider
                         />
