@@ -10,7 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors"
 import Stack from "@mui/material/Stack";
 
-const UserProfile = () => {
+const UserProfile = ({handleClose}) => {
     const currentUserName = useSelector(selectors.currentUserName);
     const currentUserNickName = useSelector(selectors.currentUserNickName);
 
@@ -25,27 +25,29 @@ const UserProfile = () => {
     const handleForm = async (e) => {
         e.preventDefault();
         if (!(name == currentUserName)) {
-
-            const nameIsWrong = !validator.isLength(name, {min: 1, max: 30});
+            const nameIsWrong = !validator.isLength(name, {min: 2, max: 30});
             setWrongName(nameIsWrong)
             if (!nameIsWrong) {
                 dispatch(changeCurrentUserName(name))
+                handleClose()
             }
         }
 
         if (!(nickName == currentUserNickName)) {
             setNickNameIsBusy(await isNickNameBusy(nickName));
-
             if (!nickNameIsBusy) {
                 dispatch(changeCurrentUserNickName(nickName));
+                handleClose()
             }
+        }
+        if ((nickName == currentUserNickName) && (name == currentUserName)) {
+            handleClose()
         }
     }
 
 
     return (
         <Fragment>
-
             <FormControl sx={{width: '100%'}} noValidate autoComplete='off'>
                 <Stack direction="column" spacing={3}>
                     <TextField label="Никнейм"
@@ -62,7 +64,7 @@ const UserProfile = () => {
                                defaultValue={name}
                                onChange={e => setName(e.target.value)}
                                error={wrongName}
-                               helperText={(wrongName) ? "Имя должно быть длиннее 1 символа и короче 30 " : ''}
+                               helperText={(wrongName) ? "Имя должно быть длиннее 2 символов и короче 30 " : ''}
                     />
                     <Button variant="contained" type="submit" size="large" onClick={handleForm}>Сохранить</Button>
                 </Stack>
