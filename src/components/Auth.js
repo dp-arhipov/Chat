@@ -4,7 +4,7 @@ import {currentUserStatus} from "../store/selectors";
 import {initAuth} from "../store/actions";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import CenterXY from "../HOC/CenterXY";
+import FlexCenter from "../HOC/FlexCenter";
 
 const Auth = ({children}) => {
         const currentUserStatus_ = useSelector(currentUserStatus);
@@ -15,9 +15,9 @@ const Auth = ({children}) => {
 
         if (currentUserStatus_ == 'FETCHING')
             return (
-                <CenterXY>
+                <FlexCenter height='100vh'>
                     <CircularProgress />
-                </CenterXY>
+                </FlexCenter>
             )
 
         return (

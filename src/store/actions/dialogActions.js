@@ -2,7 +2,7 @@ import {DB} from "../../API";
 import {
     shiftDialogMessages,
     setCurrentDialogId,
-    setCurrentDialogScrollPositionTemp,
+    // setCurrentDialogScrollPositionTemp,
     pushDialogMessages,
     setDialogMessageProps,
     setDialogProps,
@@ -56,15 +56,15 @@ export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
         //dispatch(setCurrentDialogFetching(true))
         //const isDialogListFetching = selectors.isDialogListFetching(getState())
-        const dialogIdPrevious = selectors.currentDialogId(getState());
-
-
-        if (dialogIdPrevious&&dialogIdPrevious!='none') {
-            //console.log(dialogIdPrevious)
-            const scrollPosition = selectors.currentDialogScrollPositionTemp(getState());
-            console.log(scrollPosition)
-            dispatch(setDialogProps({dialogId: dialogIdPrevious, scrollPosition: scrollPosition}))
-        }
+        // const dialogIdPrevious = selectors.currentDialogId(getState());
+        //
+        //
+        // if (dialogIdPrevious&&dialogIdPrevious!='none') {
+        //     //console.log(dialogIdPrevious)
+        //     const scrollPosition = selectors.currentDialogScrollPositionTemp(getState());
+        //     console.log(scrollPosition)
+        //     dispatch(setDialogProps({dialogId: dialogIdPrevious, scrollPosition: scrollPosition}))
+        // }
         dispatch(setCurrentDialogId(dialogId));
 
 
@@ -79,11 +79,18 @@ export const loadOldCurrentDialogMessages = () => {
         // const lastFirstId = DB.getFirstMessageId();
 
         const messages = await DB.getDialogMessages(dialogId, messageLoadLimit, lastVisibleMessageId)
-        dispatch(shiftDialogMessages({dialogId, messages}))
+
         return messages;
     }
-
 }
+
+export const addCDMessagesTop = (messages) => {
+    return async function disp(dispatch, getState) {
+        const dialogId = selectors.currentDialogId(getState());
+        dispatch(shiftDialogMessages({dialogId, messages}))
+
+    }
+ }
 
 
 export const createDialogWith = (userId) => {
@@ -129,11 +136,11 @@ export const setCurrentDialogScrollPosition = (scrollPosition) => {
     }
 }
 
-export const setCurrentDialogTempScrollPosition = (scrollPosition) => {
-    return async function disp(dispatch, getState) {
-        dispatch(setCurrentDialogScrollPositionTemp(scrollPosition));
-    }
-}
+// export const setCurrentDialogTempScrollPosition = (scrollPosition) => {
+//     return async function disp(dispatch, getState) {
+//         dispatch(setCurrentDialogScrollPositionTemp(scrollPosition));
+//     }
+// }
 
 
 

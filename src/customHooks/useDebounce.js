@@ -1,6 +1,6 @@
 import {useEffect, useRef} from "react";
 
-export default function useDebounce(func, delay, cleanUp = false) {
+export default function useDebounce(func, delay=100, cleanUp = false) {
     const timeoutRef = useRef();
 
     function clearTimer() {

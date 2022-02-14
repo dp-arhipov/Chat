@@ -4,7 +4,7 @@ import * as selectors from "../../store/selectors"
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import MessagesList from "./MessageList";
+import MessagesList from "./MessageListContainer";
 import MessageInput from "./MessageInput";
 
 
@@ -50,9 +50,10 @@ const RightBar = () => {
                             </Typography>
                         </Box>
                         <Divider/>
-                        <MessagesList flex='1 0 0'/>
+                        <MessagesList/>
                         <Box pl={1} pt={1} mt={'auto'}>
                             <MessageInput submitHandler={sendMessage_}/>
+
                         </Box>
 
                     </Fragment>

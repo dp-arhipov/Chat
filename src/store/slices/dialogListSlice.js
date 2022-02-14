@@ -8,7 +8,7 @@ const dialogListInitialState = {
 const dialogInitialState = {
     status:'FETCHING',
     dialogId: '',
-    scrollPosition: -1,
+    scrollPosition: 0,
     messages: []
 }
 

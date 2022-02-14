@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from '@mui/material/Button';
 
-import CenterXY from "../HOC/CenterXY";
+import FlexCenter from "../HOC/FlexCenter";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faGoogle} from '@fortawesome/free-brands-svg-icons/faGoogle';
 
@@ -88,7 +88,7 @@ const Login = ({history}) => {
 
     return (
         <Fragment>
-            <CenterXY>
+            <FlexCenter>
                 <Box sx={{display: 'flex', flexDirection: 'column', width: '20%', minWidth: '300px'}}>
                     <Typography variant={'h4'} sx={{flex: "1", textAlign: 'center', marginBottom: '5rem'}}>
                         Вход/Регистрация</Typography>
@@ -126,7 +126,7 @@ const Login = ({history}) => {
                         </Box>
                     </form>
                 </Box>
-            </CenterXY>
+            </FlexCenter>
         </Fragment>
     );
 };

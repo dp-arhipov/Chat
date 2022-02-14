@@ -15,19 +15,37 @@ import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import StatusIcon from "./StatusIcon";
 import Button from "@mui/material/Button";
+
+
+
+
 const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,...props}) => {
 
+    //
+    // const {ref, inView, entry} = useInView({
+    //     triggerOnce: true,
+    //     threshold: 0.5,
+    // });
 
-    const {ref, inView, entry} = useInView({
+
+    const { ref, inView } = useInView({
+        triggerOnce: true,
         threshold: 0.5,
+        // Track the actual visibility of the target
+        //trackVisibility: true,
+        // Set a minimum delay between notifications, it must be set to 100 (ms) or greater
+        // For performance perspective, use the largest tolerable value as much as possible
+        delay: 300,
     });
 
     useEffect(() => {
-        if (inView&&(!isCurrentUserMessage)) onRead(messageId)
+        if (inView && !isCurrentUserMessage && status != 'READED') onRead(messageId)
     }, [inView])
 
     return (
-                <Card {...props} elevation={1}  ref={ref} >
+
+                <Card {...props} elevation={1} ref={ref} >
+
                     <CardContent>
                         <Box sx={{ display:"flex"}}>
                             <Typography variant="caption" color="textSecondary">
@@ -38,6 +56,7 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,..
                             }
                         </Box>
                         <Typography component="pre" variant="body1" sx={{overflowWrap: "break-word", whiteSpace:"pre-wrap"}}>
+
                            {text}
                         </Typography>
                     </CardContent>
@@ -47,5 +66,15 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,..
 
     );
 };
+
+
+// const Message = ({...props}) => {
+//
+//     return (
+//         <Card {...props} elevation={1}>
+//             Text
+//         </Card>
+//     )
+// }
 
 export default React.memo(Message);
