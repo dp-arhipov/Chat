@@ -10,10 +10,11 @@ const UserProfileModal = ({open,handleClose}) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 400,
+        width:300,
         bgcolor: 'background.paper',
         border: '0px solid #000',
         boxShadow: 24,
+        boxSizing: 'border-box',
         p: 5,
 
     };

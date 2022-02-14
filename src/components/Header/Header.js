@@ -12,6 +12,7 @@ import {useDispatch} from "react-redux";
 import ExploreIcon from '@mui/icons-material/Explore';
 import * as selectors from "../../store/selectors";
 import Box from "@mui/material/Box";
+import DialogList from "../LeftBar/DialogList";
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
@@ -28,13 +29,21 @@ const Header = () => {
     const currentUserName = useSelector(selectors.currentUserName);
     return (
         <AppBar position="static">
-            <Toolbar sx={{display: 'flex'}}>
+            <Toolbar>
                 {/*<img src={avatar} alt="Avatar"/>*/}
                 <ExploreIcon/>
-                <Box display={'flex'} marginLeft={'auto'} alignItems={'center'}>
-                    <Typography variant="h6" component="div" onClick={handleOpen} sx={{cursor: "pointer"}}>
+                <Box display={'flex'} alignItems={'center'} justifyContent={'flex-end'} flex={1} width={'200px'}  >
+                    <Typography variant="h6" component="div" onClick={handleOpen} sx={{
+                        cursor: "pointer",
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        paddingLeft:'1rem'
+                    }}>
+
                         {currentUserName}
                     </Typography>
+
                     <IconButton color="inherit" onClick={handleOpen}>
                         <AccountCircle/>
                     </IconButton>

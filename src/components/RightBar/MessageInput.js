@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -17,6 +17,8 @@ const MessageInput = ({submitHandler, ...props}) => {
             submitHandler(inputText);
         }
         setInputText('');
+        const input = e.target.messageInput
+        if(input) input.focus();
     }
 
     const onChange = (e) => {
@@ -39,6 +41,7 @@ const MessageInput = ({submitHandler, ...props}) => {
         <Box {...props} >
             <form onSubmit={handleSubmit}>
                 <TextField
+                    name={'messageInput'}
                     onKeyDown={onKey}
                     onChange={onChange}
                     value={inputText}
