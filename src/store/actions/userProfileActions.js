@@ -4,15 +4,17 @@ import {
     setFinderResults,
 
 } from "../slices";
+import * as selectors from "../selectors";
 
 
 export const find = (searchString) => {
     return async function disp(dispatch, getState) {
+        const currentUserId = selectors.currentUserId(getState())
         let result = [];
-
         dispatch(setFinderStatus("FETCHING"))
         const user = await DB.findUserByNickName(searchString)
-        if (user) result.push(user)
+        if(user && user.id!=currentUserId) result.push(user)
+
         dispatch(setFinderResults(result))
         dispatch(setFinderStatus("LOADED"))
 

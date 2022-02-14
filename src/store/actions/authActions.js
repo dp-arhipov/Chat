@@ -12,9 +12,9 @@ export const initAuth = () => {
         return Auth.authHandler(async (user) => {
             if (user) {
                 dispatch(setCurrentUserProps({isLoggedIn:true, status: 'LOADED'}))
-                user = await DB.createUser(user.uid, user.displayName);
-                console.log(user.name)
-                if(user.name==null){user.name="Юзер Юзерович"}
+                if(user.displayName==null) user.displayName = "Юзер Юзерович"
+                user = await DB.createUser(user.uid, user.displayName, user.email);
+
                 dispatch(setCurrentUserProps({id: user.id, nickName: user.nickName, name: user.name}))
             }else{
                 dispatch(setCurrentUserProps({isLoggedIn:false, status: 'LOADED'}))
@@ -22,6 +22,7 @@ export const initAuth = () => {
         });
     }
 }
+
 
 export const emailLogin = (email, password) => {
     return async function disp(dispatch, getState) {

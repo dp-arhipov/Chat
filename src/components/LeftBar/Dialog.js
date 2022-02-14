@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
@@ -6,42 +6,84 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Badge from "@mui/material/Badge";
+import {styled} from '@mui/material/styles';
+import Box from "@mui/material/Box";
+
+function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = '#';
+
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.substr(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+}
+
+function stringAvatar(name) {
+
+    if (name) {
+        const sx = {
+            bgcolor: name != 'Избранное' ? stringToColor(name) : '#1976d2',
+        }
+        if (name == 'Избранное') {
+            return {
+                sx,
+                children: '★'
+            }
+        }else return{
+            sx
+        }
+    }
+
+}
 
 
-const Dialog = ({name, caption, hasUnreadedMessages, ...props}) => {
+const Dialog = ({name, caption, unreadMessagesNumber, ...props}) => {
+
     return (
-        <ListItem {...props}>
-
+        <ListItem {...props} >
 
             <ListItemAvatar>
-                <Badge color="primary" variant="dot" invisible={!hasUnreadedMessages}>
-                    <Avatar alt={name} src="/static/images/avatar/1.jpg"/>
-                </Badge>
+                <Avatar {...stringAvatar(name) }/>
             </ListItemAvatar>
 
+                <ListItemText
+                    primary={
+                        <Typography sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            color: 'text.primary'
+                        }}>
+                            {name}
+                        </Typography>
+                    }
+                    secondary={
+                        <Typography sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            color: 'text.secondary',
 
-            <ListItemText
-                primary={
-                    <Typography sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        color: 'text.primary'
-                    }}>
-                        {name}
-                    </Typography>
-                }
-                secondary={
-                    <Typography sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        color: 'text.secondary'
-                    }}>
-                        {caption}
-                    </Typography>
-                }
-            />
+                        }}>
+                            {caption}
+                        </Typography>
+                    }
+                />
+            <Box>
+                <Badge color="primary" badgeContent={unreadMessagesNumber} sx={{width: '1rem', marginRight:'0.5rem'}} />
+            </Box>
+
         </ListItem>
     );
 };

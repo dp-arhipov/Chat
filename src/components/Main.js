@@ -43,7 +43,7 @@ const Main = () => {
     return (
 
         <Fragment>
-            <Grid container height={'100vh'} direction="column" >
+            <Grid container height={'100%'} direction="column" >
                 <Grid item>
                     <Header/>
                 </Grid>

@@ -40,6 +40,7 @@
     "redux": "^4.1.2",
     "redux-reset": "^0.3.0",
     "sanitize.css": "^10.0.0",
+    "styled-components": "^5.3.3",
     "validator": "^13.7.0",
     "web-vitals": "^1.1.2",
     "yup": "^0.32.11"
