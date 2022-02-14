@@ -166,6 +166,7 @@ export class FirebaseDB {
     }
 
     addDialogMessagesListener = async (dialogId, callback) => {
+        this.addDialogMessagesListener2(dialogId,callback)
         const q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(10))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
            // const isLocal = snapshot.metadata.hasPendingWrites;
@@ -174,6 +175,24 @@ export class FirebaseDB {
                // if (!isLocal) {
 
                     callback(dialogId, change.doc.data());
+
+                //}
+            });
+        })
+        this.listeners.push(unsubscribe)
+        return unsubscribe;
+    }
+
+    addDialogMessagesListener2 = async (dialogId, callback) => {
+        const q = query(this.refs.dialogData(dialogId), where('status','!=','READED'))
+        const unsubscribe = await onSnapshot(q, (snapshot) => {
+            // const isLocal = snapshot.metadata.hasPendingWrites;
+            snapshot.docChanges().forEach((change) => {
+                console.log('messages Listener')
+                console.log(change.doc.data())
+                // if (!isLocal) {
+                callback(dialogId, change.doc.data());
+                //callback(dialogId, change.doc.data());
 
                 //}
             });
@@ -213,7 +232,7 @@ export class FirebaseDB {
             });
         })
         this.listeners.push(unsubscribe)
-        console.log(1111111)
+        // console.log(1111111)
         return unsubscribe;
 
     }
@@ -258,7 +277,7 @@ export class FirebaseDB {
     }
 
     setDialogMessageProps = async (dialogId, messageId, props) => {
-        console.log(props)
+        // console.log(props)
         const docRef = doc(this.refs.dialogData(dialogId), messageId);
         const {status} = props;
         let result;
@@ -267,6 +286,7 @@ export class FirebaseDB {
         return result;
 
     }
+
 
 
     getDialogMessage = async (dialogId, messageId) => {

@@ -7,9 +7,9 @@ import Typography from "@mui/material/Typography";
 
 import {useInView} from 'react-intersection-observer';
 import {useDispatch, useSelector} from "react-redux";
-import * as selectors from "../../store/selectors";
-import {setDialogMessageProps} from "../../store/slices";
-import {setDialogMessageIsReaded} from "../../store/actions";
+import * as selectors from "../../../store/selectors";
+import {setDialogMessageProps} from "../../../store/slices";
+import {setDialogMessageIsReaded} from "../../../store/actions";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';

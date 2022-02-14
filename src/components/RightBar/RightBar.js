@@ -4,7 +4,7 @@ import * as selectors from "../../store/selectors"
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import MessagesList from "./MessageListContainer";
+import MessagesList from "./MessageList/MessageListContainer";
 import MessageInput from "./MessageInput";
 
 

@@ -88,7 +88,7 @@ const Login = ({history}) => {
 
     return (
         <Fragment>
-            <FlexCenter>
+            <FlexCenter height='100vh'>
                 <Box sx={{display: 'flex', flexDirection: 'column', width: '20%', minWidth: '300px'}}>
                     <Typography variant={'h4'} sx={{flex: "1", textAlign: 'center', marginBottom: '5rem'}}>
                         Вход/Регистрация</Typography>
