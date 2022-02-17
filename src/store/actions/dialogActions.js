@@ -95,7 +95,8 @@ export const addCDMessagesTop = (messages) => {
 
 export const createDialogWith = (userId) => {
     return async function disp(dispatch, getState) {
-        if (userId != selectors.currentUserId(getState())) {
+        const currentUserId = selectors.currentUserId(getState())
+        if (userId != currentUserId) {
             let dialogId = await DB.findDialogByCompanionId(userId);
             console.log(dialogId)
             if (!dialogId) {
@@ -104,8 +105,6 @@ export const createDialogWith = (userId) => {
                 dispatch(setDialogListProps({status: "LOADED"}))
                 //await dispatch(loadDialogList());
             }
-
-            dispatch(setCurrentDialog(dialogId));
         }
 
 
