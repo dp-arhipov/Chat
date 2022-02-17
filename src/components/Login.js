@@ -38,7 +38,7 @@ const Login = ({history}) => {
 
     const schema = yup.object({
         email: yup.string().email('это не email').required('это поле нужно заполнить'),
-        password: yup.string().min(5, 'введите больше 5 символов').required('это поле нужно заполнить'),
+        password: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
     }).required();
 
     const {register, handleSubmit, setError, formState: {errors}} = useForm({
