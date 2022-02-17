@@ -78,8 +78,10 @@ const MessageListContainer = ({...props}) => {
     }, [containerRef]);
 
 
+
+    const needTopLoader = currentDialogStatus=='FETCHING' && scrollTop==0 && messages.length>=20
     return (
-        <MessageList ref={containerRef}>
+        <MessageList ref={containerRef} needTopLoader={needTopLoader}>
             {messages.map(message => {
                     const isCurrentUserMessage = (message.creatorId == currentUserId)
                     return (
