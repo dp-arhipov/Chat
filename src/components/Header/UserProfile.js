@@ -4,11 +4,16 @@ import validator from 'validator'
 
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import {changeCurrentUserName, changeCurrentUserNickName, isNickNameBusy} from '../../store/actions'
+import {changeCurrentUserName, changeCurrentUserNickName, emailSignUp, isNickNameBusy} from '../../store/actions'
 
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors"
 import Stack from "@mui/material/Stack";
+import * as yup from "yup";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const UserProfile = ({handleClose}) => {
     const currentUserName = useSelector(selectors.currentUserName);
@@ -22,53 +27,76 @@ const UserProfile = ({handleClose}) => {
     const dispatch = useDispatch();
 
 
-    const handleForm = async (e) => {
-        e.preventDefault();
-        if (!(name == currentUserName)) {
-            const nameIsWrong = !validator.isLength(name, {min: 2, max: 30});
-            setWrongName(nameIsWrong)
-            if (!nameIsWrong) {
-                dispatch(changeCurrentUserName(name))
+    const schema = yup.object({
+        name: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+        nickName: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+    }).required();
+
+    const {register, handleSubmit, setError, formState: {errors}} = useForm({
+        mode: 'onSubmit',
+        resolver: yupResolver(schema),
+    });
+
+
+    const handleForm = async (data) => {
+        if ((data.nickName == currentUserNickName) && (data.name == currentUserName)) {
+            handleClose()
+        }
+        if(data.name != currentUserName){
+            if (data.name!='Избранное') {
+                dispatch(changeCurrentUserNickName(data.nickName))
                 handleClose()
+            }else{
+                setError("name", {
+                    type: 'custom',
+                    message: "запрещенное имя"
+                });
+
             }
         }
 
-        if (!(nickName == currentUserNickName)) {
-            setNickNameIsBusy(await isNickNameBusy(nickName));
-            if (!nickNameIsBusy) {
-                dispatch(changeCurrentUserNickName(nickName));
+
+        if (data.nickName != currentUserNickName){
+            const nickNameIsBusy =  await isNickNameBusy(data.nickName);
+            if (nickNameIsBusy) {
+                setError("nickName", {
+                    type: 'custom',
+                    message: "никнейм занят"
+                });
+            }else{
+                dispatch(changeCurrentUserNickName(data.nickName))
                 handleClose()
             }
-        }
-        if ((nickName == currentUserNickName) && (name == currentUserName)) {
-            handleClose()
         }
     }
 
 
     return (
         <Fragment>
-            <FormControl sx={{width: '100%'}} noValidate autoComplete='off'>
-                <Stack direction="column" spacing={3}>
-                    <TextField label="Никнейм"
-                               id="filled-basic" variant="filled"
-                               defaultValue={nickName}
-
-                               onChange={e => setNickName(e.target.value)}
-                               error={nickNameIsBusy}
-                               helperText={(nickNameIsBusy) ? "Никнейм занят" : ''}
+            <form sx={{width: '100%'}}  onSubmit={handleSubmit(handleForm)}>
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
+                    <Typography variant={'h6'} sx={{flex: "1", textAlign: 'center'}}>
+                        Настройки
+                    </Typography>
+                    <TextField
+                        {...register("nickName")}
+                        label="Никнейм"
+                        defaultValue={nickName}
+                        error={errors.nickName}
+                        helperText={errors?.nickName?.message}
+                        noValidate
                     />
-                    <TextField label="Имя"
-                               id="filled-basic" variant="filled"
-
-                               defaultValue={name}
-                               onChange={e => setName(e.target.value)}
-                               error={wrongName}
-                               helperText={(wrongName) ? "Имя должно быть длиннее 2 символов и короче 30 " : ''}
+                    <TextField
+                        {...register("name")}
+                        label="Имя"
+                        defaultValue={name}
+                        error={errors.name}
+                        helperText={errors?.name?.message}
+                        noValidate
                     />
-                    <Button variant="contained" type="submit" size="large" onClick={handleForm}>Сохранить</Button>
-                </Stack>
-            </FormControl>
+                    <Button variant="contained" type="submit" size="large" >Сохранить</Button>
+                </Box>
+            </form>
         </Fragment>
     );
 };
