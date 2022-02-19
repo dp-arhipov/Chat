@@ -22,6 +22,7 @@ import {useInView} from "react-intersection-observer";
 import usePrevious from "../../../customHooks/usePrevious";
 import CircularProgress from "@mui/material/CircularProgress";
 import MessageList from "./MessageList";
+import Date from "./Date";
 
 const MessageListContainer = ({...props}) => {
     const currentUserId = useSelector(selectors.currentUserId);
@@ -95,15 +96,27 @@ const MessageListContainer = ({...props}) => {
 
 
     const needTopLoader = currentDialogStatus=='FETCHING' && scrollTop==0 && messages.length>=20
+    let previousDate = null;
+
     return (
         <MessageList ref={containerRef} needTopLoader={needTopLoader}>
             {messages.map(message => {
 
-                    const isCurrentUserMessage = (message.creatorId == currentUserId)
-                    const isReaded = (currentDialogLastRead(currentCompanionId)?.timestamp) && currentDialogLastRead(currentCompanionId)?.timestamp.toMillis() >= message?.timestamp?.toMillis()
-                    const isFirstUnreadedMessage = (currentDialog.firstUnreadedMessageOf(currentUserId)?.id == message.messageId);
+                const isCurrentUserMessage = (message.creatorId == currentUserId)
+                const isReaded = (currentDialogLastRead(currentCompanionId)?.timestamp) && currentDialogLastRead(currentCompanionId)?.timestamp.toMillis() >= message?.timestamp?.toMillis()
+                const isFirstUnreadedMessage = (currentDialog.firstUnreadedMessageOf(currentUserId)?.id == message.messageId);
+
+                const date = message.date;
+                const newDate = date != previousDate
+                if (newDate) previousDate = date;
 
                     return (
+                        <Fragment>
+                            {(newDate)&&
+                            <div style={{margin:'2rem'}}>
+                                <Date date={date}/>
+                            </div>
+                            }
                         <StyledMessage
                             isCurrentUserMessage={isCurrentUserMessage}
                             id={isFirstUnreadedMessage ? 'firstUnreadedMessage' : null}
@@ -111,12 +124,12 @@ const MessageListContainer = ({...props}) => {
                             key={message.messageId}
                             messageId={message.messageId}
                             text={message.messageId+ message?.timestamp?.toMillis() +" "+message.text}
-                            date={message.date}
                             time={message.time}
                             timestamp={message.timestamp}
                             onRead={onRead}
 
                         />
+                            </Fragment>
                     )
                 }
             )}
