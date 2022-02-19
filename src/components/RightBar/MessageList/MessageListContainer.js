@@ -22,6 +22,7 @@ import {useInView} from "react-intersection-observer";
 import usePrevious from "../../../customHooks/usePrevious";
 import CircularProgress from "@mui/material/CircularProgress";
 import MessageList from "./MessageList";
+import Date from "./Date";
 
 const MessageListContainer = ({...props}) => {
     const currentUserId = useSelector(selectors.currentUserId);
@@ -80,21 +81,37 @@ const MessageListContainer = ({...props}) => {
 
 
     const needTopLoader = currentDialogStatus=='FETCHING' && scrollTop==0 && messages.length>=20
+    let previousDate = null;
     return (
         <MessageList ref={containerRef} needTopLoader={needTopLoader}>
-            {messages.map(message => {
+            {
+
+                messages.map(message => {
                     const isCurrentUserMessage = (message.creatorId == currentUserId)
+                    const date = message.date;
+                    const newDate = date!=previousDate
+                    if(newDate)  previousDate = date;
+                    
+
                     return (
-                        <StyledMessage
-                            isCurrentUserMessage={isCurrentUserMessage}
-                            status={message.status}
-                            key={message.messageId}
-                            messageId={message.messageId}
-                            text={message.text}
-                            date={message.date}
-                            time={message.time}
-                            onRead={onRead}
-                        />
+                        <Fragment>
+                            {(newDate)&&
+                                <div style={{margin:'2rem'}}>
+                                    <Date date={date}/>
+                                </div>
+                            }
+
+                            <StyledMessage
+                                isCurrentUserMessage={isCurrentUserMessage}
+                                status={message.status}
+                                key={message.messageId}
+                                messageId={message.messageId}
+                                text={message.text}
+                                time={message.time}
+                                onRead={onRead}
+                            />
+                        </Fragment>
+
                     )
                 }
             )}
