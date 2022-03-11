@@ -12,10 +12,12 @@ import {
     setDoc,
     startAfter,
     updateDoc,
-    where
+    where,
+    startAt
 } from "firebase/firestore";
 import {nanoid} from "nanoid";
 import {Auth} from "./index";
+
 
 
 // import {browserSessionPersistence, setPersistence} from "firebase/firebase-auth";
@@ -166,7 +168,7 @@ export class FirebaseDB {
     }
 
     addDialogMessagesListener = async (dialogId, callback) => {
-        this.addDialogMessagesListener2(dialogId,callback)
+
         const q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(10))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
            // const isLocal = snapshot.metadata.hasPendingWrites;
@@ -183,23 +185,35 @@ export class FirebaseDB {
         return unsubscribe;
     }
 
-    addDialogMessagesListener2 = async (dialogId, callback) => {
-        const q = query(this.refs.dialogData(dialogId), where('status','!=','READED'))
+    addDialogInfoListener = async (dialogId, callback) => {
+        const q = query(this.refs.dialogInfo(dialogId))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
-            // const isLocal = snapshot.metadata.hasPendingWrites;
-            snapshot.docChanges().forEach((change) => {
-                console.log('messages Listener')
-                console.log(change.doc.data())
-                // if (!isLocal) {
-                callback(dialogId, change.doc.data());
-                //callback(dialogId, change.doc.data());
-
-                //}
-            });
+            callback(dialogId, snapshot.data());
         })
         this.listeners.push(unsubscribe)
         return unsubscribe;
     }
+
+    // addDialogUnreadedMessagesListener = async (dialogId, callback) => {
+    //     const q = query(this.refs.dialogData(dialogId), where('status','!=','READED'))
+    //     let ids = [];
+    //     const unsubscribe = await onSnapshot(q, (snapshot) => {
+    //         // const isLocal = snapshot.metadata.hasPendingWrites;
+    //         snapshot.docChanges().forEach((change) => {
+    //            // console.log('messages Listener')
+    //             //console.log(change.doc.data())
+    //             // if (!isLocal) {
+    //             callback(dialogId, change.doc.data());
+    //             ids.push(change.doc.data().messageId);
+    //             //callback(dialogId, change.doc.data());
+    //
+    //             //}
+    //         });
+    //     })
+    //     console.log(ids)
+    //     this.listeners.push(unsubscribe)
+    //     return unsubscribe;
+    // }
 
 
     addDialogListListener = async (userId, callback) => {
@@ -276,47 +290,113 @@ export class FirebaseDB {
 
     }
 
-    setDialogMessageProps = async (dialogId, messageId, props) => {
-        // console.log(props)
-        const docRef = doc(this.refs.dialogData(dialogId), messageId);
-        const {status} = props;
-        let result;
-        if (status) result = await updateDoc(docRef, {status});
-
-        return result;
-
-    }
-
-
-
-    getDialogMessage = async (dialogId, messageId) => {
-        let q = doc(this.refs.dialogData(dialogId), messageId)
-        const docSnap = await getDoc(q);
-        const message = docSnap.data();
-        return message;
-    }
+    // setDialogMessageProps = async (dialogId, messageId, props) => {
+    //     // console.log(props)
+    //     const docRef = doc(this.refs.dialogData(dialogId), messageId);
+    //     const {status} = props;
+    //     let result;
+    //     if (status) result = await updateDoc(docRef, {status});
+    //
+    //     return result;
+    //
+    // }
 
 
-    getDialogMessages = async (dialogId, loadLimit = 10, lastVisibleMessageId = 0) => {
+    //
+    // getDialogMessage = async (dialogId, messageId) => {
+    //     let q = doc(this.refs.dialogData(dialogId), messageId)
+    //     const docSnap = await getDoc(q);
+    //     const message = docSnap.data();
+    //     return message;
+    // }
+
+
+    // getDialogMessages = async (dialogId, loadLimit = 10, lastVisibleMessageId = 0) => {
+    //     let messages = [];
+    //         let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(loadLimit))
+    //         if (lastVisibleMessageId) {
+    //             console.log(lastVisibleMessageId)
+    //             const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+    //             q = query(
+    //                 this.refs.dialogData(dialogId),
+    //                 orderBy("timestamp", "desc"),
+    //                 startAfter(lastVisibleMessage),
+    //                 limit(loadLimit));
+    //         }
+    //         const docSnap = await getDocs(q);
+    //         if (docSnap) {
+    //             console.log(docSnap.docs)
+    //             for (let item of docSnap.docs) {
+    //                 const message = {...item.data()}
+    //                 messages = [message, ...messages];
+    //             }
+    //         }
+    //         return messages;
+    //     // }catch(error){
+    //     //     console.log(error)
+    //     // }
+    //
+    // }
+
+
+    getDialogMessages = async (dialogId, lastVisibleMessageId, loadLimit) => {
+       // console.log(dialogId, lastVisibleMessageId, loadLimit)
         let messages = [];
-        let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(loadLimit))
-        if (lastVisibleMessageId) {
-            const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+
+        const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+        let q;
+        if ((loadLimit < 0)) {
             q = query(
                 this.refs.dialogData(dialogId),
                 orderBy("timestamp", "desc"),
                 startAfter(lastVisibleMessage),
-                limit(loadLimit));
+                limit(Math.abs(loadLimit)));
+        } else {
+            q = query(
+                this.refs.dialogData(dialogId),
+                orderBy("timestamp", "asc"),
+                startAt(lastVisibleMessage),
+                limit(Math.abs(loadLimit)));
         }
+
         const docSnap = await getDocs(q);
         if (docSnap) {
+           // console.log(docSnap.docs)
             for (let item of docSnap.docs) {
                 const message = {...item.data()}
                 messages = [message, ...messages];
+                // messages = (loadLimit<=0)? [...messages, message]:[message, ...messages];
             }
         }
+
         return messages;
+
     }
+
+
+    // getDialogMessages = async (dialogId, loadLimit = 10, lastVisibleMessageId = 0, lastReadedTimestamp) => {
+    //     let messages = [];
+    //     console.log(lastReadedTimestamp)
+    //     if(lastReadedTimestamp) {
+    //         let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), where("timestamp", "<", lastReadedTimestamp.toMillis()), limit(loadLimit))
+    //         if (lastVisibleMessageId) {
+    //             const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+    //             q = query(
+    //                 this.refs.dialogData(dialogId),
+    //                 orderBy("timestamp", "desc"),
+    //                 startAfter(lastVisibleMessage),
+    //                 limit(loadLimit));
+    //         }
+    //         const docSnap = await getDocs(q);
+    //         if (docSnap) {
+    //             for (let item of docSnap.docs) {
+    //                 const message = {...item.data()}
+    //                 messages = [message, ...messages];
+    //             }
+    //         }
+    //         return messages;
+    //     }
+    // }
 
 
     // getUserDialogList = async (userId) => {
@@ -392,7 +472,7 @@ export class FirebaseDB {
         // setDoc(docRef2, {name: currentUserName, companionId: currentUserId});
 
         const docRef3 = this.refs.dialogInfo(dialogId);
-        setDoc(docRef3, {companionId: companionId, creatorId: currentUserId});
+        setDoc(docRef3, {companionId: companionId, creatorId: currentUserId });
 
         // const docRef4 = doc(this.refs.dialogInfo(dialogId), "dialogName");
         // setDoc(docRef4, dialogName);
@@ -439,5 +519,28 @@ export class FirebaseDB {
     setName = async (name, userId = this.currentUserId) => {
         return updateDoc(this.refs.user(userId), {name: name});
     }
+
+
+
+
+
+
+
+    setLastRead  = (userId, dialogId, messageTimestamp, messageId) => {
+        const docRef = this.refs.dialogInfo(dialogId);
+        setDoc(docRef,  { lastRead: {
+                [userId]: {
+                    messageTimeStamp: messageTimestamp,
+                    messageId: messageId
+                }
+            }},{ merge: true });
+    }
+
+    // getLastRead  = async (dialogId) => {
+    //     const docRef = this.refs.dialogInfo(dialogId);
+    //     const responce = await getDoc(docRef);
+    //     return responce.data().lastRead
+    // }
+
 
 }

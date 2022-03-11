@@ -9,7 +9,7 @@ import {
     addCDMessagesTop,
     loadOldCurrentDialogMessages,
     setCurrentDialogTempScrollPosition,
-    setDialogMessageIsReaded
+    setDialogMessageIsReaded, setCurrentDialogLastRead
 } from "../../../store/actions";
 import Box from "@mui/material/Box";
 import useDebounce from "../../../customHooks/useDebounce";
@@ -26,12 +26,15 @@ import MessageList from "./MessageList";
 const MessageListContainer = ({...props}) => {
     const currentUserId = useSelector(selectors.currentUserId);
 
-    const currentDialog = useSelector(selectors.currentDialog)
-    const currentDialogScrollPosition = currentDialog.scrollPosition;
+
+    const currentDialog = useSelector(selectors.currentDialogInfo)
+    //const currentDialogScrollPosition = currentDialog.scrollPosition;
+    const currentDialogLastRead = currentDialog.lastReadedMessageBy;
+    const currentCompanionId = currentDialog.companionId;
     const currentDialogStatus = currentDialog.status;
     const messages = currentDialog.messages;
-    const currentDialogId = currentDialog.dialogId;
-    const previousDialogId = usePrevious(currentDialogId)
+    const currentDialogId = currentDialog.id;
+   //\ const previousDialogId = usePrevious(currentDialogId)
     const dispatch = useDispatch();
     const {containerRef, scrollTo, setPinBottom, setScrollBottom, scrollTopPercents, scrollTop, scrollBottom, setSaveScrollPosition, init} = useScroll(
         [messages.length],
@@ -40,9 +43,8 @@ const MessageListContainer = ({...props}) => {
 
     useEffect(async () => {
         // console.log(`0-- dialog status: ${currentDialogStatus}, scrollTop: ${scrollTop}, scrollTopPercents: ${scrollTopPercents}, scrollBottom: ${scrollBottom}`);
-        if (scrollTopPercents <= 10) {
+        if (scrollTopPercents <= 5) {
             if (currentDialogStatus != 'FETCHING') {
-
                 dispatch(setDialogProps({dialogId: currentDialogId, status: 'FETCHING'}))
                 const messages = await dispatch(loadOldCurrentDialogMessages())
                 setSaveScrollPosition(true)
@@ -60,21 +62,34 @@ const MessageListContainer = ({...props}) => {
 
 
     useEffect(() => {
-        if (previousDialogId) {
-            let sc = scrollBottom
-            if (!scrollBottom) sc = '0'
-            dispatch(setDialogProps({dialogId: previousDialogId, scrollPosition: sc}))
+        if(currentDialog.firstUnreadedMessageOf(currentUserId)) {
+            const element = document.getElementById("firstUnreadedMessage");
+            if (element) {
+                console.log(element);
+                element.scrollIntoView(true);
+            }
+        }else{
+            setPinBottom(true)
         }
-        if (currentDialogScrollPosition == '0') {
-            scrollTo('bottom');
-        } else {
-            scrollTo('bottom', currentDialogScrollPosition - 0)
-        }
+
+
+        // if (previousDialogId) {
+        //     let sc = scrollBottom
+        //     if (!scrollBottom) sc = '0'
+        //     dispatch(setDialogProps({dialogId: previousDialogId, scrollPosition: sc}))
+        //     // dispatch(setLastActiveTime(previousDialogId))
+        // }
+        // if (currentDialogScrollPosition == '0') {
+        //     scrollTo('bottom');
+        // } else {
+        //     scrollTo('bottom', currentDialogScrollPosition - 0)
+        // }
     }, [currentDialogId])
 
 
-    const onRead = useCallback((messageId) => {
-        dispatch(setDialogMessageIsReaded(currentDialogId, messageId))
+
+    const onRead =  useCallback(async (messageTimestamp, messageId) => {
+        dispatch(setCurrentDialogLastRead(messageTimestamp, messageId))
     }, [containerRef]);
 
 
@@ -83,17 +98,24 @@ const MessageListContainer = ({...props}) => {
     return (
         <MessageList ref={containerRef} needTopLoader={needTopLoader}>
             {messages.map(message => {
+
                     const isCurrentUserMessage = (message.creatorId == currentUserId)
+                    const isReaded = (currentDialogLastRead(currentCompanionId)?.timestamp) && currentDialogLastRead(currentCompanionId)?.timestamp.toMillis() >= message?.timestamp?.toMillis()
+                    const isFirstUnreadedMessage = (currentDialog.firstUnreadedMessageOf(currentUserId)?.id == message.messageId);
+
                     return (
                         <StyledMessage
                             isCurrentUserMessage={isCurrentUserMessage}
-                            status={message.status}
+                            id={isFirstUnreadedMessage ? 'firstUnreadedMessage' : null}
+                            status={isReaded ? 'READED' : message.status}
                             key={message.messageId}
                             messageId={message.messageId}
-                            text={message.text}
+                            text={message.messageId+ message?.timestamp?.toMillis() +" "+message.text}
                             date={message.date}
                             time={message.time}
+                            timestamp={message.timestamp}
                             onRead={onRead}
+
                         />
                     )
                 }

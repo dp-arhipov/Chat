@@ -9,7 +9,7 @@ import {useInView} from 'react-intersection-observer';
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../../store/selectors";
 import {setDialogMessageProps} from "../../../store/slices";
-import {setDialogMessageIsReaded} from "../../../store/actions";
+import { setDialogMessageIsReaded} from "../../../store/actions";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
@@ -19,33 +19,24 @@ import Button from "@mui/material/Button";
 
 
 
-const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,...props}) => {
-
-    //
-    // const {ref, inView, entry} = useInView({
-    //     triggerOnce: true,
-    //     threshold: 0.5,
-    // });
-
+const Message = ({text, time, status, messageId, timestamp, onRead, isCurrentUserMessage,...props}) => {
 
     const { ref, inView } = useInView({
         triggerOnce: true,
         threshold: 0.5,
-        // Track the actual visibility of the target
-        //trackVisibility: true,
-        // Set a minimum delay between notifications, it must be set to 100 (ms) or greater
-        // For performance perspective, use the largest tolerable value as much as possible
         delay: 300,
     });
 
     useEffect(() => {
-        if (inView && !isCurrentUserMessage && status != 'READED') onRead(messageId)
+        if (inView && !isCurrentUserMessage) {
+            onRead(timestamp, messageId)
+        }
     }, [inView])
+
 
     return (
 
                 <Card {...props} elevation={1} ref={ref} >
-
                     <CardContent>
                         <Box sx={{ display:"flex"}}>
                             <Typography variant="caption" color="textSecondary">
@@ -67,14 +58,5 @@ const Message = ({text, time, status, messageId, onRead, isCurrentUserMessage,..
     );
 };
 
-
-// const Message = ({...props}) => {
-//
-//     return (
-//         <Card {...props} elevation={1}>
-//             Text
-//         </Card>
-//     )
-// }
 
 export default React.memo(Message);

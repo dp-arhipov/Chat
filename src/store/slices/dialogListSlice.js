@@ -9,6 +9,7 @@ const dialogInitialState = {
     status:'FETCHING',
     dialogId: '',
     scrollPosition: 0,
+    lastRead:{},
     messages: []
 }
 
@@ -50,10 +51,12 @@ const dialogListSlice = createSlice({
         },
 
         setDialogProps(state, action) {
-            const {dialogId, status, name, scrollPosition} = action.payload
+
+            const {dialogId, status, name, scrollPosition, lastRead} = action.payload
             const dialogInState = state.dialogList[dialogId]
             if(status) dialogInState.status = status
             if(name) dialogInState.name = name
+            if(lastRead) dialogInState.lastRead = {...dialogInState.lastRead,...lastRead}
             if(scrollPosition) dialogInState.scrollPosition = scrollPosition
         },
 

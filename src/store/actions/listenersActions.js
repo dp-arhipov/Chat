@@ -8,6 +8,7 @@ import {
 
 import * as selectors from "../selectors"
 import {createSavedMessages, setDialogMessageIsReaded} from "./dialogActions";
+import {useSelector} from "react-redux";
 
 
 const messageLoadLimit = 10;
@@ -33,12 +34,10 @@ export const addUserInfoListener = () => {
                 dispatch(setCurrentUserProps({name:userInfo.name}))
             }
             if (userInfo.nickName != currentUserNickName) dispatch(setCurrentUserProps({nickName:userInfo.nickName}))
-
         })
         return r;
     }
 }
-
 
 
 export const addDialogListListener = () => {
@@ -49,7 +48,10 @@ export const addDialogListListener = () => {
             dispatch(addDialog(dialog))
             await dispatch(addDialogNameListener(dialog.dialogId))
             await dispatch(addDialogMessagesListener(dialog.dialogId))
-            //dispatch(setDialogListProperty({status:"LOADED"}))
+            DB.addDialogInfoListener(dialog.dialogId, (id,data)=>{
+                dispatch(setDialogProps({dialogId:dialog?.dialogId, lastRead: data?.lastRead}))
+            })
+
 
         })
     }
@@ -75,25 +77,61 @@ export const addDialogNameListener = (dialogId) => {
     }
 }
 
+
+// export const getDialogUnreadMessages  = () => {
+//     return async function disp(dispatch, getState) {
+//         const currentDialogId = selectors.currentDialog(getState()).dialogId
+//         const currentUserId = selectors.currentUserId(getState())
+//         const lastReadedMessageId = selectors.currentDialog(getState()).lastRead[currentUserId].messageId
+//         console.log(lastReadedMessageId);
+//         const unreadMessages = await DB.getDialogUnreadMessages(currentDialogId, 10, lastReadedMessageId)
+//
+//         //dispatch(setDialogProps({dialogId:currentDialogId, lastRead:lastReaded}))
+//         return unreadMessages;
+//     }
+// }
+
+
 export const addDialogMessagesListener = (dialogId) => {
     return async function disp(dispatch, getState) {
         dispatch(setDialogProps({dialogId, status:"FETCHING"}))
-        const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
-        dispatch(pushDialogMessages({dialogId, messages}))
+        const currentUserId = selectors.currentUserId(getState());
+        const dialog = selectors.dialogInfo(getState(), dialogId);
+        const lastReadedMessage = dialog.lastReadedMessageBy(currentUserId);
+        const lastReadedMessageId = lastReadedMessage.id;
+        const lastMessageTimestamp = dialog.lastMessage.timestamp;
+        //console.log(lastReadedMessageId)
+
+        if (lastReadedMessageId) {
+            let loadedMoreMessages=[]
+            const unreadedMessages = await DB.getDialogMessages(dialogId, lastReadedMessageId, 100)
+
+            // console.log(`messages after: ${lastReadedMessageId}`, unreadedMessages )
+            const needToLoadMoreNumber = messageLoadLimit - unreadedMessages.length;
+
+            if (needToLoadMoreNumber) {
+                loadedMoreMessages = await DB.getDialogMessages(dialogId, lastReadedMessageId, -(needToLoadMoreNumber))
+                // console.log(`messages before: ${lastReadedMessageId}`, messages2)
+            }
+
+            // const messagesToAdd = [...loadedMoreMessages,...unreadedMessages].sort((a, b) => {
+            const messagesToAdd = [...loadedMoreMessages,...unreadedMessages];
+            dispatch(pushDialogMessages({dialogId, messages: messagesToAdd}))
+
+        }
+
         const r = await DB.addDialogMessagesListener(
             dialogId,
             (dialogId, message) => {
+                console.log(message);
+                const lastMessage =  selectors.dialogInfo(getState(), dialogId).lastMessage
+                const lastMessageTimestamp =  lastMessage?.timestamp
 
-                //console.log(message)
-                if(message.status=="READED") dispatch(setDialogMessageIsReaded(dialogId, message.messageId));
-
-
-                const lastMessage =  selectors.dialogLastMessage(getState(), dialogId)
-                if (!lastMessage) {
+                if (!lastMessage.id) {
                     dispatch(pushDialogMessages({dialogId, message}))
                 }
-                else if (lastMessage.hasOwnProperty("timestamp")) {
-                    if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
+                else if (lastMessageTimestamp) {
+                    if (message.timestamp.toMillis() > lastMessageTimestamp.toMillis()) {
                         dispatch(pushDialogMessages({dialogId, message}))
                     }
                 }

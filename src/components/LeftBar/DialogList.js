@@ -35,7 +35,7 @@ const DialogList = ({...props}) => {
                             onClick={(e) => onClickHandle(e,dialog.id)}
                             id={dialog.id}
                             name={dialog.name}
-                            caption={(dialog.lastMessage) ? (dialog.lastMessage) : ''}
+                            caption={(dialog.lastMessage.text) ? (dialog.lastMessage.text) : ''}
                             unreadMessagesNumber = {dialog.unreadMessagesNumber}
                             button
                             divider
