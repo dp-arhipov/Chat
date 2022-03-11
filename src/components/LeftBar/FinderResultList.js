@@ -1,10 +1,5 @@
 import React, {Fragment} from 'react';
 import Box from "@mui/material/Box";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors";

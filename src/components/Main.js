@@ -1,16 +1,12 @@
 import React, {Fragment, useEffect} from 'react';
 import RightBar from "./RightBar/RightBar";
 import Header from "./Header/Header";
-import Box from "@mui/material/Box";
 import LeftBar from "./LeftBar/LeftBar";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../store/selectors"
 import {init} from "../store/actions"
 import Grid from "@mui/material/Grid";
-import {Divider} from "@mui/material";
-import Paper from "@mui/material/Paper";
-
-import { ThemeProvider, createTheme, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import makeStyles from '@mui/styles/makeStyles'
 
 

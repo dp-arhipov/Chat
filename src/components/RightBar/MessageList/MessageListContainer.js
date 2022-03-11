@@ -1,26 +1,14 @@
 import React, {Fragment, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import Message from "./Message";
 import * as selectors from "../../../store/selectors"
 import {useDispatch, useSelector} from "react-redux";
-import styled from "styled-components";
-import Container from "@mui/material/Container";
-import {nanoid} from "nanoid";
 import {
     addCDMessagesTop,
     loadOldCurrentDialogMessages,
-    setCurrentDialogTempScrollPosition,
     setDialogMessageIsReaded, setCurrentDialogLastRead
 } from "../../../store/actions";
-import Box from "@mui/material/Box";
-import useDebounce from "../../../customHooks/useDebounce";
 import useScroll from "../../../customHooks/useScroll";
-import {setDialogProps, shiftDialogMessages} from "../../../store/slices";
-import {DB} from "../../../API";
-import {makeStyles} from "@mui/styles";
+import {setDialogProps} from "../../../store/slices";
 import StyledMessage from "./StyledMessage";
-import {useInView} from "react-intersection-observer";
-import usePrevious from "../../../customHooks/usePrevious";
-import CircularProgress from "@mui/material/CircularProgress";
 import MessageList from "./MessageList";
 import Date from "./Date";
 

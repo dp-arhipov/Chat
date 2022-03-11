@@ -1,4 +1,4 @@
-import React, {Fragment, useContext} from 'react';
+import React from 'react';
 import {AppBar, IconButton, Typography} from '@mui/material';
 
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
@@ -9,10 +9,8 @@ import UserProfileModal from "./UserProfileModal";
 import {logOut} from "../../store/actions"
 import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
-import ExploreIcon from '@mui/icons-material/Explore';
 import * as selectors from "../../store/selectors";
 import Box from "@mui/material/Box";
-import DialogList from "../LeftBar/DialogList";
 import Popover from "@mui/material/Popover";
 import PixIcon from '@mui/icons-material/Pix';
 

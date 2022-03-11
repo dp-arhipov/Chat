@@ -1,14 +1,12 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import TextField from "@mui/material/TextField";
-import validator from 'validator'
+
 
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import {changeCurrentUserName, changeCurrentUserNickName, emailSignUp, isNickNameBusy} from '../../store/actions'
+import {changeCurrentUserNickName, isNickNameBusy} from '../../store/actions'
 
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors"
-import Stack from "@mui/material/Stack";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";

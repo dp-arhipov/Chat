@@ -1,14 +1,11 @@
-import React, {Fragment, useState} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
-import {dialogsInfo, currentDialogId} from "../../store/selectors"
+import {dialogsInfo} from "../../store/selectors"
 import {setCurrentDialog} from "../../store/actions";
 import Dialog from "./Dialog";
-
-import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
-import ListItem from "@mui/material/ListItem";
 
 const DialogList = ({...props}) => {
     const _dialogsInfo = useSelector(dialogsInfo);

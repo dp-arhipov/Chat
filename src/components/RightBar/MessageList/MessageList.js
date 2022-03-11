@@ -1,8 +1,5 @@
-import React, {forwardRef, memo} from 'react';
-import Box from "@mui/material/Box";
+import React, {forwardRef} from 'react';
 import CircularProgress from "@mui/material/CircularProgress";
-import {useSelector} from "react-redux";
-import * as selectors from "../../../store/selectors";
 import FlexCenter from "../../../HOC/FlexCenter";
 import "./style.css"
 

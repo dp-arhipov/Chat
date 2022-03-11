@@ -11,8 +11,6 @@ import {
 
 import * as selectors from "../selectors"
 import {nanoid} from "nanoid";
-import * as selector from "../selectors";
-import {serverTimestamp} from "firebase/firestore";
 
 const messageLoadLimit = 10;
 

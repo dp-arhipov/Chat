@@ -1,11 +1,10 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React from 'react';
 import DialogList from "./DialogList";
 import Box from "@mui/material/Box";
 import FinderInput from "./FinderInput";
 import FinderResultList from "./FinderResultList";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../../store/selectors"
-import Paper from "@mui/material/Paper";
 
 const LeftBar = () => {
 

@@ -17,7 +17,6 @@ import {faGoogle} from '@fortawesome/free-brands-svg-icons/faGoogle';
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import FormControl from "@mui/material/FormControl";
 
 const Login = ({history}) => {
     const dispatch = useDispatch();

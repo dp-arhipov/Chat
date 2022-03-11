@@ -7,8 +7,8 @@ import {
 } from "../slices";
 
 import * as selectors from "../selectors"
-import {createSavedMessages, setDialogMessageIsReaded} from "./dialogActions";
-import {useSelector} from "react-redux";
+import {createSavedMessages} from "./dialogActions";
+
 
 
 const messageLoadLimit = 10;

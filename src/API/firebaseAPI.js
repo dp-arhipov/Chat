@@ -1,4 +1,4 @@
-import {GoogleAuthProvider, signInWithPopup, signOut, browserLocalPersistence, setPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth";
+import {GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth";
 import {
     collection,
     doc,
@@ -16,7 +16,7 @@ import {
     startAt
 } from "firebase/firestore";
 import {nanoid} from "nanoid";
-import {Auth} from "./index";
+
 
 
 export class FirebaseAuth {

@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { AuthContext } from "./Auth";
 import {useSelector} from "react-redux";
 import {isCurrentUserLoggedIn} from "../store/selectors";
 
