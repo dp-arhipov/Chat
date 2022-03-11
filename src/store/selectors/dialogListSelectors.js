@@ -33,7 +33,6 @@ export const dialogInfo = (state, dialogId) => {
                 id: firstMessage?.messageId
             },
             lastReadedMessageBy(userId) {
-                console.log(_dialog?.lastRead[_currentUserId])
                 return {
                     id: _dialog?.lastRead[userId]?.messageId,
                     timestamp: _dialog?.lastRead[userId]?.messageTimeStamp

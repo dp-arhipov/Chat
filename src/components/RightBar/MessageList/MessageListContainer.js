@@ -65,7 +65,6 @@ const MessageListContainer = ({...props}) => {
         if(currentDialog.firstUnreadedMessageOf(currentUserId)) {
             const element = document.getElementById("firstUnreadedMessage");
             if (element) {
-                console.log(element);
                 element.scrollIntoView(true);
             }
         }else{

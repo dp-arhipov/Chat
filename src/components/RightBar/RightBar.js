@@ -19,7 +19,7 @@ import {setCurrentDialogId} from "../../store/slices";
 
 
 const RightBar = () => {
-    console.log("render Main")
+
 const currentDialog = useSelector(selectors.currentDialogInfo);
 
     const currentDialogName = currentDialog?.name;

@@ -38,7 +38,7 @@ export class FirebaseAuth {
     }
 
     emailLogin  = async (email, password) => {
-        console.log(email)
+
         return await signInWithEmailAndPassword(this.auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
@@ -55,7 +55,6 @@ export class FirebaseAuth {
 
     emailSignUp  = async (email, password) => {
 
-        console.log(email)
         return await createUserWithEmailAndPassword(this.auth, email, password)
             .then((userCredential) => {
 
@@ -108,7 +107,7 @@ export class FirebaseDB {
         const user = await getDoc(this.refs.user(userId));
         const nickName = this.nickNameTemplate();
         if (!user.exists()) {
-            console.log(userName)
+
             setDoc(this.refs.user(userId), {
                 name: userName,
                 nickName: nickName
@@ -143,7 +142,7 @@ export class FirebaseDB {
         const unsubscribe = await onSnapshot(q, (snapshot) => {
            // const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach((change) => {
-                //console.log(change.doc.data())
+
                // if (!isLocal) {
 
                     callback(dialogId, change.doc.data());
@@ -271,7 +270,7 @@ export class FirebaseDB {
 
     findDialogByCompanionId = async (companionId, currentUserId = this.currentUserId) => {
         const dialogList = await this.getUserDialogsInfo(currentUserId)
-        console.log(dialogList)
+
         let dialogId=false;
         dialogList.forEach((dialog) => {
             if (dialog.companionId == companionId||dialog.creatorId == companionId) {

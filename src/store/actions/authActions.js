@@ -26,13 +26,11 @@ export const initAuth = () => {
 
 export const emailLogin = (email, password) => {
     return async function disp(dispatch, getState) {
-        console.log(email, password)
         return  Auth.emailLogin(email, password) ;
     }
 }
 export const emailSignUp = (email, password) => {
     return async function disp(dispatch, getState) {
-        console.log(email, password)
         return  Auth.emailSignUp(email, password) ;
     }
 }

@@ -27,7 +27,6 @@ const Main = () => {
     }, [currentUserId])
 
     const theme = useTheme()
-    console.log(currentDialogId=='none' || currentDialogId=='')
     const useStyles = makeStyles(()=> ({
         leftBar: {
             [theme.breakpoints.down('md')]: {

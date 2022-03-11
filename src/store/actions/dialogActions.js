@@ -49,7 +49,6 @@ export const setCurrentDialogLastRead = (messageTimeStamp, messageId) => {
         const currentUserId = selectors.currentUserId(getState())
         const dialogId = selectors.currentDialogId(getState())
         const lastReadedMessage = selectors.currentDialogInfo(getState()).lastReadedMessageBy(currentUserId);
-        console.log( selectors.currentDialogInfo(getState()).lastReadedMessageBy(currentUserId))
         if (!lastReadedMessage.timestamp || lastReadedMessage?.timestamp?.toMillis() < messageTimeStamp?.toMillis()) {
             dispatch(setDialogProps({
                 dialogId: dialogId,
@@ -119,7 +118,6 @@ export const createSavedMessages = () => {
     return async function disp(dispatch, getState) {
         const userId = selectors.currentUserId(getState())
             let dialogId = await DB.isSavedMessagesExist(userId);
-        console.log(userId)
             if (!dialogId) {
                 dispatch(setDialogListProps({status: "FETCHING"}))
                 return DB.createDialogWith(userId);

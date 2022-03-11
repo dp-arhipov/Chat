@@ -79,7 +79,6 @@ const init = ()=>{
 
 
     const setScrollBottom = (scrollBottom) => {
-        // console.log(`set sb-- ${scrollBottom}`)
         const containerHeight = containerRef.current.clientHeight;
         const scrollHeight = containerRef.current.scrollHeight;
         containerRef.current.scrollTop = scrollHeight - containerHeight - scrollBottom;

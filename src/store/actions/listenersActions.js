@@ -104,7 +104,6 @@ export const addDialogMessagesListener = (dialogId) => {
         const r = await DB.addDialogMessagesListener(
             dialogId,
             (dialogId, message) => {
-                console.log(message);
                 const lastMessage =  selectors.dialogInfo(getState(), dialogId).lastMessage
                 const lastMessageTimestamp =  lastMessage?.timestamp
 
