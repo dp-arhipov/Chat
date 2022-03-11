@@ -4,7 +4,7 @@ import {currentUserStatus} from "../store/selectors";
 import {initAuth} from "../store/actions";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import FlexCenter from "../HOC/FlexCenter";
+import FlexCenter from "./FlexCenter";
 
 const Auth = ({children}) => {
         const currentUserStatus_ = useSelector(currentUserStatus);

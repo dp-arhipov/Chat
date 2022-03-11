@@ -1,4 +1,4 @@
-import {DB} from "../../API";
+import {DB} from "../../services/firebase";
 import {
     addDialog,
     pushDialogMessages,

@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from '@mui/material/Button';
 
-import FlexCenter from "../HOC/FlexCenter";
+import FlexCenter from "./FlexCenter";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faGoogle} from '@fortawesome/free-brands-svg-icons/faGoogle';
 

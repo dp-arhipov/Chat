@@ -1,4 +1,4 @@
-import {Auth, DB} from "../../API";
+import {Auth, DB} from "../../services/firebase";
 import {
     resetDialogList,
     resetFinder,
