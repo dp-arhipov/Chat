@@ -17,7 +17,6 @@ import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {setCurrentDialogId} from "../../store/slices";
 
-//import * as actions from "../../store/actions";
 
 const RightBar = () => {
     console.log("render Main")

@@ -3,7 +3,6 @@ import {createSlice} from "@reduxjs/toolkit";
 const currentDialogInitialState = {
     status: 'LOADED',
     id: '',
-    // scrollPosition: '',
 }
 
 const currentDialogSlice = createSlice({
@@ -18,10 +17,6 @@ const currentDialogSlice = createSlice({
             const status = action.payload;
             if(status) state.status = status;
         },
-        // setCurrentDialogScrollPositionTemp(state, action){
-        //     const scrollPosition = action.payload;
-        //     if(scrollPosition) state.scrollPosition = scrollPosition;
-        // },
         resetCurrentDialog(state, action) {
             Object.assign(state, currentDialogInitialState)
         }

@@ -11,9 +11,7 @@ import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 
 const DialogList = ({...props}) => {
-    //console.log("render DialogList")
     const _dialogsInfo = useSelector(dialogsInfo);
-    // const _currentDialogId = useSelector(currentDialogId)
     const dispatch = useDispatch();
     const [selectedId, setSelectedId] = useState();
 

@@ -29,13 +29,12 @@ const MessageListContainer = ({...props}) => {
 
 
     const currentDialog = useSelector(selectors.currentDialogInfo)
-    //const currentDialogScrollPosition = currentDialog.scrollPosition;
+
     const currentDialogLastRead = currentDialog.lastReadedMessageBy;
     const currentCompanionId = currentDialog.companionId;
     const currentDialogStatus = currentDialog.status;
     const messages = currentDialog.messages;
     const currentDialogId = currentDialog.id;
-   //\ const previousDialogId = usePrevious(currentDialogId)
     const dispatch = useDispatch();
     const {containerRef, scrollTo, setPinBottom, setScrollBottom, scrollTopPercents, scrollTop, scrollBottom, setSaveScrollPosition, init} = useScroll(
         [messages.length],

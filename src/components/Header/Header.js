@@ -23,11 +23,11 @@ const Header = () => {
     const dispatch = useDispatch();
 
     const logOutButtonHandler = () => {
-        // API.logOutStore();
+
         dispatch(logOut());
 
     }
-    // const currentUser = store.getState().currentUser;
+
     const currentUserName = useSelector(selectors.currentUserName);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -46,7 +46,6 @@ const Header = () => {
     return (
         <AppBar position="static">
             <Toolbar>
-                {/*<img src={avatar} alt="Avatar"/>*/}
 
                 <IconButton color="inherit" onClick={handleChatIconClick}>
                     <PixIcon fontSize="medium"/>

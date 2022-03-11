@@ -15,7 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth();
-//setPersistence(auth, browserSessionPersistence); //сохранить токен в браузере
 
 export const Auth = new FirebaseAuth(auth);
 export const DB = new FirebaseDB(app, firestore);

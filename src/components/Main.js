@@ -16,12 +16,10 @@ import makeStyles from '@mui/styles/makeStyles'
 
 const Main = () => {
     const dispatch = useDispatch();
-    // const currentDialog = useSelector(selectors.dialogInfo(currentDialogId);
-    // console.log(currentDialog)
 
     const currentDialog = useSelector(selectors.currentDialogInfo);
     const currentDialogId = currentDialog?.id;
-    //const currentDialogName = useSelector(selectors.currentDialogName);
+
     const currentUserId = useSelector(selectors.currentUserId);
 
     useEffect(() => {

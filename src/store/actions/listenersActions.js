@@ -44,7 +44,6 @@ export const addDialogListListener = () => {
     return async function disp(dispatch, getState) {
         const currentUserId = selectors.currentUserId(getState());
         return await DB.addDialogListListener(currentUserId, async (dialog) => {
-            //dispatch(setDialogListProperty({status:"FETCHING"}))
             dispatch(addDialog(dialog))
             await dispatch(addDialogNameListener(dialog.dialogId))
             await dispatch(addDialogMessagesListener(dialog.dialogId))
@@ -77,21 +76,6 @@ export const addDialogNameListener = (dialogId) => {
     }
 }
 
-
-// export const getDialogUnreadMessages  = () => {
-//     return async function disp(dispatch, getState) {
-//         const currentDialogId = selectors.currentDialog(getState()).dialogId
-//         const currentUserId = selectors.currentUserId(getState())
-//         const lastReadedMessageId = selectors.currentDialog(getState()).lastRead[currentUserId].messageId
-//         console.log(lastReadedMessageId);
-//         const unreadMessages = await DB.getDialogUnreadMessages(currentDialogId, 10, lastReadedMessageId)
-//
-//         //dispatch(setDialogProps({dialogId:currentDialogId, lastRead:lastReaded}))
-//         return unreadMessages;
-//     }
-// }
-
-
 export const addDialogMessagesListener = (dialogId) => {
     return async function disp(dispatch, getState) {
         dispatch(setDialogProps({dialogId, status:"FETCHING"}))
@@ -100,21 +84,18 @@ export const addDialogMessagesListener = (dialogId) => {
         const lastReadedMessage = dialog.lastReadedMessageBy(currentUserId);
         const lastReadedMessageId = lastReadedMessage.id;
         const lastMessageTimestamp = dialog.lastMessage.timestamp;
-        //console.log(lastReadedMessageId)
 
         if (lastReadedMessageId) {
             let loadedMoreMessages=[]
             const unreadedMessages = await DB.getDialogMessages(dialogId, lastReadedMessageId, 100)
 
-            // console.log(`messages after: ${lastReadedMessageId}`, unreadedMessages )
             const needToLoadMoreNumber = messageLoadLimit - unreadedMessages.length;
 
             if (needToLoadMoreNumber) {
                 loadedMoreMessages = await DB.getDialogMessages(dialogId, lastReadedMessageId, -(needToLoadMoreNumber))
-                // console.log(`messages before: ${lastReadedMessageId}`, messages2)
+
             }
 
-            // const messagesToAdd = [...loadedMoreMessages,...unreadedMessages].sort((a, b) => {
             const messagesToAdd = [...loadedMoreMessages,...unreadedMessages];
             dispatch(pushDialogMessages({dialogId, messages: messagesToAdd}))
 
