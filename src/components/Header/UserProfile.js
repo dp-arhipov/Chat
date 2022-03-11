@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
-import * as yup from "yup";
+import {string, object} from "yup";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 
@@ -17,17 +17,11 @@ const UserProfile = ({handleClose}) => {
     const currentUserName = useSelector(selectors.currentUserName);
     const currentUserNickName = useSelector(selectors.currentUserNickName);
 
-    const [nickName, setNickName] = useState(currentUserNickName);
-    const [name, setName] = useState(currentUserName);
-
-    const [nickNameIsBusy, setNickNameIsBusy] = useState(false);
-    const [wrongName, setWrongName] = useState(false);
     const dispatch = useDispatch();
 
-
-    const schema = yup.object({
-        name: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
-        nickName: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+    const schema = object({
+        name: string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+        nickName: string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
     }).required();
 
     const {register, handleSubmit, setError, formState: {errors}} = useForm({
@@ -79,7 +73,7 @@ const UserProfile = ({handleClose}) => {
                     <TextField
                         {...register("nickName")}
                         label="Никнейм"
-                        defaultValue={nickName}
+                        defaultValue={currentUserNickName}
                         error={errors.nickName}
                         helperText={errors?.nickName?.message}
                         noValidate
@@ -87,7 +81,7 @@ const UserProfile = ({handleClose}) => {
                     <TextField
                         {...register("name")}
                         label="Имя"
-                        defaultValue={name}
+                        defaultValue={currentUserName}
                         error={errors.name}
                         helperText={errors?.name?.message}
                         noValidate

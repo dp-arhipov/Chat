@@ -17,7 +17,7 @@ import FlexCenter from "./FlexCenter";
 
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
+import {string, object} from "yup";
 
 const Login = ({history}) => {
     const dispatch = useDispatch();
@@ -36,9 +36,9 @@ const Login = ({history}) => {
         [history]
     );
 
-    const schema = yup.object({
-        email: yup.string().email('это не email').required('это поле нужно заполнить'),
-        password: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+    const schema = object({
+        email: string().email('это не email').required('это поле нужно заполнить'),
+        password: string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
     }).required();
 
     const {register, handleSubmit, setError, formState: {errors}} = useForm({
