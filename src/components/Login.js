@@ -1,6 +1,6 @@
-import React, {Fragment, useCallback, useEffect, useState} from 'react';
+import React, {Fragment, useCallback} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {createSavedMessages, emailLogin, googleLogIn, emailSignUp} from "../store/actions"
+import {emailLogin, googleLogIn, emailSignUp} from "../store/actions"
 import {isCurrentUserLoggedIn} from "../store/selectors";
 import {Redirect} from "react-router-dom";
 

@@ -1,12 +1,11 @@
 import React, {useEffect} from 'react';
+import {useInView} from 'react-intersection-observer';
+
+import StatusIcon from "./StatusIcon";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import {useInView} from 'react-intersection-observer';
-import { setDialogMessageIsReaded} from "../../../store/actions";
-import StatusIcon from "./StatusIcon";
-
 
 
 

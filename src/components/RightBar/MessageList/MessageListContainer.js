@@ -1,10 +1,10 @@
-import React, {Fragment, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {Fragment, useCallback, useEffect} from 'react';
 import * as selectors from "../../../store/selectors"
 import {useDispatch, useSelector} from "react-redux";
 import {
     addCDMessagesTop,
     loadOldCurrentDialogMessages,
-    setDialogMessageIsReaded, setCurrentDialogLastRead
+    setCurrentDialogLastRead
 } from "../../../store/actions";
 import useScroll from "../../../customHooks/useScroll";
 import {setDialogProps} from "../../../store/slices";

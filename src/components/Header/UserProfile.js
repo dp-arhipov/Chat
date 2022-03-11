@@ -1,17 +1,17 @@
-import React, {Fragment, useEffect, useState} from 'react';
-import TextField from "@mui/material/TextField";
-
-
-import Button from "@mui/material/Button";
-import {changeCurrentUserNickName, isNickNameBusy} from '../../store/actions'
-
+import React, {Fragment, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
+import {changeCurrentUserNickName, isNickNameBusy} from '../../store/actions'
 import * as selectors from "../../store/selectors"
+
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+
 
 const UserProfile = ({handleClose}) => {
     const currentUserName = useSelector(selectors.currentUserName);

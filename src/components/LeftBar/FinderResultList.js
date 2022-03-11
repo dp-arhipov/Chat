@@ -1,11 +1,12 @@
 import React, {Fragment} from 'react';
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import {useDispatch, useSelector} from "react-redux";
+import {setFinderStatus} from "../../store/slices";
 import * as selectors from "../../store/selectors";
 import {createDialogWith} from "../../store/actions";
+import {useDispatch, useSelector} from "react-redux";
+
 import Dialog from "./Dialog";
-import {setFinderStatus} from "../../store/slices";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const FinderResultList = () => {
 

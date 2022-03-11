@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-
 import {dialogsInfo} from "../../store/selectors"
 import {setCurrentDialog} from "../../store/actions";
 import Dialog from "./Dialog";
+
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 
