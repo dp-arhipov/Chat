@@ -47,7 +47,8 @@
   },
   "scripts": {
     "start": "cross-env HOST=0.0.0.0 react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build  --stats",
+    "analyze": "node scripts/analyze_build_bundle.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -70,6 +71,8 @@
     ]
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.9"
+    "redux-devtools-extension": "^2.13.9",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "progress-bar-webpack-plugin": "^2.1.0"
   }
 }
