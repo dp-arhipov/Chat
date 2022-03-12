@@ -1,8 +1,6 @@
 import {DB} from "../../services/firebase";
 import {
     shiftDialogMessages,
-    setCurrentDialogId,
-
     pushDialogMessages,
     setDialogMessageProps,
     setDialogProps,
@@ -70,7 +68,7 @@ export const setCurrentDialogLastRead = (messageTimeStamp, messageId) => {
 
 export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
-        dispatch(setCurrentDialogId(dialogId));
+        dispatch(setDialogListProps({currentDialogId:dialogId}));
     }
 }
 export const loadOldCurrentDialogMessages = () => {

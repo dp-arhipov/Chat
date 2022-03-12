@@ -12,9 +12,6 @@ import Button from '@mui/material/Button';
 import GoogleIcon from '@mui/icons-material/Google';
 
 import FlexCenter from "./FlexCenter";
-// import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-// import {faGoogle} from '@fortawesome/free-brands-svg-icons/faGoogle';
-
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import {string, object} from "yup";

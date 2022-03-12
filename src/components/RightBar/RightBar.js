@@ -12,11 +12,8 @@ import MessageInput from "./MessageInput";
 import {
     sendMessage, setCurrentDialog,
 } from "../../store/actions";
-import Grid from "@mui/material/Grid";
-import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import {setCurrentDialogId} from "../../store/slices";
 
 
 const RightBar = () => {

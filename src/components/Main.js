@@ -36,7 +36,6 @@ const Main = () => {
             },
         }
     }))
-
     const classes = useStyles();
     return (
 

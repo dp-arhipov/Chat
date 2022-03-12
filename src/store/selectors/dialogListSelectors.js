@@ -1,6 +1,7 @@
-import {currentDialogId} from "./currentDialogSelectors"
+
 import {currentUserId} from "./currentUserSelectors"
 
+export const currentDialogId = state => state.dialogs?.currentDialogId
 
 export const dialogList = state => state?.dialogs?.dialogList
 

@@ -4,7 +4,6 @@ import {
     resetFinder,
     resetUser,
     setCurrentUserProps,
-    resetCurrentDialog
 } from "../slices";
 
 export const initAuth = () => {
@@ -49,7 +48,6 @@ export const logOut = () => {
         dispatch(resetUser())
         dispatch(resetFinder())
         dispatch(resetDialogList())
-        dispatch(resetCurrentDialog())
         DB.removeListeners();
     }
 }

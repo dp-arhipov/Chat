@@ -2,6 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 const dialogListInitialState = {
 
     status:'LOADED',
+    currentDialogId:'',
     dialogList: {}
 }
 
@@ -47,7 +48,6 @@ const dialogListSlice = createSlice({
             const messagesInState = state.dialogList[dialogId].messages
             if(status) messagesInState.find(message=>message.messageId == messageId).status = status
             if(timestamp) messagesInState.find(message=>message.messageId == messageId).timestamp = timestamp
-            // if(isReaded) messagesInState.find(message=>message.messageId == messageId).isReaded = isReaded
         },
 
         setDialogProps(state, action) {
@@ -61,15 +61,15 @@ const dialogListSlice = createSlice({
         },
 
         setDialogListProps(state, action) {
-            const {status} = action.payload;
+            const {status, currentDialogId} = action.payload;
             if(status) state.status = status
+            if(currentDialogId) state.currentDialogId = currentDialogId
            },
 
         addDialog(state, action) {
             const {dialogId} = action.payload;
             state.dialogList[dialogId] = {...dialogInitialState,...action.payload}
         },
-
 
         resetDialogList(state, action) {
             Object.assign(state, dialogListInitialState)
