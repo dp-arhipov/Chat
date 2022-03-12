@@ -5,10 +5,8 @@ export const currentDialogId = state => state.dialogs?.currentDialogId
 
 export const dialogList = state => state?.dialogs?.dialogList
 
-export const dialog = (state, dialogId) => dialogList(state)[dialogId]
-
-export const dialogInfo = (state, dialogId) => {
-    const _dialog = dialog(state, dialogId);
+export const dialog = (state, dialogId) => {
+    const _dialog = dialogList(state)[dialogId]
 
     if (_dialog) {
         const messages = [..._dialog?.messages]?.sort((a, b) => {
@@ -57,6 +55,7 @@ export const dialogInfo = (state, dialogId) => {
                 ? _dialog.companionId
                 : _dialog.creatorId
             ,
+            creatorId:_dialog.creatorId,
             unreadMessagesNumber: (() => {
                 const lastReadedTimestamp = lastReadedMessage(_currentUserId)?.messageTimeStamp?.toMillis();
                 if(lastReadedTimestamp) {
@@ -75,11 +74,11 @@ export const dialogInfo = (state, dialogId) => {
     }
 }
 
-export const dialogsInfo = (state) => {
+export const dialogs = (state) => {
     const dialogIds = Object.keys(dialogList(state));
     return dialogIds.map((dialogId) => {
-        return dialogInfo(state, dialogId)
+        return dialog(state, dialogId)
     })
 }
 
-export const currentDialogInfo = state => dialogInfo(state, currentDialogId(state))
+export const currentDialogInfo = state => dialog(state, currentDialogId(state))

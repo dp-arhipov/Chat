@@ -60,7 +60,7 @@ export const addDialogNameListener = (dialogId) => {
     return async function disp(dispatch, getState) {
         const currentUserId = selectors.currentUserId(getState());
         const dialog = selectors.dialog(getState(), dialogId);
-        let dialogToListen = {dialogId: dialog.dialogId, userId: dialog.currentUserId};
+        let dialogToListen = {dialogId: dialog.id, userId: dialog.currentUserId};
         if (dialog.creatorId == currentUserId && dialog.companionId == currentUserId) {
             dispatch(setDialogProps({dialogId: dialogToListen.dialogId, name: 'Избранное'}))
             return;
@@ -80,7 +80,7 @@ export const addDialogMessagesListener = (dialogId) => {
     return async function disp(dispatch, getState) {
         dispatch(setDialogProps({dialogId, status:"FETCHING"}))
         const currentUserId = selectors.currentUserId(getState());
-        const dialog = selectors.dialogInfo(getState(), dialogId);
+        const dialog = selectors.dialog(getState(), dialogId);
         const lastReadedMessage = dialog.lastReadedMessageBy(currentUserId);
         const lastReadedMessageId = lastReadedMessage.id;
         const lastMessageTimestamp = dialog.lastMessage.timestamp;
@@ -104,7 +104,7 @@ export const addDialogMessagesListener = (dialogId) => {
         const r = await DB.addDialogMessagesListener(
             dialogId,
             (dialogId, message) => {
-                const lastMessage =  selectors.dialogInfo(getState(), dialogId).lastMessage
+                const lastMessage =  selectors.dialog(getState(), dialogId).lastMessage
                 const lastMessageTimestamp =  lastMessage?.timestamp
 
                 if (!lastMessage.id) {

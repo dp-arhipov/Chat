@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {dialogsInfo} from "../../store/selectors"
+import {dialogs} from "../../store/selectors"
 import {setCurrentDialog} from "../../store/actions";
 import Dialog from "./Dialog";
 
@@ -8,7 +8,7 @@ import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 
 const DialogList = ({...props}) => {
-    const _dialogsInfo = useSelector(dialogsInfo);
+    const _dialogsInfo = useSelector(dialogs);
     const dispatch = useDispatch();
     const [selectedId, setSelectedId] = useState();
 
