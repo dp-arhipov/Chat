@@ -104,6 +104,7 @@ export const createDialogWith = (userId) => {
                 dialogId = await DB.createDialogWith(userId);
                 dispatch(setDialogListProps({status: "LOADED"}))
             }
+            dispatch(setCurrentDialog(dialogId));
         }
 
 

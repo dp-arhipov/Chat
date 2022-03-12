@@ -66,7 +66,9 @@ export const dialog = (state, dialogId) => {
                         }).length)
                     }
                 }else{
-                    return messages.length;
+                    return (messages.filter((message) => {
+                        return (message?.creatorId != _currentUserId)
+                    }).length)
                 }
 
             })(),

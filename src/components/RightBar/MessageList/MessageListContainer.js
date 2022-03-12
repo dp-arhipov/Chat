@@ -1,11 +1,7 @@
 import React, {Fragment, useCallback, useEffect} from 'react';
 import * as selectors from "../../../store/selectors"
 import {useDispatch, useSelector} from "react-redux";
-import {
-    addCDMessagesTop,
-    loadOldCurrentDialogMessages,
-    setCurrentDialogLastRead
-} from "../../../store/actions";
+import {addCDMessagesTop, loadOldCurrentDialogMessages, setCurrentDialogLastRead} from "../../../store/actions";
 import useScroll from "../../../customHooks/useScroll";
 import {setDialogProps} from "../../../store/slices";
 import StyledMessage from "./StyledMessage";
@@ -50,13 +46,11 @@ const MessageListContainer = ({...props}) => {
 
 
     useEffect(() => {
-        if(currentDialog.firstUnreadedMessageOf(currentUserId)) {
-            const element = document.getElementById("firstUnreadedMessage");
-            if (element) {
-                element.scrollIntoView(true);
-            }
-        }else{
-            setPinBottom(true)
+        const element = document.getElementById("firstUnreadedMessage");
+        if (element) {
+            element.scrollIntoView(true);
+        } else {
+            scrollTo('bottom')
         }
 
 

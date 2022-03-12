@@ -26,13 +26,13 @@ function stringToColor(string) {
     return color;
 }
 
-function stringAvatar(name) {
+function stringAvatar(id, isFavourites) {
 
-    if (name) {
+    if (id) {
         const sx = {
-            bgcolor: name != 'Избранное' ? stringToColor(name) : '#1976d2',
+            bgcolor: !isFavourites ? stringToColor(id) : '#1976d2',
         }
-        if (name == 'Избранное') {
+        if (isFavourites) {
             return {
                 sx,
                 children: '★'
@@ -45,13 +45,13 @@ function stringAvatar(name) {
 }
 
 
-const Dialog = ({name, caption, unreadMessagesNumber, ...props}) => {
+const Dialog = ({name, id, caption, unreadMessagesNumber,isFavourites, ...props}) => {
 
     return (
         <ListItem {...props} >
 
-            <ListItemAvatar>
-                <Avatar {...stringAvatar(name) }/>
+            <ListItemAvatar sx={{paddingLeft:1}}>
+                <Avatar {...stringAvatar(id, isFavourites) }/>
             </ListItemAvatar>
 
                 <ListItemText

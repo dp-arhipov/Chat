@@ -15,8 +15,8 @@ const Main = () => {
     const dispatch = useDispatch();
 
     const currentDialog = useSelector(selectors.currentDialogInfo);
-    const currentDialogId = currentDialog?.id;
-
+    const currentDialogId = useSelector(selectors.currentDialogId);
+    console.log(currentDialogId)
     const currentUserId = useSelector(selectors.currentUserId);
 
     useEffect(() => {
@@ -27,12 +27,12 @@ const Main = () => {
     const useStyles = makeStyles(()=> ({
         leftBar: {
             [theme.breakpoints.down('md')]: {
-                display: (currentDialogId!='none' && currentDialogId!='')?'none':'',
+                display: (currentDialogId=='none'||currentDialogId=='')?'':'none',
             },
         },
         rightBar: {
             [theme.breakpoints.down('md')]: {
-                display: (currentDialogId=='none' || currentDialogId=='')?'none':'',
+                display: (currentDialogId=='none'||currentDialogId=='')?'none':'',
             },
         }
     }))

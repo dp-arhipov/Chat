@@ -1,4 +1,10 @@
-import {GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut
+} from "firebase/auth";
 import {
     collection,
     doc,
@@ -11,11 +17,10 @@ import {
     serverTimestamp,
     setDoc,
     startAfter,
-    updateDoc,
-    startAt
+    startAt,
+    updateDoc
 } from "firebase/firestore";
 import {nanoid} from "nanoid";
-
 
 
 export class FirebaseAuth {
@@ -220,20 +225,28 @@ export class FirebaseDB {
 
     getDialogMessages = async (dialogId, lastVisibleMessageId, loadLimit) => {
         let messages = [];
-
-        const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
         let q;
-        if ((loadLimit < 0)) {
+        if (lastVisibleMessageId) {
+
+            const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+
+            if ((loadLimit < 0)) {
+                q = query(
+                    this.refs.dialogData(dialogId),
+                    orderBy("timestamp", "desc"),
+                    startAfter(lastVisibleMessage),
+                    limit(Math.abs(loadLimit)));
+            } else {
+                q = query(
+                    this.refs.dialogData(dialogId),
+                    orderBy("timestamp", "asc"),
+                    startAt(lastVisibleMessage),
+                    limit(Math.abs(loadLimit)));
+            }
+        }else{
             q = query(
                 this.refs.dialogData(dialogId),
                 orderBy("timestamp", "desc"),
-                startAfter(lastVisibleMessage),
-                limit(Math.abs(loadLimit)));
-        } else {
-            q = query(
-                this.refs.dialogData(dialogId),
-                orderBy("timestamp", "asc"),
-                startAt(lastVisibleMessage),
                 limit(Math.abs(loadLimit)));
         }
 

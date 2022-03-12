@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {dialogs} from "../../store/selectors"
+import {dialogs, currentDialogId} from "../../store/selectors"
 import {setCurrentDialog} from "../../store/actions";
 import Dialog from "./Dialog";
 
@@ -10,12 +10,10 @@ import Box from "@mui/material/Box";
 
 const DialogList = ({...props}) => {
     const _dialogs = useSelector(dialogs);
+    const _currentDialogId = useSelector(currentDialogId);
     const dispatch = useDispatch();
-    const [selectedId, setSelectedId] = useState();
-
 
     const onClickHandle = (e, dialogId) => {
-        setSelectedId(dialogId);
         dispatch(setCurrentDialog(dialogId));
     }
 
@@ -25,8 +23,9 @@ const DialogList = ({...props}) => {
                 {_dialogs.map((dialog) => {
                     return (
                         <Dialog
+                            isFavourites = {dialog.name=='Избранное'}
                             sx={{height:'5rem'}}
-                            selected={selectedId === dialog.id}
+                            selected={_currentDialogId === dialog.id}
                             key={dialog.id}
                             onClick={(e) => onClickHandle(e,dialog.id)}
                             id={dialog.id}
