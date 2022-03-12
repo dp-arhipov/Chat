@@ -13,7 +13,7 @@ export const dialog = (state, dialogId) => {
             return a?.timestamp?.toMillis() - b?.timestamp?.toMillis()
         });
         const lastMessage = messages[messages?.length - 1];
-        const firstMessage = messages && messages[0] && messages[0];
+        const firstMessage = messages && messages[0];
         const lastReadedMessage = (userId) => _dialog?.lastRead[userId]
         const _currentUserId = currentUserId(state);
         return {

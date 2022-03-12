@@ -7,8 +7,9 @@ import Dialog from "./Dialog";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 
+
 const DialogList = ({...props}) => {
-    const _dialogsInfo = useSelector(dialogs);
+    const _dialogs = useSelector(dialogs);
     const dispatch = useDispatch();
     const [selectedId, setSelectedId] = useState();
 
@@ -21,7 +22,7 @@ const DialogList = ({...props}) => {
     return (
         <Box {...props} sx={{overflowY:'auto'}}>
             <List sx={{ minWidth:'0'}}>
-                {_dialogsInfo.map((dialog) => {
+                {_dialogs.map((dialog) => {
                     return (
                         <Dialog
                             sx={{height:'5rem'}}

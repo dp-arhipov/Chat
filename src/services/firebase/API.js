@@ -37,7 +37,6 @@ export class FirebaseAuth {
     }
 
     emailLogin  = async (email, password) => {
-
         return await signInWithEmailAndPassword(this.auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;

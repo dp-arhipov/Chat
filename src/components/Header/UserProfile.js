@@ -1,6 +1,6 @@
 import React, {Fragment, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {changeCurrentUserNickName, isNickNameBusy} from '../../store/actions'
+import {changeCurrentUserNickName, changeCurrentUserName, isNickNameBusy} from '../../store/actions'
 import * as selectors from "../../store/selectors"
 
 import TextField from "@mui/material/TextField";
@@ -36,14 +36,13 @@ const UserProfile = ({handleClose}) => {
         }
         if(data.name != currentUserName){
             if (data.name!='Избранное') {
-                dispatch(changeCurrentUserNickName(data.nickName))
+                dispatch(changeCurrentUserName(data.name))
                 handleClose()
             }else{
                 setError("name", {
                     type: 'custom',
                     message: "запрещенное имя"
                 });
-
             }
         }
 
