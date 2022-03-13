@@ -103,7 +103,7 @@ const MessageListContainer = ({...props}) => {
                             status={isReaded ? 'READED' : message.status}
                             key={message.messageId}
                             messageId={message.messageId}
-                            text={message.messageId+ message?.timestamp?.toMillis() +" "+message.text}
+                            text={message.text}
                             time={message.time}
                             timestamp={message.timestamp}
                             onRead={onRead}
