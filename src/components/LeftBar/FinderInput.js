@@ -26,6 +26,13 @@ const FinderInput = ({handleFinder}) => {
         }
     }
 
+    const onKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+
     const handleDeleteButton = () => {
         dispatch(setFinderStatus('INIT'));
      }
@@ -49,6 +56,7 @@ const FinderInput = ({handleFinder}) => {
                 inputRef={searchRef}
                 onChange={handleChangeDebounce}
                 InputProps={{
+                    onKeyDown: onKeyDown,
                     endAdornment:
                         <InputAdornment position="end">
                             {(finderStatus == "INIT")
