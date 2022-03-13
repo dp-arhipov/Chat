@@ -1,77 +1,86 @@
-import {currentDialogId} from "./currentDialogSelectors"
+
 import {currentUserId} from "./currentUserSelectors"
 
-export const dialogList = state => state.dialogs.dialogList
+export const currentDialogId = state => state.dialogs?.currentDialogId
 
-export const dialogListStatus = state => state.dialogs.status
+export const dialogList = state => state?.dialogs?.dialogList
 
-export const dialogListValues = state => Object.values(dialogList(state))
-export const dialogListIds = state => Object.keys(dialogList(state))
+export const dialog = (state, dialogId) => {
+    const _dialog = dialogList(state)[dialogId]
 
+    if (_dialog) {
+        const messages = [..._dialog?.messages]?.sort((a, b) => {
+            return a?.timestamp?.toMillis() - b?.timestamp?.toMillis()
+        });
+        const lastMessage = messages[messages?.length - 1];
+        const firstMessage = messages && messages[0];
+        const lastReadedMessage = (userId) => _dialog?.lastRead[userId]
+        const _currentUserId = currentUserId(state);
+        return {
+            id: _dialog.dialogId,
+            name: _dialog.name,
+            status: _dialog.status,
+            messages: messages,
+            scrollPosition: _dialog.scrollPosition,
+            lastMessage: {
+                text: lastMessage?.text,
+                id: lastMessage?.messageId,
+                timestamp: lastMessage?.timestamp
+            },
+            firstMessage: {
+                text: firstMessage?.text,
+                id: firstMessage?.messageId
+            },
+            lastReadedMessageBy(userId) {
+                return {
+                    id: _dialog?.lastRead[userId]?.messageId,
+                    timestamp: _dialog?.lastRead[userId]?.messageTimeStamp
+                }
+            },
+            firstUnreadedMessageOf(userId) {
+                const timestamp = _dialog?.lastRead[userId]?.messageTimeStamp
+                const message = messages.find(item => (
+                    item.timestamp?.toMillis() > timestamp?.toMillis())
+                    && item.creatorId != _currentUserId
+                )
+                if(message) {
+                    return {
+                        id: message.messageId,
+                        timestamp: message.timestamp
+                    }
+                }else return false
+            },
 
-export const dialog = (state, dialogId) => dialogList(state)[dialogId]
-export const dialogStatus = (state, dialogId) => dialog(state, dialogId)?.status
-export const dialogScrollPosition = (state, dialogId) => dialog(state, dialogId)?.scrollPosition
-export const dialogName = (state, dialogId) => dialog(state, dialogId)?.name
+            companionId: (_dialog.companionId != _currentUserId && _dialog.companionId)
+                ? _dialog.companionId
+                : _dialog.creatorId
+            ,
+            creatorId:_dialog.creatorId,
+            unreadMessagesNumber: (() => {
+                const lastReadedTimestamp = lastReadedMessage(_currentUserId)?.messageTimeStamp?.toMillis();
+                if(lastReadedTimestamp) {
 
-export const dialogMessages = (state, dialogId) => dialog(state, dialogId)?.messages
-export const dialogMessage = (state, dialogId, messageId) => dialogMessages(state, dialogId).find(message => message.messageId == messageId)
-export const dialogMessageStatus = (state, dialogId, messageId) => dialogMessage(state, dialogId, messageId).status
-export const dialogFirstMessage = (state, dialogId) => dialogMessages(state, dialogId)[0]
-export const dialogFirstMessageId = (state, dialogId) => dialogFirstMessage(state, dialogId)?.messageId
-export const dialogFirstMessageText = (state, dialogId) => dialogFirstMessage(state, dialogId)?.text
-export const dialogLastMessage = (state, dialogId) => dialogMessages(state, dialogId)[dialogMessages(state, dialogId).length - 1]
-export const dialogLastMessageText = (state, dialogId) => dialogLastMessage(state, dialogId)?.text
-export const dialogLastMessageId = (state, dialogId) => dialogLastMessage(state, dialogId)?.messageId
+                    if (messages.length != 0) {
+                        return (messages.filter((message) => {
+                            return (message?.timestamp?.toMillis() > lastReadedTimestamp && message?.creatorId != _currentUserId)
+                        }).length)
+                    }
+                }else{
+                    return (messages.filter((message) => {
+                        return (message?.creatorId != _currentUserId)
+                    }).length)
+                }
 
-
-export const dialogInfo = (state, dialogId) => {
-
-    const _dialog = dialog(state, dialogId);
-    const lastMessage = dialogLastMessage(state, dialogId)
-    return {
-        id: _dialog.dialogId,
-        name: _dialog.name,
-        lastMessage: dialogLastMessageText(state, dialogId),
-        unreadMessagesNumber: unreadMessagesNumber(state, dialogId)
+            })(),
+        }
     }
 }
 
-export const unreadMessagesNumber = (state, dialogId) => {
-const messages = dialogMessages(state, dialogId);
-    console.log(currentUserId, messages)
-if(messages.length!=0) {
-    return messages.reduce((summ, item) => {
-            return (item.status != 'READED'&&item.creatorId!=currentUserId(state))
-                ? summ + 1
-                : summ
-
-        } , 0
-    )
-}
-}
-
-export const dialogsInfo = (state) => {
-    const dialogIds = dialogListIds(state);
+export const dialogs = (state) => {
+    const dialogIds = Object.keys(dialogList(state));
     return dialogIds.map((dialogId) => {
-        return dialogInfo(state, dialogId)
+        return dialog(state, dialogId)
     })
 }
 
-export const currentDialog = state => dialog(state, currentDialogId(state))
-export const currentDialogName = state => dialogName(state, currentDialogId(state))
-export const currentDialogStatus = state => dialogStatus(state, currentDialogId(state))
-export const currentDialogMessages = state => dialogMessages(state, currentDialogId(state))
-export const currentDialogMessage = (state, messageId) => dialogMessage(state, currentDialogId(state), messageId)
-export const currentDialogMessageStatus = (state, messageId) => dialogMessageStatus(state, currentDialogId(state), messageId)
-
-export const currentDialogFirstMessageId = state => dialogFirstMessageId(state, currentDialogId(state))
-export const currentDialogScrollPosition = state => dialogScrollPosition(state, currentDialogId(state))
-export const currentDialogLastMessageId = state => dialogLastMessageId(state, currentDialogId(state))
-
-
-export const test = (state, dialogId) => {
-    //console.log(currentDialogMessageStatus(state, currentDialogFirstMessageId(state)))
-    //console.log(currentDialogMessageStatus(state, '2VRz_zkb')?.status)
-
-}
+export const currentDialogInfo = state => dialog(state, currentDialogId(state))

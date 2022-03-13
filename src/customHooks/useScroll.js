@@ -7,7 +7,7 @@ import usePrevious from "./usePrevious";
 
 const UseScroll = (triggers, debounce, callback = () => {
 }) => {
-    //console.log("hook rerender")
+
     const containerRef = useRef(null);
 
     const [scrollTopPercents, setScrollPosition] = useState(null);
@@ -41,17 +41,13 @@ const init = ()=>{
             const scrollHeight = containerRef.current.scrollHeight;
             const scrollBottomTemp = scrollHeight - containerHeight - scrollTopTemp;
             const scrollTopPercentsTemp = Math.round((scrollTopTemp / (scrollHeight - containerHeight)) * 100)
-           //console.log(containerScrollTop)
+
 
             setScrollPosition(scrollTopPercentsTemp);
             setScrollBottomState(scrollBottomTemp);
             setScrollTopState(scrollTopTemp);
 
-            // console.log(`init-- scrollTop: ${scrollTopTemp},containerHeight: ${containerHeight},scrollHeight: ${scrollHeight},scrollBottom: ${scrollBottomTemp},scrollTopPercents: ${scrollTopPercentsTemp}`)
 
-            // console.log(`2 scrollTop: ${scrollTop},containerHeight: ${containerHeight},scrollHeight: ${scrollHeight},scrollBottom: ${scrollBottom},scrollTopPercents: ${scrollTopPercents}`)
-
-            // callback(scrollTopPercents, scrollTop, scrollBottom);
         }, debounce)
         , [containerRef]);
 
@@ -75,7 +71,7 @@ const init = ()=>{
                     break;
                 }
             }
-            // console.log("finish 1")
+
             onScroll();
         }
 
@@ -83,7 +79,6 @@ const init = ()=>{
 
 
     const setScrollBottom = (scrollBottom) => {
-        // console.log(`set sb-- ${scrollBottom}`)
         const containerHeight = containerRef.current.clientHeight;
         const scrollHeight = containerRef.current.scrollHeight;
         containerRef.current.scrollTop = scrollHeight - containerHeight - scrollBottom;

@@ -1,10 +1,9 @@
-import {Auth, DB} from "../../API";
+import {Auth, DB} from "../../services/firebase";
 import {
     resetDialogList,
     resetFinder,
     resetUser,
     setCurrentUserProps,
-    resetCurrentDialog
 } from "../slices";
 
 export const initAuth = () => {
@@ -26,13 +25,11 @@ export const initAuth = () => {
 
 export const emailLogin = (email, password) => {
     return async function disp(dispatch, getState) {
-        console.log(email, password)
         return  Auth.emailLogin(email, password) ;
     }
 }
 export const emailSignUp = (email, password) => {
     return async function disp(dispatch, getState) {
-        console.log(email, password)
         return  Auth.emailSignUp(email, password) ;
     }
 }
@@ -51,7 +48,6 @@ export const logOut = () => {
         dispatch(resetUser())
         dispatch(resetFinder())
         dispatch(resetDialogList())
-        dispatch(resetCurrentDialog())
         DB.removeListeners();
     }
 }

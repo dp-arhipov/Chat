@@ -1,4 +1,4 @@
-import {DB} from "../../API";
+import {DB} from "../../services/firebase";
 import {
     setFinderStatus,
     setFinderResults,
@@ -25,14 +25,12 @@ export const find = (searchString) => {
 export const changeCurrentUserNickName = (nickName) => {
     return async function disp(dispatch, getState) {
         await DB.setNickName(nickName);
-        //dispatch(setNickName(nickName))
     };
 }
 
 export const changeCurrentUserName = (name) => {
     return async function disp(dispatch, getState) {
         await DB.setName(name);
-        //dispatch(setName(name))
     };
 }
 

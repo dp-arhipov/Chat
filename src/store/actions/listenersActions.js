@@ -1,4 +1,4 @@
-import {DB} from "../../API";
+import {DB} from "../../services/firebase";
 import {
     addDialog,
     pushDialogMessages,
@@ -7,7 +7,8 @@ import {
 } from "../slices";
 
 import * as selectors from "../selectors"
-import {createSavedMessages, setDialogMessageIsReaded} from "./dialogActions";
+import {createSavedMessages} from "./dialogActions";
+
 
 
 const messageLoadLimit = 10;
@@ -33,23 +34,23 @@ export const addUserInfoListener = () => {
                 dispatch(setCurrentUserProps({name:userInfo.name}))
             }
             if (userInfo.nickName != currentUserNickName) dispatch(setCurrentUserProps({nickName:userInfo.nickName}))
-
         })
         return r;
     }
 }
 
 
-
 export const addDialogListListener = () => {
     return async function disp(dispatch, getState) {
         const currentUserId = selectors.currentUserId(getState());
         return await DB.addDialogListListener(currentUserId, async (dialog) => {
-            //dispatch(setDialogListProperty({status:"FETCHING"}))
             dispatch(addDialog(dialog))
             await dispatch(addDialogNameListener(dialog.dialogId))
             await dispatch(addDialogMessagesListener(dialog.dialogId))
-            //dispatch(setDialogListProperty({status:"LOADED"}))
+            DB.addDialogInfoListener(dialog.dialogId, (id,data)=>{
+                dispatch(setDialogProps({dialogId:dialog?.dialogId, lastRead: data?.lastRead}))
+            })
+
 
         })
     }
@@ -59,7 +60,7 @@ export const addDialogNameListener = (dialogId) => {
     return async function disp(dispatch, getState) {
         const currentUserId = selectors.currentUserId(getState());
         const dialog = selectors.dialog(getState(), dialogId);
-        let dialogToListen = {dialogId: dialog.dialogId, userId: dialog.currentUserId};
+        let dialogToListen = {dialogId: dialog.id, userId: dialog.currentUserId};
         if (dialog.creatorId == currentUserId && dialog.companionId == currentUserId) {
             dispatch(setDialogProps({dialogId: dialogToListen.dialogId, name: 'Избранное'}))
             return;
@@ -78,22 +79,41 @@ export const addDialogNameListener = (dialogId) => {
 export const addDialogMessagesListener = (dialogId) => {
     return async function disp(dispatch, getState) {
         dispatch(setDialogProps({dialogId, status:"FETCHING"}))
-        const messages = await DB.getDialogMessages(dialogId, messageLoadLimit)
-        dispatch(pushDialogMessages({dialogId, messages}))
+        const currentUserId = selectors.currentUserId(getState());
+        const dialog = selectors.dialog(getState(), dialogId);
+        const lastReadedMessage = dialog.lastReadedMessageBy(currentUserId);
+        const lastReadedMessageId = lastReadedMessage.id;
+
+let messagesToAdd=[];
+        if (lastReadedMessageId) {
+            let loadedMoreMessages=[]
+            const unreadedMessages = await DB.getDialogMessages(dialogId, lastReadedMessageId, 100)
+
+            const needToLoadMoreNumber = messageLoadLimit - unreadedMessages.length;
+
+            if (needToLoadMoreNumber) {
+                loadedMoreMessages = await DB.getDialogMessages(dialogId, lastReadedMessageId, -(needToLoadMoreNumber))
+
+            }
+            messagesToAdd = [...loadedMoreMessages,...unreadedMessages];
+        }else{
+
+            messagesToAdd = await DB.getDialogMessages(dialogId, false, messageLoadLimit)
+        }
+
+        dispatch(pushDialogMessages({dialogId, messages: messagesToAdd}))
+
         const r = await DB.addDialogMessagesListener(
             dialogId,
             (dialogId, message) => {
+                const lastMessage =  selectors.dialog(getState(), dialogId).lastMessage
+                const lastMessageTimestamp =  lastMessage?.timestamp
 
-                //console.log(message)
-                if(message.status=="READED") dispatch(setDialogMessageIsReaded(dialogId, message.messageId));
-
-
-                const lastMessage =  selectors.dialogLastMessage(getState(), dialogId)
-                if (!lastMessage) {
+                if (!lastMessage.id) {
                     dispatch(pushDialogMessages({dialogId, message}))
                 }
-                else if (lastMessage.hasOwnProperty("timestamp")) {
-                    if (message.timestamp.toMillis() > lastMessage.timestamp.toMillis()) {
+                else if (lastMessageTimestamp) {
+                    if (message.timestamp.toMillis() > lastMessageTimestamp.toMillis()) {
                         dispatch(pushDialogMessages({dialogId, message}))
                     }
                 }

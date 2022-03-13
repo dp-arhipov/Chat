@@ -1,6 +1,6 @@
-import React, {Fragment, useCallback, useEffect, useState} from 'react';
+import React, {Fragment, useCallback} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {createSavedMessages, emailLogin, googleLogIn, emailSignUp} from "../store/actions"
+import {emailLogin, googleLogIn, emailSignUp} from "../store/actions"
 import {isCurrentUserLoggedIn} from "../store/selectors";
 import {Redirect} from "react-router-dom";
 
@@ -9,15 +9,12 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from '@mui/material/Button';
+import GoogleIcon from '@mui/icons-material/Google';
 
-import FlexCenter from "../HOC/FlexCenter";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faGoogle} from '@fortawesome/free-brands-svg-icons/faGoogle';
-
+import FlexCenter from "./FlexCenter";
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
-import FormControl from "@mui/material/FormControl";
+import {string, object} from "yup";
 
 const Login = ({history}) => {
     const dispatch = useDispatch();
@@ -36,9 +33,9 @@ const Login = ({history}) => {
         [history]
     );
 
-    const schema = yup.object({
-        email: yup.string().email('это не email').required('это поле нужно заполнить'),
-        password: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+    const schema = object({
+        email: string().email('это не email').required('это поле нужно заполнить'),
+        password: string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
     }).required();
 
     const {register, handleSubmit, setError, formState: {errors}} = useForm({
@@ -120,7 +117,7 @@ const Login = ({history}) => {
                             </Button>
 
                             <Button variant="contained" size="large" onClick={googleLoginHandler}
-                                    startIcon={<FontAwesomeIcon icon={faGoogle}/>}>
+                                    startIcon={<GoogleIcon/>}>
                                 +
                             </Button>
                         </Box>

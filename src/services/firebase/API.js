@@ -1,4 +1,10 @@
-import {GoogleAuthProvider, signInWithPopup, signOut, browserLocalPersistence, setPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut
+} from "firebase/auth";
 import {
     collection,
     doc,
@@ -11,21 +17,16 @@ import {
     serverTimestamp,
     setDoc,
     startAfter,
-    updateDoc,
-    where
+    startAt,
+    updateDoc
 } from "firebase/firestore";
 import {nanoid} from "nanoid";
-import {Auth} from "./index";
 
-
-// import {browserSessionPersistence, setPersistence} from "firebase/firebase-auth";
 
 export class FirebaseAuth {
 
     constructor(auth) {
         this.auth = auth;
-        // console.log('setpers')
-        //setPersistence(this.auth, browserLocalPersistence);
     }
 
     authHandler = (callback) => {
@@ -41,42 +42,35 @@ export class FirebaseAuth {
     }
 
     emailLogin  = async (email, password) => {
-        // return await createUserWithEmailAndPassword(this.auth, email, password)
-        console.log(email)
         return await signInWithEmailAndPassword(this.auth, email, password)
             .then((userCredential) => {
-                // Signed in
                 const user = userCredential.user;
-                //console.log(user)
-                // ...
             })
             .catch((error) => {
 
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                //console.log(errorCode)
+
                 return error;
-                // ..
+
             });
     }
 
     emailSignUp  = async (email, password) => {
-        // return await createUserWithEmailAndPassword(this.auth, email, password)
-        console.log(email)
+
         return await createUserWithEmailAndPassword(this.auth, email, password)
             .then((userCredential) => {
-                // Signed in
+
                 const user = userCredential.user;
-                //console.log(user)
-                // ...
+
             })
             .catch((error) => {
 
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                //console.log(errorCode)
+
                 return error;
-                // ..
+
             });
     }
 
@@ -111,32 +105,12 @@ export class FirebaseDB {
 
     }
 
-    //  setCurrentUser = (currentUser = {}) => {
-    // if (Object.keys(currentUser).length != 0) {
-    //  this.currentUserId = currentUser.id
-    // this.currentUserName = currentUser.name
-    // this.refs.currentUser = this.refs.user(this.currentUserId)
-    // this.refs.currentUserDialogList = this.refs.userDialogList(this.currentUserId)
-    //}
-
-    // if (Object.keys(currentDialog).length != 0) {
-    //     this.currentDialogId = currentDialog.id
-    //     this.currentCompanionId = currentDialog.companionId
-    //     this.refs.currentDialog = this.refs.dialog(this.currentDialogId)
-    //     this.refs.currentDialogData = this.refs.dialogData(this.currentDialogId)
-    //     this.refs.currentDialogInfo = this.refs.dialogInfo(this.currentDialogId)
-    //
-    //     this.refs.currentCompanionDialog = doc(this.refs.userDialogList(this.currentCompanionId), this.currentDialogId)
-    // }
-    //console.log( this.refs.currentCompanionDialog)
-
-    // }
 
     createUser = async (userId, userName) => {
         const user = await getDoc(this.refs.user(userId));
         const nickName = this.nickNameTemplate();
         if (!user.exists()) {
-            console.log(userName)
+
             setDoc(this.refs.user(userId), {
                 name: userName,
                 nickName: nickName
@@ -166,12 +140,12 @@ export class FirebaseDB {
     }
 
     addDialogMessagesListener = async (dialogId, callback) => {
-        this.addDialogMessagesListener2(dialogId,callback)
+
         const q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(10))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
            // const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach((change) => {
-                //console.log(change.doc.data())
+
                // if (!isLocal) {
 
                     callback(dialogId, change.doc.data());
@@ -183,19 +157,10 @@ export class FirebaseDB {
         return unsubscribe;
     }
 
-    addDialogMessagesListener2 = async (dialogId, callback) => {
-        const q = query(this.refs.dialogData(dialogId), where('status','!=','READED'))
+    addDialogInfoListener = async (dialogId, callback) => {
+        const q = query(this.refs.dialogInfo(dialogId))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
-            // const isLocal = snapshot.metadata.hasPendingWrites;
-            snapshot.docChanges().forEach((change) => {
-                console.log('messages Listener')
-                console.log(change.doc.data())
-                // if (!isLocal) {
-                callback(dialogId, change.doc.data());
-                //callback(dialogId, change.doc.data());
-
-                //}
-            });
+            callback(dialogId, snapshot.data());
         })
         this.listeners.push(unsubscribe)
         return unsubscribe;
@@ -203,11 +168,9 @@ export class FirebaseDB {
 
 
     addDialogListListener = async (userId, callback) => {
-        //const q = query(this.refs.userDialogList(userId),orderBy("timestamp", "desc"), limit(1))
         const q = query(this.refs.userDialogList(userId))
         const unsubscribe = await onSnapshot(q, (snapshot) => {
 
-            //const isLocal = snapshot.metadata.hasPendingWrites;
             snapshot.docChanges().forEach(async (change) => {
 
                 const dialogId = change.doc.id
@@ -232,7 +195,6 @@ export class FirebaseDB {
             });
         })
         this.listeners.push(unsubscribe)
-        // console.log(1111111)
         return unsubscribe;
 
     }
@@ -245,28 +207,13 @@ export class FirebaseDB {
         return unsubscribe;
     }
 
-    // updateDialogName = async (dialogId, newDialogName) => {
-    //     return await updateDoc(doc(this.refs.dialogInfo(dialogId), {name: newDialogName}))
-    // }
+    updateDialogName = async (dialogId, newDialogName) => {
+        return await updateDoc(doc(this.refs.dialogInfo(dialogId), {name: newDialogName}))
+    }
 
 
     sendMessage = async (dialogId, message, creatorId = this.currentUserId) => {
         message = {...message, timestamp: serverTimestamp()}
-
-        // const now = new Date();
-        // const date = now.toLocaleDateString();
-        // const time = now.toLocaleTimeString();
-        // const messageId = nanoid(8);
-        //
-        // let message = {
-        //     messageId,
-        //     creatorId: creatorId,
-        //     text: text,
-        //     date: date,
-        //     time: time,
-        //     timestamp: serverTimestamp()
-        //
-        // }
         const docRef = doc(this.refs.dialogData(dialogId), message.messageId);
         const r = await setDoc(docRef, message);
        
@@ -276,60 +223,47 @@ export class FirebaseDB {
 
     }
 
-    setDialogMessageProps = async (dialogId, messageId, props) => {
-        // console.log(props)
-        const docRef = doc(this.refs.dialogData(dialogId), messageId);
-        const {status} = props;
-        let result;
-        if (status) result = await updateDoc(docRef, {status});
-
-        return result;
-
-    }
-
-
-
-    getDialogMessage = async (dialogId, messageId) => {
-        let q = doc(this.refs.dialogData(dialogId), messageId)
-        const docSnap = await getDoc(q);
-        const message = docSnap.data();
-        return message;
-    }
-
-
-    getDialogMessages = async (dialogId, loadLimit = 10, lastVisibleMessageId = 0) => {
+    getDialogMessages = async (dialogId, lastVisibleMessageId, loadLimit) => {
         let messages = [];
-        let q = query(this.refs.dialogData(dialogId), orderBy("timestamp", "desc"), limit(loadLimit))
+        let q;
         if (lastVisibleMessageId) {
+
             const lastVisibleMessage = await getDoc(doc(this.refs.dialogData(dialogId), lastVisibleMessageId));
+
+            if ((loadLimit < 0)) {
+                q = query(
+                    this.refs.dialogData(dialogId),
+                    orderBy("timestamp", "desc"),
+                    startAfter(lastVisibleMessage),
+                    limit(Math.abs(loadLimit)));
+            } else {
+                q = query(
+                    this.refs.dialogData(dialogId),
+                    orderBy("timestamp", "asc"),
+                    startAt(lastVisibleMessage),
+                    limit(Math.abs(loadLimit)));
+            }
+        }else{
             q = query(
                 this.refs.dialogData(dialogId),
                 orderBy("timestamp", "desc"),
-                startAfter(lastVisibleMessage),
-                limit(loadLimit));
+                limit(Math.abs(loadLimit)));
         }
+
         const docSnap = await getDocs(q);
         if (docSnap) {
+
             for (let item of docSnap.docs) {
                 const message = {...item.data()}
                 messages = [message, ...messages];
             }
         }
+
         return messages;
+
     }
 
 
-    // getUserDialogList = async (userId) => {
-    //     let dialogList = [];
-    //
-    //     const docs = await getDocs(this.refs.userDialogList(userId));
-    //     if (docs) {
-    //         docs.forEach((doc) => {
-    //             dialogList.push({id: doc.id, name: doc.data().dialogName, companionId: doc.data().companionId});
-    //         });
-    //     }
-    //     return dialogList;
-    // }
     getUserDialogsInfo = async (currentUserId = this.currentUserId) => {
         const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
 
@@ -342,15 +276,12 @@ export class FirebaseDB {
             dialogInfoArr.push({id: dialogId, ...dialogInfo.data()})
         }
 
-        // console.log(dialogInfoArr)
         return dialogInfoArr;
     }
 
     findDialogByCompanionId = async (companionId, currentUserId = this.currentUserId) => {
-        //const docRef = collection(this.firestore, "Users", currentUserId, "dialogList");
-        //const dialogList = await getDocs(this.refs.userDialogList(currentUserId));
         const dialogList = await this.getUserDialogsInfo(currentUserId)
-        console.log(dialogList)
+
         let dialogId=false;
         dialogList.forEach((dialog) => {
             if (dialog.companionId == companionId||dialog.creatorId == companionId) {
@@ -377,36 +308,24 @@ export class FirebaseDB {
 
         const dialogId = this.dialogIdTemplate();
 
-        //const user = await getDoc(this.refs.user(companionId));
-        //const dialogName = this.dialogNameTemplate(user.data().name);
-
         const docRef1 = doc(this.refs.userDialogList(currentUserId), dialogId);
         setDoc(docRef1, {});
         const docRef2 = doc(this.refs.userDialogList(companionId), dialogId);
         setDoc(docRef2, {});
 
-        // const docRef1 = doc(this.refs.userDialogList(currentUserId), dialogId);
-        // setDoc(docRef1, {name: dialogName, companionId: companionId});
-        //
-        // const docRef2 = doc(this.refs.userDialogList(companionId), dialogId);
-        // setDoc(docRef2, {name: currentUserName, companionId: currentUserId});
-
         const docRef3 = this.refs.dialogInfo(dialogId);
-        setDoc(docRef3, {companionId: companionId, creatorId: currentUserId});
-
-        // const docRef4 = doc(this.refs.dialogInfo(dialogId), "dialogName");
-        // setDoc(docRef4, dialogName);
+        setDoc(docRef3, {companionId: companionId, creatorId: currentUserId });
 
         return dialogId;
 
     }
 
-    // renameDialog = async (dialogId, newName, currentUser, companionId) => {
-    //     const docRef = await doc(this.refs.userDialogList(companionId), dialogId);
-    //     updateDoc(docRef, {dialogName: currentUser.name});
-    //     return dialogId;
-    //
-    // }
+    renameDialog = async (dialogId, newName, currentUser, companionId) => {
+        const docRef = await doc(this.refs.userDialogList(companionId), dialogId);
+        updateDoc(docRef, {dialogName: currentUser.name});
+        return dialogId;
+
+    }
 
     findUserByNickName = async (nickName) => {
         let user = false;
@@ -438,6 +357,16 @@ export class FirebaseDB {
 
     setName = async (name, userId = this.currentUserId) => {
         return updateDoc(this.refs.user(userId), {name: name});
+    }
+
+    setLastRead  = (userId, dialogId, messageTimestamp, messageId) => {
+        const docRef = this.refs.dialogInfo(dialogId);
+        setDoc(docRef,  { lastRead: {
+                [userId]: {
+                    messageTimeStamp: messageTimestamp,
+                    messageId: messageId
+                }
+            }},{ merge: true });
     }
 
 }

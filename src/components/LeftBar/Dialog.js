@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
@@ -6,14 +6,12 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Badge from "@mui/material/Badge";
-import {styled} from '@mui/material/styles';
 import Box from "@mui/material/Box";
 
 function stringToColor(string) {
     let hash = 0;
     let i;
 
-    /* eslint-disable no-bitwise */
     for (i = 0; i < string.length; i += 1) {
         hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -24,18 +22,17 @@ function stringToColor(string) {
         const value = (hash >> (i * 8)) & 0xff;
         color += `00${value.toString(16)}`.substr(-2);
     }
-    /* eslint-enable no-bitwise */
 
     return color;
 }
 
-function stringAvatar(name) {
+function stringAvatar(id, isFavourites) {
 
-    if (name) {
+    if (id) {
         const sx = {
-            bgcolor: name != 'Избранное' ? stringToColor(name) : '#1976d2',
+            bgcolor: !isFavourites ? stringToColor(id) : '#1976d2',
         }
-        if (name == 'Избранное') {
+        if (isFavourites) {
             return {
                 sx,
                 children: '★'
@@ -48,13 +45,13 @@ function stringAvatar(name) {
 }
 
 
-const Dialog = ({name, caption, unreadMessagesNumber, ...props}) => {
+const Dialog = ({name, id, caption, unreadMessagesNumber,isFavourites, ...props}) => {
 
     return (
         <ListItem {...props} >
 
-            <ListItemAvatar>
-                <Avatar {...stringAvatar(name) }/>
+            <ListItemAvatar sx={{paddingLeft:1}}>
+                <Avatar {...stringAvatar(id, isFavourites) }/>
             </ListItemAvatar>
 
                 <ListItemText

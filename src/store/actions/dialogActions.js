@@ -1,8 +1,6 @@
-import {DB} from "../../API";
+import {DB} from "../../services/firebase";
 import {
     shiftDialogMessages,
-    setCurrentDialogId,
-    // setCurrentDialogScrollPositionTemp,
     pushDialogMessages,
     setDialogMessageProps,
     setDialogProps,
@@ -11,7 +9,6 @@ import {
 
 import * as selectors from "../selectors"
 import {nanoid} from "nanoid";
-import * as selector from "../selectors";
 
 const messageLoadLimit = 10;
 
@@ -24,6 +21,7 @@ export const sendMessage = (text) => {
         const date = now.toLocaleDateString();
         const time = now.toLocaleTimeString();
         const messageId = nanoid(8);
+
         let message = {
             messageId,
             creatorId: creatorId,
@@ -31,55 +29,57 @@ export const sendMessage = (text) => {
             date: date,
             time: time,
             status: "LOADED"
-
         }
+
         dispatch(setDialogProps({dialogId, status: "FETCHING"}))
         dispatch(pushDialogMessages({dialogId, message}));
         dispatch(setDialogMessageProps({dialogId, messageId, status: "FETCHING"}));
         const request = await DB.sendMessage(dialogId, message);
         dispatch(setDialogMessageProps({dialogId, messageId, timestamp: request.timestamp, status: "LOADED"}));
         dispatch(setDialogProps({dialogId, status: "LOADED"}))
-
-        const test = selectors.test(getState(), dialogId);
-        //dispatch(setDialogMessageProperty({dialogId: dialogId,messageId:messageId, status:"1" }))
     }
 }
 
-export const setDialogMessageIsReaded = (dialogId, messageId) => {
+export const setCurrentDialogLastRead = (messageTimeStamp, messageId) => {
     return async function disp(dispatch, getState) {
-        dispatch(setDialogMessageProps({dialogId, messageId, status: "READED"}))
-        await DB.setDialogMessageProps(dialogId, messageId, {status: "READED"} );
+        const currentUserId = selectors.currentUserId(getState())
+        const dialogId = selectors.currentDialogId(getState())
+        const lastReadedMessage = selectors.currentDialogInfo(getState()).lastReadedMessageBy(currentUserId);
+        if (!lastReadedMessage.timestamp || lastReadedMessage?.timestamp?.toMillis() < messageTimeStamp?.toMillis()) {
+            dispatch(setDialogProps({
+                dialogId: dialogId,
+                lastRead: {
+                    [currentUserId]: {
+                        messageTimeStamp: messageTimeStamp,
+                        messageId: messageId
+                    }
+                }
+            }))
+            DB.setLastRead(currentUserId, dialogId, messageTimeStamp, messageId)
+        }
     }
 }
+
+
+
+
+
+
 
 export const setCurrentDialog = (dialogId) => {
     return async function disp(dispatch, getState) {
-        //dispatch(setCurrentDialogFetching(true))
-        //const isDialogListFetching = selectors.isDialogListFetching(getState())
-        // const dialogIdPrevious = selectors.currentDialogId(getState());
-        //
-        //
-        // if (dialogIdPrevious&&dialogIdPrevious!='none') {
-        //     //console.log(dialogIdPrevious)
-        //     const scrollPosition = selectors.currentDialogScrollPositionTemp(getState());
-        //     console.log(scrollPosition)
-        //     dispatch(setDialogProps({dialogId: dialogIdPrevious, scrollPosition: scrollPosition}))
-        // }
-        dispatch(setCurrentDialogId(dialogId));
-
-
+        dispatch(setDialogListProps({currentDialogId:dialogId}));
     }
 }
-
 export const loadOldCurrentDialogMessages = () => {
     return async function disp(dispatch, getState) {
-        const dialogId = selectors.currentDialogId(getState());
-        const lastVisibleMessageId = selectors.currentDialogFirstMessageId(getState());
-
-        // const lastFirstId = DB.getFirstMessageId();
-
-        const messages = await DB.getDialogMessages(dialogId, messageLoadLimit, lastVisibleMessageId)
-
+        const dialog = selectors.currentDialogInfo(getState());
+        const dialogId = dialog.id;
+        const lastVisibleMessageId = dialog?.firstMessage?.id;
+        let messages=[];
+        if(lastVisibleMessageId) {
+            messages = await DB.getDialogMessages(dialogId, lastVisibleMessageId, -messageLoadLimit)
+        }
         return messages;
     }
 }
@@ -98,13 +98,13 @@ export const createDialogWith = (userId) => {
         const currentUserId = selectors.currentUserId(getState())
         if (userId != currentUserId) {
             let dialogId = await DB.findDialogByCompanionId(userId);
-            console.log(dialogId)
+
             if (!dialogId) {
                 dispatch(setDialogListProps({status: "FETCHING"}))
                 dialogId = await DB.createDialogWith(userId);
                 dispatch(setDialogListProps({status: "LOADED"}))
-                //await dispatch(loadDialogList());
             }
+            dispatch(setCurrentDialog(dialogId));
         }
 
 
@@ -115,32 +115,13 @@ export const createSavedMessages = () => {
     return async function disp(dispatch, getState) {
         const userId = selectors.currentUserId(getState())
             let dialogId = await DB.isSavedMessagesExist(userId);
-        console.log(userId)
             if (!dialogId) {
                 dispatch(setDialogListProps({status: "FETCHING"}))
                 return DB.createDialogWith(userId);
                 dispatch(setDialogListProps({status: "LOADED"}))
-                //await dispatch(loadDialogList());
             }
         }
 
 }
-
-
-export const setCurrentDialogScrollPosition = (scrollPosition) => {
-    return async function disp(dispatch, getState) {
-        //console.log(selectors.currentDialogId(getState());)
-        const dialogId = selectors.currentDialogId(getState());
-        dispatch(setDialogProps({dialogId, scrollPosition}));
-    }
-}
-
-// export const setCurrentDialogTempScrollPosition = (scrollPosition) => {
-//     return async function disp(dispatch, getState) {
-//         dispatch(setCurrentDialogScrollPositionTemp(scrollPosition));
-//     }
-// }
-
-
 
 

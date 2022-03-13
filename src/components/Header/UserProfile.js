@@ -1,35 +1,27 @@
-import React, {Fragment, useEffect, useState} from 'react';
-import TextField from "@mui/material/TextField";
-import validator from 'validator'
-
-import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import {changeCurrentUserName, changeCurrentUserNickName, emailSignUp, isNickNameBusy} from '../../store/actions'
-
+import React, {Fragment, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
+import {changeCurrentUserNickName, changeCurrentUserName, isNickNameBusy} from '../../store/actions'
 import * as selectors from "../../store/selectors"
-import Stack from "@mui/material/Stack";
-import * as yup from "yup";
-import {useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
+
+import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+
+import {string, object} from "yup";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+
 
 const UserProfile = ({handleClose}) => {
     const currentUserName = useSelector(selectors.currentUserName);
     const currentUserNickName = useSelector(selectors.currentUserNickName);
 
-    const [nickName, setNickName] = useState(currentUserNickName);
-    const [name, setName] = useState(currentUserName);
-
-    const [nickNameIsBusy, setNickNameIsBusy] = useState(false);
-    const [wrongName, setWrongName] = useState(false);
     const dispatch = useDispatch();
 
-
-    const schema = yup.object({
-        name: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
-        nickName: yup.string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+    const schema = object({
+        name: string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
+        nickName: string().min(6, 'введите больше 6 символов').required('это поле нужно заполнить'),
     }).required();
 
     const {register, handleSubmit, setError, formState: {errors}} = useForm({
@@ -44,14 +36,13 @@ const UserProfile = ({handleClose}) => {
         }
         if(data.name != currentUserName){
             if (data.name!='Избранное') {
-                dispatch(changeCurrentUserNickName(data.nickName))
+                dispatch(changeCurrentUserName(data.name))
                 handleClose()
             }else{
                 setError("name", {
                     type: 'custom',
                     message: "запрещенное имя"
                 });
-
             }
         }
 
@@ -81,7 +72,7 @@ const UserProfile = ({handleClose}) => {
                     <TextField
                         {...register("nickName")}
                         label="Никнейм"
-                        defaultValue={nickName}
+                        defaultValue={currentUserNickName}
                         error={errors.nickName}
                         helperText={errors?.nickName?.message}
                         noValidate
@@ -89,7 +80,7 @@ const UserProfile = ({handleClose}) => {
                     <TextField
                         {...register("name")}
                         label="Имя"
-                        defaultValue={name}
+                        defaultValue={currentUserName}
                         error={errors.name}
                         helperText={errors?.name?.message}
                         noValidate

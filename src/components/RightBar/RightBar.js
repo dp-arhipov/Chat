@@ -1,6 +1,7 @@
-import React, {Fragment, useCallback, useEffect, useRef, useState} from 'react';
+import React, {Fragment} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import * as selectors from "../../store/selectors"
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -11,18 +12,15 @@ import MessageInput from "./MessageInput";
 import {
     sendMessage, setCurrentDialog,
 } from "../../store/actions";
-import Grid from "@mui/material/Grid";
-import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import {setCurrentDialogId} from "../../store/slices";
 
-//import * as actions from "../../store/actions";
 
 const RightBar = () => {
-    console.log("render Main")
 
-    const currentDialogName = useSelector(selectors.currentDialogName);
+const currentDialog = useSelector(selectors.currentDialogInfo);
+
+    const currentDialogName = currentDialog?.name;
     const dispatch = useDispatch();
 
     const sendMessage_ = (message) => {
