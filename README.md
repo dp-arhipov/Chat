@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# Tachyon мессенджер
+Попробовать можно здесь: 
+[t.arhipov.me](https://t.arhipov.me).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Описание
+Простой мессенджер, построенный на React, использует следующие технологии:
+- Стартовый шаблон: [Create React App](https://github.com/facebook/create-react-app).
+- Бекэнд: firebase
+- Фронтэнд: redux-toolkit, materialUI
+- Оптимизация сборки: webpack bundler analyzer, react dev tools
 
-## Available Scripts
 
-In the project directory, you can run:
+## Возможности
+Сейчас мессенджер умеет:
+ - Работать с разными размерами экранов
+ - Отправлять/получать текстовые сообщения в режиме реального времени
+ - Изменять имя и ник пользователя, отслеживать подобные изменения у других пользователей
+ - Искать собеседника по нику
+ - Отображать большое количество сообщений без лагов
+ - Отображать количество непрочитанных сообщений
+ - Отображать, когда отправленное сообщение будет прочитано собеседником
+ - Отображать дату и время отправки сообщений
+ 
+## В разработке
+ - Перенос бэкэнда с firebase на node.js
+ - Серверный рендеринг
+ - Реализация возможности отправки файлов
+ - Реализация возможности создания комнат
+ - Реализация возможности удаления сообщений
+ - Перенос дизайна с Material UI на ванильный css для уменьшения размеров приложения
+ 
+ 
+## Процедура установки
+1. Клонируем проект, устанавливаем npm пакеты
+2. Регистрируемся на firebase, создаем там новый проект, настраиваем для него авторизацию по google и email, добавляем в список разрешенных хостов locallhost или ваш домен, на котором будет развернуто приложение
+3. Вносим новые данные для подключения к проекту на firebase в файл services/firebase/config.js
+4. Запускаем проект командой  `npm start`
 
-### `npm start`
+## Поддерживаемые команды
+`npm start` - запуск проекта в dev режиме
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`npm run build` - запуск сборки для prod режима
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+`npm run analyze` - запуск webpack bundle analyzer
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
