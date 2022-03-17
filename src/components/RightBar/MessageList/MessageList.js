@@ -1,13 +1,18 @@
 import React, {forwardRef} from 'react';
 import CircularProgress from "@mui/material/CircularProgress";
 import FlexCenter from "../../FlexCenter";
-import "./style.css"
 
 const MessageList = forwardRef(({children, needTopLoader}, ref)=>{
 
 
     return (
-        <div className={'container'} ref={ref} >
+        <div style={{
+            overflow:'auto',
+            padding:'2rem',
+            flex: 1,
+            flexBasis:0,
+            overflowAnchor:'none'
+        }} ref={ref} >
             <FlexCenter>
                 {needTopLoader && <CircularProgress />}
             </FlexCenter>
