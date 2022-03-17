@@ -4,9 +4,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {addCDMessagesTop, loadOldCurrentDialogMessages, setCurrentDialogLastRead} from "../../../store/actions";
 import useScroll from "../../../customHooks/useScroll";
 import {setDialogProps} from "../../../store/slices";
-import StyledMessage from "./StyledMessage";
 import MessageList from "./MessageList";
 import Date from "./Date";
+import Message from "./Message";
 
 const MessageListContainer = ({...props}) => {
     const currentUserId = useSelector(selectors.currentUserId);
@@ -26,7 +26,6 @@ const MessageListContainer = ({...props}) => {
     );
 
     useEffect(async () => {
-        // console.log(`0-- dialog status: ${currentDialogStatus}, scrollTop: ${scrollTop}, scrollTopPercents: ${scrollTopPercents}, scrollBottom: ${scrollBottom}`);
         if (scrollTopPercents <= 5) {
             if (currentDialogStatus != 'FETCHING') {
                 dispatch(setDialogProps({dialogId: currentDialogId, status: 'FETCHING'}))
@@ -43,8 +42,7 @@ const MessageListContainer = ({...props}) => {
             setPinBottom(false)
         }
     }, [scrollBottom])
-
-
+    
     useEffect(() => {
         const element = document.getElementById("firstUnreadedMessage");
         if (element) {
@@ -52,19 +50,6 @@ const MessageListContainer = ({...props}) => {
         } else {
             scrollTo('bottom')
         }
-
-
-        // if (previousDialogId) {
-        //     let sc = scrollBottom
-        //     if (!scrollBottom) sc = '0'
-        //     dispatch(setDialogProps({dialogId: previousDialogId, scrollPosition: sc}))
-        //     // dispatch(setLastActiveTime(previousDialogId))
-        // }
-        // if (currentDialogScrollPosition == '0') {
-        //     scrollTo('bottom');
-        // } else {
-        //     scrollTo('bottom', currentDialogScrollPosition - 0)
-        // }
     }, [currentDialogId])
 
 
@@ -90,27 +75,35 @@ const MessageListContainer = ({...props}) => {
                 const newDate = date != previousDate
                 if (newDate) previousDate = date;
 
-                    return (
-                        <Fragment>
-                            {(newDate)&&
-                            <div style={{margin:'2rem'}}>
-                                <Date date={date}/>
-                            </div>
-                            }
-                        <StyledMessage
-                            isCurrentUserMessage={isCurrentUserMessage}
-                            id={isFirstUnreadedMessage ? 'firstUnreadedMessage' : null}
-                            status={isReaded ? 'READED' : message.status}
-                            key={message.messageId}
-                            messageId={message.messageId}
-                            text={message.text}
-                            time={message.time}
-                            timestamp={message.timestamp}
-                            onRead={onRead}
+                return (
+                    <Fragment>
+                        {(newDate) &&
+                        <div style={{margin: '2rem'}}>
+                            <Date date={date}/>
+                        </div>
+                        }
 
-                        />
-                            </Fragment>
-                    )
+                        <div style={{
+                            maxWidth: '60%',
+                            marginBottom: '10px',
+                            width: 'max-content',
+                            backgroundColor: isCurrentUserMessage ? "inherit" : "rgba(25,118,210,0.11)",
+                            marginLeft: isCurrentUserMessage ? 'auto' : 0,
+                        }}>
+                            <Message
+                                isCurrentUserMessage={isCurrentUserMessage}
+                                id={isFirstUnreadedMessage ? 'firstUnreadedMessage' : null}
+                                status={isReaded ? 'READED' : message.status}
+                                key={message.messageId}
+                                messageId={message.messageId}
+                                text={message.text}
+                                time={message.time}
+                                timestamp={message.timestamp}
+                                onRead={onRead}
+                            />
+                        </div>
+                    </Fragment>
+                )
                 }
             )}
 
